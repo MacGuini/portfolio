@@ -32,9 +32,9 @@ else:
     DEBUG = False
     # FORM SUBMISSION
     # Comment out the following line and place your railway URL, and your production URL in the array.
-    # CSRF_TRUSTED_ORIGINS = ["https://www.brian-lindsay.com", "https://brian-lindsay.com", "https://brianlindsay.up.railway.app"]
+    # CSRF_TRUSTED_ORIGINS = [""]
 
-ALLOWED_HOSTS = ["127.0.0.1", "www.brian-lindsay.com", "brian-lindsay.com", "brianlindsay.up.railway.app", "https://www.brian-lindsay.com", "https://brian-lindsay.com", "https://brianlindsay.up.railway.app"]
+ALLOWED_HOSTS = ["*"]
 
 
 
