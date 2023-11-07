@@ -1,0 +1,27 @@
+{% extends "main.html" %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container center">
+
+	<form method="POST">
+		{% csrf_token %}
+		<div>
+			<label>Username: </label>
+			<input type="text" name="username" placeholder="Enter your username">
+		</div>
+		<div>
+			<label>Password: </label>
+			<input type="password" name="password" placeholder="*********"/>
+		</div>
+		<div>
+			<input type="submit" value="Log In"/>
+			
+		</div>
+	</form>
+<a href="{% url 'reset_password' %}">Forgot Password?</a>
+</div>
+    
+{% endblock content %}

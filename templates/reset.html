@@ -1,0 +1,17 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+    <h3>Password Reset</h3>
+
+    <p>Please create a new password.</p>
+    
+    <form>
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" />
+    </form>
+
+
+
+{% endblock content %}

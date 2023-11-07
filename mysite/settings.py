@@ -25,13 +25,19 @@ SECRET_KEY = str(os.environ.get('DJANGO_SECRET_KEY'))
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# NOTE environmental variable to control production and development environments
+if str(os.environ.get('DEBUG_VALUE')) == "True":
+    DEBUG = True
+else:
+    DEBUG = False
+    # FORM SUBMISSION
+    # Comment out the following line and place your railway URL, and your production URL in the array.
+    CSRF_TRUSTED_ORIGINS = ["https://www.brian-lindsay.com", "https://brian-lindsay.com", "https://brianlindsay.up.railway.app"]
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["127.0.0.1", "www.brian-lindsay.com", "brian-lindsay.com", "brianlindsay.up.railway.app", "https://www.brian-lindsay.com", "https://brian-lindsay.com", "https://brianlindsay.up.railway.app"]
 
-# FORM SUBMISSION
-# Comment out the following line and place your railway URL, and your production URL in the array.
-# CSRF_TRUSTED_ORIGINS = ["*"]
+
+
 
 # Application definition
 
@@ -42,6 +48,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'accounts.apps.AccountsConfig',
+
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
@@ -60,7 +70,9 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -128,6 +140,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
