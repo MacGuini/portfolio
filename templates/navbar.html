@@ -21,14 +21,33 @@
             <a href="#" class="block py-2 px-3 text-cyan-300 rounded hover:bg-blue-300 hover:text-blue-800 md:p-2 text-center">About</a>
           </li>
           <li>
-            <a href="#" class="block py-2 px-3 text-cyan-300 rounded hover:bg-blue-300 hover:text-blue-800 md:p-2 text-center">Services</a>
+            <a href="#" class="block py-2 px-3 text-cyan-300 rounded hover:bg-blue-300 hover:text-blue-800 md:p-2 text-center">Blog</a>
           </li>
           <li>
-            <a href="#" class="block py-2 px-3 text-cyan-300 rounded hover:bg-blue-300 hover:text-blue-800 md:p-2 text-center">Pricing</a>
+            <a href="#" class="block py-2 px-3 text-cyan-300 rounded hover:bg-blue-300 hover:text-blue-800 md:p-2 text-center">Forum</a>
           </li>
           <li>
-            <a href="#" class="block py-2 px-3 text-cyan-300 rounded hover:bg-blue-300 hover:text-blue-800 md:p-2 text-center">Contact</a>
-          </li>
+            <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar" class="flex items-center justify-between w-full py-2 px-3 bg-transparent text-gray-200 rounded">Projects<svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+              </svg></button>
+            <!-- Dropdown menu -->
+            <div id="dropdownNavbar" class="z-10 hidden font-normal bg-blue-900 divide-y divide-blue-950 rounded-lg shadow w-44 text-center">
+                <ul class="py-2 text-sm text-cyan-400" aria-labelledby="dropdownLargeButton">
+                  <li>
+                    <a href="#" class="block px-4 py-2 hover:bg-blue-400 hover:text-blue-900">More</a>
+                  </li>
+                  <li>
+                    <a href="#" class="block px-4 py-2 hover:bg-blue-400 hover:text-blue-900">To</a>
+                  </li>
+                  <li>
+                    <a href="#" class="block px-4 py-2 hover:bg-blue-400 hover:text-blue-900">Come</a>
+                  </li>
+                </ul>
+                <div class="py-1">
+                  <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-blue-400 hover:text-gray-900">Sign out</a>
+                </div>
+            </div>
+        </li>
         </ul>
       </div>
     </div>
