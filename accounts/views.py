@@ -4,13 +4,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import Profile
 from .forms import CustomUserCreationForm
+import os
 
 # Create your views here.
 def index(request):
 	return render(request, 'index.html')
 
 def loginUser(request):
-	
+	site_key = os.getenv("RECAPTCHA_SITE_KEY")
 	if request.user.is_authenticated:
 		return redirect('index')
 
@@ -39,7 +40,7 @@ def loginUser(request):
 		else:
 			print('Invalid User name or password')
 
-	return render(request, 'accounts/login.html')
+	return render(request, 'accounts/login.html', {'site_key':site_key})
 
 def logoutUser(request):
 	logout(request)

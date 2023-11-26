@@ -11,6 +11,18 @@ def generate_password(length):
     password = ''.join(secrets.choice(alphabet) for i in range(length))
     return password
 
+@receiver(post_save, sender=User)
+def createProfile(sender, instance, created, **kwargs):
+	if created:
+		user = instance
+		profile = Profile.objects.create(
+			user = user,
+			username = user.username,
+			email = user.email,
+			fname = user.first_name,
+			lname = user.last_name,
+		)
+		profile.save()
 
 		
 @receiver(post_save, sender=Profile)

@@ -1,0 +1,10 @@
+{% extends "main.html" %}
+
+{% block content %}
+{% if request.user.is_staff %}
+
+{% include "accounts/template_edit_account.html" with id=account.id %}
+
+{% endif %}
+
+{% endblock content %}

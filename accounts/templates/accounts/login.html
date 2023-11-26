@@ -2,26 +2,43 @@
 {% load static %}
 
 {% block content %}
-
-
-<div class="container center">
-
-	<form method="POST">
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<div class="bg-gradient-to-t from-blue-900 to-gray-800 min-h-screen text-gray-500 pt-20">
+	<form id="login-form" method="POST" class="max-w-md mx-auto">
 		{% csrf_token %}
-		<div>
-			<label>Username: </label>
-			<input type="text" name="username" placeholder="Enter your username">
+		<div class="relative z-0 w-full mb-5 group">
+			<input type="text" name="username" id="floating_username" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+			<label for="floating_username" class="peer-focus:font-medium absolute duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Username</label>
 		</div>
-		<div>
-			<label>Password: </label>
-			<input type="password" name="password" placeholder="*********"/>
+		<div class="relative z-0 w-full mb-5 group">
+			<input type="password" name="password" id="floating_password" class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
+			<label for="floating_password" class="peer-focus:font-medium absolute duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">Password</label>
 		</div>
-		<div>
-			<input type="submit" value="Log In"/>
-			
+	
+		<div class="flex justify-between">
+			<button class="g-recaptcha p-2 rounded hover:bg-blue-500 hover:text-gray-900" 
+			data-sitekey="{{site_key}}" 
+			data-callback='onSubmit' 
+			data-action='submit'>Submit</button>
+			<a class=" p-2 rounded hover:bg-red-500 hover:text-gray-900" href="{% url "reset_password" %}">Reset Password</a>
 		</div>
-	</form>
-<a href="{% url 'reset_password' %}">Forgot Password?</a>
+		
+	  </form>
+	
+	
+	<script>
+		function onSubmit(token) {
+		  document.getElementById("login-form").submit();
+		}
+	  </script>
 </div>
+
+ 
     
 {% endblock content %}
+
+
+
+
+
+  

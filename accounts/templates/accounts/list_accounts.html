@@ -1,0 +1,35 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+{% if request.user.is_staff %}
+<div class="container">
+    <table class="table table-hover">
+        <tr>
+            <th>Username</th>
+            <th>Name</th>
+            <th>Edit</th>
+            {% if request.user.is_staff %}
+                <th>Delete</th>
+            {% endif %}
+            
+        </tr>
+        {% for user in users  %}
+        <tr>
+            <td>{{user.username}}</td>
+            <td>{{user.lname}}, {{user.fname}}</td>
+            <td><a class="btn btn-info" href="{% url "admin-edit-account" user.id %}">Edit</a></td>
+            {% if request.user.is_staff and request.user.username !=  user.username %}
+            <td><a class="btn btn-danger" href="{% url "delete-account" user.id %}?next={% url "list-accounts" %}">Delete</a></td> 
+            {% endif %}
+                      
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endif %}
+
+{% endblock content %}
+
+
