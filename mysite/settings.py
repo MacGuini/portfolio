@@ -27,9 +27,9 @@ SECRET_KEY = str(os.environ.get('DJANGO_SECRET_KEY'))
 # SECURITY WARNING: don't run with debug turned on in production!
 # NOTE environmental variable to control production and development environments
 if str(os.environ.get('DEBUG_VALUE')) == "True":
-    DEBUG = False
-else:
     DEBUG = True
+else:
+    DEBUG = False
     # FORM SUBMISSION
     # Comment out the following line and place your railway URL, and your production URL in the array.
     CSRF_TRUSTED_ORIGINS = ["https://brian-lindsay.com", "https://www.brian-lindsay.com", "https://brianlindsay.up.railway.app/"]
@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-if DEBUG == False:
+if DEBUG == True:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -110,6 +110,11 @@ else:
         }
     }
 
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# MAIL_USE_TLS = True
+# EMAIL_HOST_USER = os.getenv('GMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.getenv('GMAIL_HOST_PASSWORD')
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
