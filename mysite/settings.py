@@ -32,9 +32,9 @@ else:
     DEBUG = False
     # FORM SUBMISSION
     # Comment out the following line and place your railway URL, and your production URL in the array.
-    # CSRF_TRUSTED_ORIGINS = [""]
+    CSRF_TRUSTED_ORIGINS = ["https://brian-lindsay.com", "https://www.brian-lindsay.com", "https://brianlindsay.up.railway.app/"]
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["127.0.0.1", "https://brian-lindsay.com", "https://www.brian-lindsay.com", "brian-lindsay.com", "www.brian-lindsay.com"]
 
 
 
@@ -110,6 +110,11 @@ else:
         }
     }
 
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# MAIL_USE_TLS = True
+# EMAIL_HOST_USER = os.getenv('GMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.getenv('GMAIL_HOST_PASSWORD')
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -159,6 +164,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 RECAPTCHA_PUBLIC_KEY = str(os.getenv('RECAPTCHA_PUBLIC_KEY'))
 RECAPTCHA_PRIVATE_KEY = str(os.getenv('RECAPTCHA_PRIVATE_KEY'))
 
-RECAPTCHA_REQUIRED_SCORE = 0.85
+RECAPTCHA_REQUIRED_SCORE = 0.50
 
 # SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
