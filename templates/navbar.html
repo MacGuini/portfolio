@@ -47,7 +47,7 @@
                   </li>
                   <li>
                     <div class="py-1">
-                      <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-blue-400 hover:text-gray-900">More Ideas</a>
+                      <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-blue-400 hover:text-gray-900">Insert More Ideas</a>
                     </div>
                   </li>
                 </ul>
@@ -56,11 +56,11 @@
         </li>
         {% if request.user.is_authenticated %}
         <li>
-          <a href="{% url "logout" %}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-blue-400 hover:text-gray-900 rounded">Logout</a>
+          <a href="{% url "logout" %}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-blue-400 hover:text-gray-900 rounded text-center">Logout</a>
         </li>
         {% else %}
         <li>
-          <a href="{% url "login" %}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-blue-400 hover:text-gray-900 rounded">Login</a>
+          <a href="{% url "login" %}" class="block px-4 py-2 text-sm text-gray-300 hover:bg-blue-400 hover:text-gray-900 rounded text-center">Login</a>
         </li>
         {% endif %}
         </ul>
