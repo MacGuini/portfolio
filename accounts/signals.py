@@ -10,60 +10,18 @@ def generate_password(length):
     password = ''.join(secrets.choice(alphabet) for i in range(length))
     return password
 
-# @receiver(post_save, sender=User)
-# def createProfile(sender, instance, created, **kwargs):
-# 	if created:
-# 		user = instance
-# 		profile = Profile.objects.create(
-# 			user = user,
-# 			username = user.username,
-# 			email = user.email,
-# 			fname = user.first_name,
-# 			lname = user.last_name,
-# 		)
-# 		profile.save()
-
-		
-@receiver(post_save, sender=Profile)
-def updateUser(sender, instance, created, **kwargs):
-	profile = instance
-	# user = profile.user
+@receiver(post_save, sender=User)
+def createProfile(sender, instance, created, **kwargs):
 	if created:
-		profile = instance 
-
-		fname = str(profile.fname)
-		lname = str(profile.lname)
-		username = str(profile.username)
-		
-		password = generate_password(random.randint(8, 16))
-		email = str(profile.email) if profile.email else ''
-		user = User.objects.create_user(username, email, password)
-
-		user.is_staff = profile.is_staff
-		user.is_superuser = profile.is_superuser		
-
-		user.first_name = fname
-		user.last_name = lname
-		user.save()
-
-		profile.user = user
+		user = instance
+		profile = Profile.objects.create(
+			user = user,
+			username = user.username,
+			email = user.email,
+			fname = user.first_name,
+			lname = user.last_name,
+		)
 		profile.save()
-
-
-	elif User.objects.filter(username=profile.username).exists():
-		user = User.objects.get(username=profile.username)
-
-
-		if created == False:
-			user.username = profile.username
-			user.first_name = profile.fname 
-			user.last_name = profile.lname
-			user.email = str(profile.email) if profile.email else ''
-
-			user.is_staff = profile.is_staff
-			user.is_superuser = profile.is_superuser		
-
-			user.save()
 
 		
 @receiver(post_save, sender=Profile)
@@ -75,6 +33,8 @@ def updateProfile(sender, instance, created, **kwargs):
 		user.first_name = profile.fname 
 		user.last_name = profile.lname
 		user.email = profile.email
+		# user.is_staff = profile.is_staff
+		# user.is_superuser = profile.is_superuser
 		user.save()
 
 @receiver(post_delete, sender=Profile)
