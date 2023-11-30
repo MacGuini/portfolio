@@ -4,8 +4,9 @@
 {% block content %}
 
 <div class="bg-gradient-to-t from-blue-800 to-slate-800 h-screen px-5">
-    <form method="POST" class="max-w-md mx-auto pt-16">
+    <form id="recaptcha-form" method="POST" class="max-w-md mx-auto pt-16">
         {% csrf_token %}
+        {{form.captcha}}
         <div class="grid md:grid-cols-2 md:gap-6">
             <div class="relative z-0 w-full mb-5 group">
                 {{form.first_name}}
@@ -34,18 +35,19 @@
         </div>
         <div class="container flex justify-around">
             <div>
-                <input class="text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 mt-8 text-center bg-blue-600 hover:bg-blue-700 focus:ring-blue-800" type="submit" value="Submit">
+                <input class="text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center bg-blue-600 hover:bg-blue-700 focus:ring-blue-800" type="submit" value="Submit">
             </div>
-            <div class="text-center">
-                <p class="mb-3 text-blue-300">Already have an account?</p>
-                <a class="text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center bg-teal-700 hover:bg-teal-600 focus:ring-teal-800" href="{% url "login" %}">Log In</a>
+            <div class="my-auto">
+                
+                <a class="text-slate-400 text-sm hover:text-blue-400" href="{% url "login" %}">Already have an account?</a>
             </div>
 
         </div>
         
 
-        {{form.captcha}}
+        
     </form>
 </div>
 
+{% include "recaptcha_script.html" %}
 {% endblock content %}

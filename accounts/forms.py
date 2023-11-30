@@ -2,18 +2,18 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Profile
-from django_recaptcha.fields import ReCaptchaField
-from django_recaptcha.widgets import ReCaptchaV3
+# from django_recaptcha.fields import ReCaptchaField
+# from django_recaptcha.widgets import ReCaptchaV3
 
-class LoginForm(forms.Form):
-    captcha = ReCaptchaField(widget=ReCaptchaV3())
+# class LoginForm(forms.Form):
+#     captcha = ReCaptchaField(widget=ReCaptchaV3())
 
 
 class CustomUserCreationForm(UserCreationForm): # Inherets all aspects of the imported UserCreationForm
-	first_name = forms.CharField(required=True)
-	last_name = forms.CharField(required=True)
-	email = forms.EmailField(required=True)
-	captcha = ReCaptchaField(widget=ReCaptchaV3())
+	first_name = forms.CharField()
+	last_name = forms.CharField()
+	email = forms.EmailField()
+	# captcha = ReCaptchaField(widget=ReCaptchaV3())
 
 	class Meta: 
 		model = User
@@ -47,7 +47,6 @@ class ProfileForm(forms.ModelForm):
 		model = Profile
 		fields = '__all__'
 		exclude = [
-			'user',
 			'is_superuser',
 		]
 

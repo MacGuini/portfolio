@@ -1,0 +1,18 @@
+<script src="https://www.google.com/recaptcha/api.js?render={{site_key}}"></script>
+<script>
+  // 3
+  grecaptcha.ready(function() {
+      // 4
+      $('#recaptcha-form').submit(function(e){
+          var form = this;
+          // 5
+          e.preventDefault()
+          grecaptcha.execute('{{site_key}}',).then(function(token) {
+              // 6
+              $('#recaptcha').val(token)
+              // 7
+              form.submit()
+          });
+      })
+  });
+ </script>

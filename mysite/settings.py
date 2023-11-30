@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
 
     'django_cleanup.apps.CleanupConfig',
-    'django_recaptcha',
+    # 'django_recaptcha',
 ]
 
 MIDDLEWARE = [
@@ -161,9 +161,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-RECAPTCHA_PUBLIC_KEY = str(os.getenv('RECAPTCHA_PUBLIC_KEY'))
-RECAPTCHA_PRIVATE_KEY = str(os.getenv('RECAPTCHA_PRIVATE_KEY'))
+RECAPTCHA_SITE_KEY = str(os.getenv('RECAPTCHA_PUBLIC_KEY'))
+RECAPTCHA_SECRET_KEY = str(os.getenv('RECAPTCHA_PRIVATE_KEY'))
 
-RECAPTCHA_REQUIRED_SCORE = 0.50
+RECAPTCHA_REQUIRED_SCORE = 0.80
 
 # SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']

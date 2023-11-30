@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.shortcuts import render, redirect
+import requests
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -15,8 +17,10 @@ def loginUser(request):
     
     if request.user.is_authenticated:
         return redirect('index')
+    
 
     if request.method == 'POST':
+        
         # Username forced lower case to prevent repeat users
         username = request.POST['username'].lower()
         password = request.POST['password']
@@ -42,30 +46,36 @@ def loginUser(request):
         else:
             messages.error(request, 'Invalid password')
         
-    return render(request, 'accounts/login.html')
+    return render(request, 'accounts/login.html', {'site_key':settings.RECAPTCHA_SITE_KEY})
 
 
-
+@login_required(login_url='login')
 def logoutUser(request):
 	logout(request)
 	return redirect('index')
 
 def registerUser(request):
-
-    form = CustomUserCreationForm()
-
+    if request.user.is_authenticated:
+        return redirect('index')
+    form = CustomUserCreationForm(request.POST or None)
+    print("\n" * 2 + "View activated" + "\n" * 2)
     if request.method == 'POST':
+        print("\n" * 2 + "Post Request Received" + "\n" * 2)
         form = CustomUserCreationForm(request.POST)
+        print("\n" * 2 + "Form validity = " + str(form.is_valid()) + "\n" * 2)
         if form.is_valid():
+            print("\n" * 2 + "Form is Valid" + "\n" * 2)
             user = form.save(commit=False) # Instead of committing data to database, it suspends it temporarily
             user.username = user.username.lower() # Ensures all usernames are lower case to prevent duplicates with different cases.
-            user.save() # Finally saves
-
+            user.save() # Finally saves 
+            print("\n" * 2 + "User Saved!!!!" + "\n" * 2)
             login(request, user) # Logs user in
             return redirect('index')
         else:
+            print(form.errors)
+            print("\n" * 2 + "An error has occured during registration." + "\n" * 2)
             messages.success(request, "An error has occured during registration")
 
-    context = {'form':form}
+    context = {'form':form, 'site_key':settings.RECAPTCHA_SITE_KEY}
     return render (request, 'accounts/register_account.html', context)
 
