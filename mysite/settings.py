@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'accounts.apps.AccountsConfig',
+    'forum.apps.ForumConfig',
 
     'django_cleanup.apps.CleanupConfig',
     # 'django_recaptcha',

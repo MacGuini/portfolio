@@ -1,0 +1,34 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+<table class="table-fixed">
+    <thead>
+        <th>Username</th>
+        <th>Topic</th>
+        <th></th>
+        <th>Posted</th>
+    </thead>
+    {% for post in posts %}
+    
+    <tbody>
+        <td>
+            {{post.username}}
+        </td>
+        <td>
+            {{post.title}}
+        </td>
+        <td>
+            <a href="{% url "view-post" post.id %}">{{post.body|truncatechars:150}}</a>
+            
+        </td>
+        <td>
+            {{post.created}}
+        </td>
+ 
+    </tbody>
+    
+    {% endfor %}
+</table>
+
+{% endblock content %}
