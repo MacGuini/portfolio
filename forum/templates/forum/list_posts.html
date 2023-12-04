@@ -1,6 +1,9 @@
 {% extends "main.html" %}
 
 {% block content %}
+<div>
+    <a href="{% url "create-forum-post" %}?next={{request.path}}">Create Forum</a>
+</div>
 
 <table class="table-fixed">
     <thead>

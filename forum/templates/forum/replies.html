@@ -1,0 +1,11 @@
+
+<!--Renders all replies for a comment and sorts them from oldest to newest-->
+{% for reply in replies|dictsort:"created" %}
+    <!-- display reply here -->
+    {{ reply.text }}
+    {% if reply.replies.all %}
+        <div class="replies">
+            {% include 'forum/replies.html' with replies=reply.replies.all %}
+        </div>
+    {% endif %}
+{% endfor %}

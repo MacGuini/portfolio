@@ -19,6 +19,9 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
 
+    class Meta:
+        ordering = ['-created',]
+
     def save(self, *args, **kwargs):
         self.username = self.author.username
         self.fname = self.author.fname
@@ -26,11 +29,13 @@ class Post(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return (f'Post by {self.fname} {self.lname} - {self.username}')
+        return (f'Post "{self.title}" by {self.username}')
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=CASCADE, related_name='comments', null=True, blank=True)
+    post = models.ForeignKey(Post, on_delete=CASCADE, related_name='comments', null=False, blank=False)
+    parent = models.ForeignKey('self', on_delete=CASCADE, related_name="replies", null=True, blank=True)
     author = models.ForeignKey(Profile, on_delete=SET_NULL, null=True, blank=True)
+    
     username = models.CharField(max_length=100, null=False, blank=False)
     fname = models.CharField(max_length=100, null=False, blank=False)
     lname = models.CharField(max_length=100, null=False, blank=False)
@@ -39,10 +44,16 @@ class Comment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
-
+    class Meta:
+        ordering = ['-created',]
+        
     def save(self, *args, **kwargs):
         self.username = self.author.username
         self.fname = self.author.fname
         self.lname = self.author.lname
         super().save(*args, **kwargs)
+    
+    def __str__(self):
+        return (f'Comment by {self.fname} {self.lname} on {self.post}')
+    
         

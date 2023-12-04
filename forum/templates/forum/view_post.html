@@ -1,5 +1,5 @@
 {% extends "main.html" %}
-
+{% load static %}
 {% block content %}
 
     <div class="container">
@@ -17,5 +17,62 @@
             {{post.body}}
         </div>
     </div>
+<!-- display comment form for the post -->
+<form method="POST" action="{% url "comment" post.id %}">
+    {% csrf_token %}
+    {{ form.text }}
+    <input type="submit" value="Comment">
+</form>
+
+{% for comment in comments %}
+    <!-- display comment here -->
+    <div>
+        {{comment.username}}
+    </div>
+    <div>
+        {{comment.text|linebreaksbr}}
+    </div>
+    {% if comment.replies.all %}
+        <div class="replies">
+            {% include 'forum/replies.html' with replies=comment.replies.all %}
+        </div>
+    {% endif %}
+        <!-- display reply button with unique id -->
+        <button id="reply-button-{{ comment.id }}" onclick="showReplyForm('{{ comment.id }}')">Reply</button>
+    <!-- display reply form here -->
+    <form id="reply-form-{{comment.id}}" method="POST" action="{% url "reply" post.id comment.id %}" style="display: none;">
+        {% csrf_token %}
+        {{ form.text }}
+        <input type="submit" value="Submit">
+    </form>
+{% endfor %}
+
+<script>
+    function showReplyForm(commentId) {
+        // Hide all reply forms
+        var forms = document.getElementsByTagName('form');
+        for (var i = 0; i < forms.length; i++) {
+            if (forms[i].id.startsWith('reply-form-')) {
+                forms[i].style.display = 'none';
+            }
+        }
+    
+        // Hide all reply buttons
+        var buttons = document.getElementsByTagName('button');
+        for (var i = 0; i < buttons.length; i++) {
+            if (buttons[i].id.startsWith('reply-button-')) {
+                buttons[i].style.display = 'block';
+            }
+        }
+    
+        // Show the reply form for the clicked reply button
+        document.getElementById('reply-form-' + commentId).style.display = 'block';
+        // Hide the clicked reply button
+        document.getElementById('reply-button-' + commentId).style.display = 'none';
+    }
+    
+</script>
+    
+
 
 {% endblock content %}

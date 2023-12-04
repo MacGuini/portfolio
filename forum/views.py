@@ -25,9 +25,24 @@ def createForumPost(request):
 
     return render(request, 'forum/create_forum_post.html', {'form':form})
 
-def viewPost(request, pk):
+def viewPost(request, pk, parent_comment_id=None):
     post = get_object_or_404(Post, pk=pk)
-    return render(request, 'forum/view_post.html', {'post':post})
+    comments = post.comments.filter(parent=None)  # Only fetch top-level comments
+    form = CommentForm()
 
-    
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form = form.save(commit=False)
+            form.post = post
+            form.author = request.user.profile
+            form.username = request.user.username
+            form.fname = request.user.first_name
+            form.lname = request.user.last_name
+            # Adds reply to comment if there is a parent_comment_id in the URL pattern
+            if parent_comment_id:
+                form.parent = Comment.objects.get(id=parent_comment_id)
+            form.save()
+            return redirect('view-post', pk=post.pk)  # Redirect after POST
 
+    return render(request, 'forum/view_post.html', {'post':post, 'comments': comments, 'form': form})
