@@ -10,6 +10,7 @@ def listPosts(request):
     posts = Post.objects.all()
     return render(request, 'forum/list_posts.html', {'posts':posts})
 
+@login_required(login_url='login')
 def createForumPost(request):
     profile = request.user.profile
     form = PostForm()
@@ -32,7 +33,7 @@ def viewPost(request, pk, parent_comment_id=None):
 
     if request.method == 'POST':
         form = CommentForm(request.POST)
-        if form.is_valid():
+        if form.is_valid() and request.user.is_authenticated:
             form = form.save(commit=False)
             form.post = post
             form.author = request.user.profile
@@ -44,5 +45,7 @@ def viewPost(request, pk, parent_comment_id=None):
                 form.parent = Comment.objects.get(id=parent_comment_id)
             form.save()
             return redirect('view-post', pk=post.pk)  # Redirect after POST
+        else:
+            return redirect('login')
 
     return render(request, 'forum/view_post.html', {'post':post, 'comments': comments, 'form': form})

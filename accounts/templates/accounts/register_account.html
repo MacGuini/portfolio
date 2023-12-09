@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<div class="bg-gradient-to-t from-blue-800 to-slate-800 h-screen px-5">
+<div class="px-5">
     <form id="recaptcha-form" method="POST" class="max-w-md mx-auto pt-16">
         {% csrf_token %}
         {{form.captcha}}

@@ -2,50 +2,65 @@
 {% load static %}
 {% block content %}
 
-    <div class="container">
-        <div>
-            {{post.username}}
-        </div>
-        <div>
-            {{post.fname}}
-            {{post.lname}}
-        </div>
-        <div>
-            {{post.title}}
-        </div>
-        <div>
-            {{post.body}}
-        </div>
+<div class="container mx-auto text-slate-400">
+    <div class="text-lg">
+        <p>Submitted by</p>
+        {{post.username}}
     </div>
-<!-- display comment form for the post -->
-<form method="POST" action="{% url "comment" post.id %}">
-    {% csrf_token %}
-    {{ form.text }}
-    <input type="submit" value="Comment">
-</form>
+    <div class="text-lg">
+        {{post.fname}}
+        {{post.lname}}
+    </div>
+    <br>
+    <div class="text-2xl">
+        {{post.title}}
+    </div>
+    <hr>
+    <br>
+    <div class="text-lg">
+        {{post.body}}
+    </div>
 
-{% for comment in comments %}
-    <!-- display comment here -->
-    <div>
-        {{comment.username}}
-    </div>
-    <div>
-        {{comment.text|linebreaksbr}}
-    </div>
-    {% if comment.replies.all %}
-        <div class="replies">
-            {% include 'forum/replies.html' with replies=comment.replies.all %}
-        </div>
-    {% endif %}
-        <!-- display reply button with unique id -->
-        <button id="reply-button-{{ comment.id }}" onclick="showReplyForm('{{ comment.id }}')">Reply</button>
-    <!-- display reply form here -->
-    <form id="reply-form-{{comment.id}}" method="POST" action="{% url "reply" post.id comment.id %}" style="display: none;">
+
+    <!-- display comment form for the post -->
+    <form method="POST" action="{% url "comment" post.id %}">
         {% csrf_token %}
         {{ form.text }}
-        <input type="submit" value="Submit">
+        <input type="submit" value="Comment">
     </form>
-{% endfor %}
+    <!--Displays comments-->
+    <div class="">
+        {% for comment in comments %}
+        <!-- display comment here -->
+        <div class="bg-slate-600 rounded-lg p-1 my-4 max-w-lg">
+            <div>
+                {{comment.username}}
+            </div>
+            <div>
+                {{comment.text|linebreaksbr}}
+            </div>
+        
+
+        {% if comment.replies.all %}
+            <div class="replies static">
+                {% include 'forum/replies.html' with replies=comment.replies.all %}
+            </div>
+        {% endif %}
+    </div>
+            <!-- display reply button with unique id -->
+        <button id="reply-button-{{ comment.id }}" class="bg-blue-600 rounded p-2 m-1" onclick="showReplyForm('{{ comment.id }}')">Reply</button>
+        <!-- display reply form here -->
+        <form id="reply-form-{{comment.id}}" method="POST" action="{% url "reply" post.id comment.id %}" style="display: none;">
+
+            {% csrf_token %}
+            {{ form.text }}
+            <input type="submit" value="Submit">
+        </form> 
+        {% endfor %}
+    </div>
+
+</div>
+
 
 <script>
     function showReplyForm(commentId) {
