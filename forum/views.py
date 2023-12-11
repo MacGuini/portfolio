@@ -28,7 +28,7 @@ def createForumPost(request):
 
 def viewPost(request, pk, parent_comment_id=None):
     post = get_object_or_404(Post, pk=pk)
-    comments = post.comments.filter(parent=None)  # Only fetch top-level comments
+    comments = post.comments.all()  # Fetch all comments
     form = CommentForm()
 
     if request.method == 'POST':

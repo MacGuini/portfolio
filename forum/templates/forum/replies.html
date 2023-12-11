@@ -1,24 +1,28 @@
 
 <!--Renders all replies for a comment and sorts them from oldest to newest-->
 {% for reply in replies|dictsort:"created" %}
-<div class="border-s border-blue-400 ms-1 static">
+<div class="ms-1 inline-block">
     <!-- display reply here -->
-    <div class="bg-blue-700 rounded p-3 m-1">
-        {{reply.username}}
-    </div>
-        <dir class="bg-blue-600 rounded p-3 m-1">
+    <div class="border-s-2 border-blue-700">
+        <div class="p-3 m-1">
+            {{reply.username}}
+        </div>
+        <div class="p-3 m-1">
         {{ reply.text }}
-    </dir>
+        </div>
     <!-- display reply button with unique id -->
-    <button id="reply-button-{{ reply.id }}" class="bg-teal-400 rounded p-2" onclick="showReplyForm('{{ reply.id }}')">Reply</button>
+    <button id="reply-button-{{ reply.id }}" class="ms-2 bg-teal-400 rounded p-2" onclick="showReplyForm('{{ reply.id }}')">Reply</button>
     <!-- display reply form here -->
-    <form id="reply-form-{{reply.id}}" method="POST" action="{% url "reply" post.id reply.id %}" style="display: none;">
+    <form id="reply-form-{{reply.id}}" method="POST" class="ms-2" action="{% url "reply" post.id reply.id %}" style="display: none;">
         {% csrf_token %}
         {{ form.text }}
         <input type="submit" value="Submit">
     </form>
+    </div>
+
+ 
     {% if reply.replies.all %}
-        <div class="replies">
+        <div class="replies static">
             {% include 'forum/replies.html' with replies=reply.replies.all %}
         </div>
     {% endif %}

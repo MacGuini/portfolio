@@ -29,10 +29,10 @@
         <input type="submit" value="Comment">
     </form>
     <!--Displays comments-->
-    <div class="">
+    <div class="relative">
         {% for comment in comments %}
         <!-- display comment here -->
-        <div class="bg-slate-600 rounded-lg p-1 my-4 max-w-lg">
+        <div class="bg-slate-600 rounded-lg p-1 max-w-lg">
             <div>
                 {{comment.username}}
             </div>
@@ -41,23 +41,25 @@
             </div>
         
 
-        {% if comment.replies.all %}
-            <div class="replies static">
-                {% include 'forum/replies.html' with replies=comment.replies.all %}
-            </div>
-        {% endif %}
-    </div>
+            {% if comment.replies.all %}
+                <div class="replies static">
+                    {% include 'forum/replies.html' with replies=comment.replies.all %}
+                </div>
+            {% endif %}
             <!-- display reply button with unique id -->
-        <button id="reply-button-{{ comment.id }}" class="bg-blue-600 rounded p-2 m-1" onclick="showReplyForm('{{ comment.id }}')">Reply</button>
-        <!-- display reply form here -->
-        <form id="reply-form-{{comment.id}}" method="POST" action="{% url "reply" post.id comment.id %}" style="display: none;">
+            <button id="reply-button-{{ comment.id }}" class="bg-blue-600 rounded p-2 m-1" onclick="showReplyForm('{{ comment.id }}')">Reply</button>
+            <!-- display reply form here -->
+            <form id="reply-form-{{comment.id}}" method="POST" action="{% url "reply" post.id comment.id %}" style="display: none;">
 
-            {% csrf_token %}
-            {{ form.text }}
-            <input type="submit" value="Submit">
-        </form> 
-        {% endfor %}
+                {% csrf_token %}
+                {{ form.text }}
+                <input type="submit" value="Submit">
+            </form> 
+            {% endfor %}
+        </div>
     </div>
+
+
 
 </div>
 
@@ -72,7 +74,7 @@
             }
         }
     
-        // Hide all reply buttons
+        // Show all reply buttons
         var buttons = document.getElementsByTagName('button');
         for (var i = 0; i < buttons.length; i++) {
             if (buttons[i].id.startsWith('reply-button-')) {
@@ -85,6 +87,7 @@
         // Hide the clicked reply button
         document.getElementById('reply-button-' + commentId).style.display = 'none';
     }
+    
     
 </script>
     
