@@ -30,26 +30,26 @@
     </form>
     <!--Displays comments-->
     <div class="relative">
-        {% for comment in comments %}
+        {% for node in comment_tree %}
         <!-- display comment here -->
-        <div class="bg-slate-600 rounded-lg p-1 max-w-lg">
+        <div class="bg-slate-600 rounded-lg p-1 mx-auto container">
             <div>
-                {{comment.username}}
+                {{node.comment.username}}
             </div>
             <div>
-                {{comment.text|linebreaksbr}}
+                {{node.comment.text|linebreaksbr}}
             </div>
         
 
-            {% if comment.replies.all %}
+      
                 <div class="replies static">
-                    {% include 'forum/replies.html' with replies=comment.replies.all %}
+                    {% include 'forum/replies.html' with comment_tree=node.replies %}
                 </div>
-            {% endif %}
+
             <!-- display reply button with unique id -->
-            <button id="reply-button-{{ comment.id }}" class="bg-blue-600 rounded p-2 m-1" onclick="showReplyForm('{{ comment.id }}')">Reply</button>
+            <button id="reply-button-{{ node.comment.id }}" class="bg-blue-600 rounded p-2 m-1" onclick="showReplyForm('{{ node.comment.id }}')">Reply</button>
             <!-- display reply form here -->
-            <form id="reply-form-{{comment.id}}" method="POST" action="{% url "reply" post.id comment.id %}" style="display: none;">
+            <form id="reply-form-{{node.comment.id}}" method="POST" action="{% url "reply" post.id node.comment.id %}" style="display: none;">
 
                 {% csrf_token %}
                 {{ form.text }}

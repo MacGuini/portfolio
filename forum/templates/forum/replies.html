@@ -1,32 +1,26 @@
-
 <!--Renders all replies for a comment and sorts them from oldest to newest-->
-{% for reply in replies|dictsort:"created" %}
-<div class="ms-1 inline-block">
+{% for node in comment_tree %}
+
+<div class="border-s-2 border-blue-400 py-2 ms-3">
     <!-- display reply here -->
-    <div class="border-s-2 border-blue-700">
-        <div class="p-3 m-1">
-            {{reply.username}}
-        </div>
-        <div class="p-3 m-1">
-        {{ reply.text }}
-        </div>
+    <div class="bg-blue-700 rounded p-3 ms-mb-1">
+        {{node.comment.username}}
+    </div>
+    <dir class="bg-blue-600 rounded p-3 mt-1">
+        {{ node.comment.text }}
+    </dir>
     <!-- display reply button with unique id -->
-    <button id="reply-button-{{ reply.id }}" class="ms-2 bg-teal-400 rounded p-2" onclick="showReplyForm('{{ reply.id }}')">Reply</button>
+    <button id="reply-button-{{ node.comment.id }}" class="bg-teal-400 rounded p-2" onclick="showReplyForm('{{ node.comment.id }}')">Reply</button>
     <!-- display reply form here -->
-    <form id="reply-form-{{reply.id}}" method="POST" class="ms-2" action="{% url "reply" post.id reply.id %}" style="display: none;">
+    <form id="reply-form-{{node.comment.id}}" method="POST" action="{% url "reply" post.id node.comment.id %}" style="display: none;">
         {% csrf_token %}
         {{ form.text }}
         <input type="submit" value="Submit">
     </form>
-    </div>
-
- 
-    {% if reply.replies.all %}
-        <div class="replies static">
-            {% include 'forum/replies.html' with replies=reply.replies.all %}
+    {% if node.replies %}
+        <div class="replies">
+            {% include 'forum/replies.html' with comment_tree=node.replies %}
         </div>
     {% endif %}
-
 </div>
-
 {% endfor %}

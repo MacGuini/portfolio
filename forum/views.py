@@ -26,9 +26,24 @@ def createForumPost(request):
 
     return render(request, 'forum/create_forum_post.html', {'form':form})
 
+#NOTE: depth and max_depth are used to control the amount of replies in some fashion. Will work on using these for something in the future.
+def build_comment_tree(comments, depth=0, max_depth=10):
+    comment_tree = []
+    for comment in comments.order_by('created'):
+        # Add the comment and its replies to the tree
+        node = {
+            'comment': comment,
+            'depth': min(depth, max_depth),
+            'replies': build_comment_tree(comment.replies.all(), depth + 1, max_depth),
+        }
+        comment_tree.append(node)
+    return comment_tree
+
+
 def viewPost(request, pk, parent_comment_id=None):
     post = get_object_or_404(Post, pk=pk)
-    comments = post.comments.all()  # Fetch all comments
+    comments = post.comments.filter(parent=None)  # Only fetch top-level comments
+    comment_tree = build_comment_tree(comments)
     form = CommentForm()
 
     if request.method == 'POST':
@@ -46,6 +61,6 @@ def viewPost(request, pk, parent_comment_id=None):
             form.save()
             return redirect('view-post', pk=post.pk)  # Redirect after POST
         else:
-            return redirect('login')
+            return redirect(request.GET['next'] if 'next' in request.GET else 'login')
 
-    return render(request, 'forum/view_post.html', {'post':post, 'comments': comments, 'form': form})
+    return render(request, 'forum/view_post.html', {'post':post, 'comments': comments, 'comment_tree':comment_tree, 'form': form, })
