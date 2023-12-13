@@ -1,21 +1,23 @@
 <!--Renders all replies for a comment and sorts them from oldest to newest-->
 {% for node in comment_tree %}
 
-<div class="border-s-2 border-blue-400 py-2 ms-3">
+<div class="border-s-2 border-blue-400 ms-3">
     <!-- display reply here -->
-    <div class="bg-blue-700 rounded p-3 ms-mb-1">
+    <div class="p-2">
         {{node.comment.username}}
     </div>
-    <dir class="bg-blue-600 rounded p-3 mt-1">
+    <dir class="p-2 my-0">
         {{ node.comment.text }}
     </dir>
     <!-- display reply button with unique id -->
-    <button id="reply-button-{{ node.comment.id }}" class="bg-teal-400 rounded p-2" onclick="showReplyForm('{{ node.comment.id }}')">Reply</button>
+    <button id="reply-button-{{ node.comment.id }}" class="bg-transparent hover:underline p-2 text-slate-600 hover:text-slate-400" onclick="showReplyForm('{{ node.comment.id }}')">Reply</button>
     <!-- display reply form here -->
     <form id="reply-form-{{node.comment.id}}" method="POST" action="{% url "reply" post.id node.comment.id %}" style="display: none;">
-        {% csrf_token %}
-        {{ form.text }}
-        <input type="submit" value="Submit">
+        <div class="relative">
+            {% csrf_token %}
+            {{ form.text }}
+            <input class="absolute bottom-0 left-0 text-slate-900 p-3 hover:underline hover:text-blue-800" type="submit" value="Comment">
+        </div>
     </form>
     {% if node.replies %}
         <div class="replies">

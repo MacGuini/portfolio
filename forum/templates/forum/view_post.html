@@ -22,39 +22,41 @@
     </div>
 
 
-    <!-- display comment form for the post -->
-    <form method="POST" action="{% url "comment" post.id %}">
-        {% csrf_token %}
+<!-- display comment form for the post -->
+<form method="POST" action="{% url "comment" post.id %}">
+    {% csrf_token %}
+    <div class="relative">
         {{ form.text }}
-        <input type="submit" value="Comment">
-    </form>
+        <input class="absolute bottom-0 left-0 text-slate-900 p-3 hover:underline hover:text-blue-800" type="submit" value="Comment">
+    </div>
+</form>
+
     <!--Displays comments-->
     <div class="relative">
         {% for node in comment_tree %}
         <!-- display comment here -->
-        <div class="bg-slate-600 rounded-lg p-1 mx-auto container">
+        <div class="bg-slate-900 rounded-lg p-1 mx-auto container">
             <div>
                 {{node.comment.username}}
             </div>
             <div>
                 {{node.comment.text|linebreaksbr}}
             </div>
-        
-
-      
-                <div class="replies static">
-                    {% include 'forum/replies.html' with comment_tree=node.replies %}
-                </div>
 
             <!-- display reply button with unique id -->
-            <button id="reply-button-{{ node.comment.id }}" class="bg-blue-600 rounded p-2 m-1" onclick="showReplyForm('{{ node.comment.id }}')">Reply</button>
+            <button id="reply-button-{{ node.comment.id }}" class="bg-transparent hover:underline p-2 text-slate-600 hover:text-slate-400" onclick="showReplyForm('{{ node.comment.id }}')">Reply</button>
             <!-- display reply form here -->
             <form id="reply-form-{{node.comment.id}}" method="POST" action="{% url "reply" post.id node.comment.id %}" style="display: none;">
+                <div class="relative">
+                    {% csrf_token %}
+                    {{ form.text }}
+                    <input class="absolute bottom-0 left-0 text-slate-900 p-3 hover:underline hover:text-blue-800" type="submit" value="Comment">
+                </div>
 
-                {% csrf_token %}
-                {{ form.text }}
-                <input type="submit" value="Submit">
             </form> 
+            <div class="replies static">
+                {% include 'forum/replies.html' with comment_tree=node.replies %}
+            </div>
             {% endfor %}
         </div>
     </div>
