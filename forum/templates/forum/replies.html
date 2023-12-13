@@ -21,6 +21,7 @@
             <div class="relative">
                 {% csrf_token %}
                 {{ form.text }}
+                {{form.captcha}}
                 <input class="absolute bottom-0 left-0 text-blue-500 p-3 hover:underline hover:text-slate-400" type="submit" value="Reply">
             </div>
         </form>
@@ -33,4 +34,6 @@
         </div>
     {% endif %}
 </div>
+
+{% include "recaptcha_script.html" %}
 {% endfor %}
