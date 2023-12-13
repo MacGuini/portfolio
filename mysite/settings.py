@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'forum.apps.ForumConfig',
 
     'django_cleanup.apps.CleanupConfig',
-    # 'django_recaptcha',
 ]
 
 MIDDLEWARE = [
@@ -111,11 +110,11 @@ else:
         }
     }
 
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# MAIL_USE_TLS = True
-# EMAIL_HOST_USER = os.getenv('GMAIL_HOST_USER')
-# EMAIL_HOST_PASSWORD = os.getenv('GMAIL_HOST_PASSWORD')
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('GMAIL_USER')
+EMAIL_HOST_PASSWORD = os.getenv('GMAIL_PASSWORD')
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

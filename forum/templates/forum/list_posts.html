@@ -26,6 +26,8 @@
             <th class="border border-slate-500">Posted</th>
         </thead>
         <tbody>
+
+            {% if posts %}
             {% for post in posts %}
         
             <tr class="odd:bg-slate-800 odd:text-slate-300 even:bg-slate-700 even:text-slate-200">
@@ -46,6 +48,10 @@
             </tr>
             
             {% endfor %}
+            {% else %}
+                <p class="text-xl text-slate-300">There are no posts to show. Please create a post.</p>
+            {% endif %}
+
         </tbody>
 
     </table>

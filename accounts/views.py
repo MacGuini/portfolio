@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.contrib import messages
 from .models import Profile
 from .forms import CustomUserCreationForm
@@ -67,7 +68,15 @@ def registerUser(request):
             user = form.save(commit=False) # Instead of committing data to database, it suspends it temporarily
             user.username = user.username.lower() # Ensures all usernames are lower case to prevent duplicates with different cases.
             user.save() # Finally saves 
-            
+
+            send_mail(
+                 ('User ' + str(user.username) + ' was successfully created'),
+                 ('A user was created for brian-lindsay.com!\n\nUsername: ' + str(user.username) + '\n\nName: ' + str(user.first_name) + ' ' + str(user.last_name) + '\n\nEmail: ' + str(user.email) + '\n\n\nThis email is being sent for to confirm the creation of accounts. It is also being forwarded to the site owner, Brian Lindsay, for further review to ensure no suspicious activity is done.'),
+                 'brian.s.lindsay829@gmail.com',
+                 ['brian.s.lindsay829@gmail.com', str(user.email)],
+                 fail_silently=False,
+            )
+
             login(request, user) # Logs user in
             return redirect('index')
         else:
