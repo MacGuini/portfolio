@@ -1,24 +1,32 @@
 <!--Renders all replies for a comment and sorts them from oldest to newest-->
 {% for node in comment_tree %}
 
-<div class="border-s-2 border-blue-400 ms-3">
-    <!-- display reply here -->
-    <div class="p-2">
-        {{node.comment.username}}
-    </div>
-    <dir class="p-2 my-0">
-        {{ node.comment.text }}
-    </dir>
-    <!-- display reply button with unique id -->
-    <button id="reply-button-{{ node.comment.id }}" class="bg-transparent hover:underline p-2 text-slate-600 hover:text-slate-400" onclick="showReplyForm('{{ node.comment.id }}')">Reply</button>
-    <!-- display reply form here -->
-    <form id="reply-form-{{node.comment.id}}" method="POST" action="{% url "reply" post.id node.comment.id %}" style="display: none;">
-        <div class="relative">
-            {% csrf_token %}
-            {{ form.text }}
-            <input class="absolute bottom-0 left-0 text-slate-900 p-3 hover:underline hover:text-blue-800" type="submit" value="Comment">
+<div class="border-s border-blue-400 ms-3">
+    <!--Reply Box-->
+    <div class="text-slate-300 py-3 ps-2 border-b border-slate-600">
+        <!-- display reply here -->
+        <div class="">
+            {{node.comment.username}}
         </div>
-    </form>
+        <div class="">
+            {{ node.comment.text }}
+        </div>
+        <div class="">
+            {{node.comment.created}}
+        </div>
+        <!-- display reply button with unique id -->
+        <button id="reply-button-{{ node.comment.id }}" class="bg-transparent hover:underline pt-1 text-slate-500 hover:text-slate-300" onclick="showReplyForm('{{ node.comment.id }}')">Reply</button>
+        <!-- display reply form here -->
+        <form id="reply-form-{{node.comment.id}}" method="POST" action="{% url "reply" post.id node.comment.id %}" style="display: none;">
+            <div class="relative">
+                {% csrf_token %}
+                {{ form.text }}
+                <input class="absolute bottom-0 left-0 text-blue-500 p-3 hover:underline hover:text-slate-400" type="submit" value="Reply">
+            </div>
+        </form>
+    </div>
+
+
     {% if node.replies %}
         <div class="replies">
             {% include 'forum/replies.html' with comment_tree=node.replies %}

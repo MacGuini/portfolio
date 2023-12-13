@@ -2,58 +2,77 @@
 {% load static %}
 {% block content %}
 
-<div class="container mx-auto text-slate-400">
-    <div class="text-lg">
-        <p>Submitted by</p>
-        {{post.username}}
-    </div>
-    <div class="text-lg">
-        {{post.fname}}
-        {{post.lname}}
-    </div>
-    <br>
-    <div class="text-2xl">
-        {{post.title}}
-    </div>
-    <hr>
-    <br>
-    <div class="text-lg">
-        {{post.body}}
+<div class="container mx-auto">
+    <!--Post-->
+    <div class="text-slate-400">
+        <div class="text-lg">
+            <p>Submitted by</p>
+            {{post.username}}
+        </div>
+        <div class="text-lg">
+            {{post.fname}}
+            {{post.lname}}
+        </div>
+        <div class="text-lg text-slate-500">
+            <p>Posted: {{post.created}}</p>   
+        </div>
+        <br>
+        <div class="text-lg">
+            {{post.title}}
+        </div>
+        <hr>
+        <br>
+        <div>
+            {{post.body}}
+        </div>
+        <!-- display reply button with unique id -->
+        <button id="reply-button-{{ post.id }}" class="bg-transparent hover:underline p-4 text-slate-300 hover:text-blue-300" onclick="showReplyForm('{{ post.id }}')">Comment on Post</button>
+
+        <!-- display comment form for the post -->
+        <form class="py-3" method="POST" id="reply-form-{{post.id}}" action="{% url "comment" post.id %}" style="display: none;">
+            {% csrf_token %}
+            <div class="relative">
+                {{ form.text }}
+                <input class="absolute bottom-0 left-0 text-blue-500 p-3 hover:underline hover:text-slate-400" type="submit" value="Comment">
+            </div>
+        </form>
     </div>
 
 
-<!-- display comment form for the post -->
-<form method="POST" action="{% url "comment" post.id %}">
-    {% csrf_token %}
-    <div class="relative">
-        {{ form.text }}
-        <input class="absolute bottom-0 left-0 text-slate-900 p-3 hover:underline hover:text-blue-800" type="submit" value="Comment">
-    </div>
-</form>
 
+<hr class="p-3">
     <!--Displays comments-->
     <div class="relative">
         {% for node in comment_tree %}
         <!-- display comment here -->
-        <div class="bg-slate-900 rounded-lg p-1 mx-auto container">
-            <div>
-                {{node.comment.username}}
-            </div>
-            <div>
-                {{node.comment.text|linebreaksbr}}
-            </div>
-
-            <!-- display reply button with unique id -->
-            <button id="reply-button-{{ node.comment.id }}" class="bg-transparent hover:underline p-2 text-slate-600 hover:text-slate-400" onclick="showReplyForm('{{ node.comment.id }}')">Reply</button>
-            <!-- display reply form here -->
-            <form id="reply-form-{{node.comment.id}}" method="POST" action="{% url "reply" post.id node.comment.id %}" style="display: none;">
-                <div class="relative">
-                    {% csrf_token %}
-                    {{ form.text }}
-                    <input class="absolute bottom-0 left-0 text-slate-900 p-3 hover:underline hover:text-blue-800" type="submit" value="Comment">
+        <div class="p-1 mx-auto container">
+            <!--Comment-->
+            <div class="text-slate-300 ps-2 py-3 border-s border-b border-blue-400">
+                <div>
+                    {{node.comment.username}}
                 </div>
+                <div>
+                    {{node.comment.text|linebreaksbr}}
+                </div>
+                <div class="text-slate-400">
+                    {{node.comment.created}}
+                </div>
+                <!-- display reply button with unique id -->
+                <button id="reply-button-{{ node.comment.id }}" class="bg-transparent hover:underline pt-1 text-slate-500 hover:text-slate-300" onclick="showReplyForm('{{ node.comment.id }}')">Reply</button>
+                            <!-- display reply form here -->
+                <form id="reply-form-{{node.comment.id}}" method="POST" action="{% url "reply" post.id node.comment.id %}" style="display: none;">
+                    <div class="relative">
+                        {% csrf_token %}
+                        {{ form.text }}
+                        <input class="absolute bottom-0 left-0 text-blue-500 p-3 hover:underline hover:text-slate-400" type="submit" value="Reply">
+                    </div>
 
-            </form> 
+                </form> 
+            </div>
+
+
+
+
             <div class="replies static">
                 {% include 'forum/replies.html' with comment_tree=node.replies %}
             </div>
