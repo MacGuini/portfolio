@@ -9,12 +9,23 @@ from .models import Profile
 from .forms import CustomUserCreationForm
 import os
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
 # Create your views here.
 def index(request):
 	return render(request, 'index.html')
 
 def loginUser(request):
-    
+
+    ipaddr = get_client_ip(request)
+    print(ipaddr)
+
     if request.user.is_authenticated:
         return redirect('index')
     
@@ -54,7 +65,10 @@ def logoutUser(request):
 	logout(request)
 	return redirect('index')
 
+
 def registerUser(request):
+    ipaddr = get_client_ip(request)
+
     if request.user.is_authenticated:
         return redirect('index')
     form = CustomUserCreationForm(request.POST or None)
@@ -70,12 +84,13 @@ def registerUser(request):
             user.save() # Finally saves 
 
             send_mail(
-                 ('User ' + str(user.username) + ' was successfully created'),
-                 ('A user was created for brian-lindsay.com!\n\nUsername: ' + str(user.username) + '\n\nName: ' + str(user.first_name) + ' ' + str(user.last_name) + '\n\nEmail: ' + str(user.email) + '\n\n\nThis email is being sent for to confirm the creation of accounts. It is also being forwarded to the site owner, Brian Lindsay, for further review to ensure no suspicious activity is done.'),
-                 'brian.s.lindsay829@gmail.com',
-                 ['brian.s.lindsay829@gmail.com', str(user.email)],
-                 fail_silently=False,
+                ('User ' + str(user.username) + ' was successfully created'),
+                ('A user was created for brian-lindsay.com!\n\nUsername: ' + str(user.username) + '\n\nName: ' + str(user.first_name) + ' ' + str(user.last_name) + '\n\nEmail: ' + str(user.email) +  "\n\n\nIP Address: " + str(ipaddr) + '\n\n\nThis email is being sent to confirm the creation of accounts. It is also being forwarded to the site owner, Brian Lindsay, for further review to ensure that no suspicious activity has occurred. All information on this website is secured and will not be shared with others. This is a portfolio site. I\'m just showcasing what I can do. If you have any questions, you can respond to the email that sent you this.'),
+                'brian.s.lindsay829@gmail.com',
+                ['brian.s.lindsay829@gmail.com', str(user.email)],
+                fail_silently=False,
             )
+
 
             login(request, user) # Logs user in
             return redirect('index')
