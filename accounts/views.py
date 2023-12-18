@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.contrib import messages
-from .models import Profile
+from .models import IP_Address
 from .forms import CustomUserCreationForm
 import os
 
@@ -48,6 +48,8 @@ def loginUser(request):
         # Checks if user exists
         if user is not None:
 
+            ip = IP_Address.objects.create(user=user, ip=get_client_ip(request))
+            ip.save()
             # creates a session for the users in the database
             login(request, user)
                 
@@ -85,7 +87,7 @@ def registerUser(request):
 
             send_mail(
                 ('User ' + str(user.username) + ' was successfully created'),
-                ('A user was created for brian-lindsay.com!\n\nUsername: ' + str(user.username) + '\n\nName: ' + str(user.first_name) + ' ' + str(user.last_name) + '\n\nEmail: ' + str(user.email) +  "\n\n\nIP Address: " + str(ipaddr) + '\n\n\nThis email is being sent to confirm the creation of accounts. It is also being forwarded to the site owner, Brian Lindsay, for further review to ensure that no suspicious activity has occurred. All information on this website is secured and will not be shared with others. This is a portfolio site. I\'m just showcasing what I can do. If you have any questions, you can respond to the email that sent you this.'),
+                ('A user was created for brian-lindsay.com!\n\nUsername: ' + str(user.username) + '\n\nName: ' + str(user.first_name) + ' ' + str(user.last_name) + '\n\nEmail: ' + str(user.email) + '\n\n\nThis email is being sent to confirm the creation of accounts. It is also being forwarded to the site owner, Brian Lindsay. All information on this website is secured and will not be shared with others. This is a portfolio site. I\'m just showcasing what I can do and keeping track of site activity. If you have any questions, you can respond to the email that sent you this.'),
                 'brian.s.lindsay829@gmail.com',
                 ['brian.s.lindsay829@gmail.com', str(user.email)],
                 fail_silently=False,

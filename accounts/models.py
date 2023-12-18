@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.deletion import CASCADE
-from django.utils.functional import empty
 import uuid
 
 # Create your models here.
@@ -17,7 +16,7 @@ class Profile(models.Model):
         ('email', 'Email'),
     )
 	# NOTE: fname, lname, and email must be added in any form you create to add a new profile. Built in user model breaks otherwise. Try to figure out solution in signals.
-	user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+	user = models.OneToOneField(User, on_delete=CASCADE, null=True, blank=True)
 	username = models.CharField(max_length=100, null=True, blank=True)
 	fname = models.CharField(max_length=100, null=True, blank=True)
 	mname = models.CharField(max_length=100, null=True, blank=True)
@@ -45,5 +44,15 @@ class Profile(models.Model):
 
 	def __str__(self):
 		return f'{self.fname} {self.lname} - {self.username}'
+	
+class IP_Address(models.Model):
+	user = models.ForeignKey(User, on_delete=CASCADE, null=False, blank=False)
+	ip = models.CharField(max_length=39, null=True, blank=True, editable=False)
+
+	created = models.DateTimeField(auto_now_add=True, editable=False)
+	id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+
+	def __str__(self):
+		return f"{self.user} logged in from {self.ip} on {self.created}"
 
     

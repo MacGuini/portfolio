@@ -61,6 +61,20 @@ def viewPost(request, pk, parent_comment_id=None):
             form.save()
             return redirect('view-post', pk=post.pk)  # Redirect after POST
         else:
-            return redirect(request.GET['next'] if 'next' in request.GET else 'login')
+            return redirect(request.GET['next'] if 'next' in request.GET else 'list-posts')
 
     return render(request, 'forum/view_post.html', {'post':post, 'comments': comments, 'comment_tree':comment_tree, 'form': form, 'site_key':settings.RECAPTCHA_SITE_KEY })
+
+def editPost(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    form = PostForm()
+
+    if request.method == 'POST' and post.username == request.user.username or request.user.is_staff:
+        form = PostForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(request.GET['next'] if 'next' in request.GET else 'view-post', pk=pk)
+        
+        else:
+            return redirect(request.GET['next'] if 'next' in request.GET else 'view-post', pk=pk)
+    return render(request, 'forum/edit_post.html', {"post":post, "form":form})

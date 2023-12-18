@@ -7,5 +7,6 @@ urlpatterns = [
     path('view-post/<uuid:pk>', views.viewPost, name='view-post'),
     path('post/<uuid:pk>/comment/', views.viewPost, name='comment'),
     path('post/<uuid:pk>/comment/<uuid:parent_comment_id>/', views.viewPost, name='reply'),
+    path('edit-post/<uuid:pk>/', views.editPost, name="edit-post"),
 
 ]

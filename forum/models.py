@@ -54,6 +54,6 @@ class Comment(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return (f'Comment by {self.fname} {self.lname} on {self.post}')
+        return (f'Comment by {self.fname} {self.lname}: {self.text}')
     
         

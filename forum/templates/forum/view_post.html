@@ -17,13 +17,19 @@
             <p>Posted: {{post.created}}</p>   
         </div>
         <br>
-        <div class="text-lg">
+        <div class="text-lg flex justify-between">
             {{post.title}}
+            {% if request.user.username == post.username %}
+            <a href="{% url "edit-post" pk=post.id %}">Edit Post</a>
+        {% endif %}
         </div>
         <hr>
         <br>
         <div>
             {{post.body}}
+
+
+            
         </div>
         <!-- display reply button with unique id -->
         <button id="reply-button-{{ post.id }}" class="bg-transparent hover:underline p-4 text-slate-300 hover:text-blue-300" onclick="showReplyForm('{{ post.id }}')">Comment on Post</button>
