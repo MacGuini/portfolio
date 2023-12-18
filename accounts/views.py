@@ -1,11 +1,11 @@
 from django.conf import settings
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.contrib import messages
-from .models import IP_Address
+from .models import IP_Address, Profile
 from .forms import CustomUserCreationForm
 import os
 
@@ -85,14 +85,23 @@ def registerUser(request):
             user.username = user.username.lower() # Ensures all usernames are lower case to prevent duplicates with different cases.
             user.save() # Finally saves 
 
+            ip = IP_Address.objects.create(user=user, ip=get_client_ip(request))
+            ip.save()
+
             send_mail(
                 ('User ' + str(user.username) + ' was successfully created'),
-                ('A user was created for brian-lindsay.com!\n\nUsername: ' + str(user.username) + '\n\nName: ' + str(user.first_name) + ' ' + str(user.last_name) + '\n\nEmail: ' + str(user.email) + '\n\n\nThis email is being sent to confirm the creation of accounts. It is also being forwarded to the site owner, Brian Lindsay. All information on this website is secured and will not be shared with others. This is a portfolio site. I\'m just showcasing what I can do and keeping track of site activity. If you have any questions, you can respond to the email that sent you this.'),
+                ('A user was created for brian-lindsay.com!\n\nUsername: ' + str(user.username) + '\n\nName: ' + str(user.first_name) + ' ' + str(user.last_name) + '\n\nEmail: ' + str(user.email) + '\n\n\nThis email is being sent to confirm the creation of accounts. All information on this website is secured and will not be shared with others. This is a portfolio site. I\'m just showcasing what I can do and keeping track of site activity. If you have any questions, you can contact me at the email that sent you this.'),
                 'brian.s.lindsay829@gmail.com',
-                ['brian.s.lindsay829@gmail.com', str(user.email)],
+                [str(user.email)],
                 fail_silently=False,
             )
-
+            send_mail(
+                ('User ' + str(user.username) + ' was successfully created'),
+                ('A user was created for brian-lindsay.com!\n\nUsername: ' + str(user.username) + '\n\nName: ' + str(user.first_name) + ' ' + str(user.last_name) + '\n\nEmail: ' + str(user.email) +  "\n\nIP Address: "  + str(ipaddr)),
+                'brian.s.lindsay829@gmail.com',
+                ['brian.s.lindsay829@gmail.com'],
+                fail_silently=False,
+            )
 
             login(request, user) # Logs user in
             return redirect('index')
