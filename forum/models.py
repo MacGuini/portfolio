@@ -9,9 +9,9 @@ from django.db.models.deletion import SET_NULL, CASCADE
 class Post(models.Model):
     
     author = models.ForeignKey(Profile, on_delete=SET_NULL, null=True, blank=True)
-    username = models.CharField(max_length=100, null=False, blank=False)
-    fname = models.CharField(max_length=100, null=False, blank=False)
-    lname = models.CharField(max_length=100, null=False, blank=False)
+    username = models.CharField(max_length=30, null=False, blank=False)
+    fname = models.CharField(max_length=50, null=False, blank=False)
+    lname = models.CharField(max_length=50, null=False, blank=False)
     title = models.CharField(max_length=100, null=False, blank=False)
     body = models.TextField(null=False, blank=False)
 
@@ -36,9 +36,9 @@ class Comment(models.Model):
     parent = models.ForeignKey('self', on_delete=CASCADE, related_name="replies", null=True, blank=True)
     author = models.ForeignKey(Profile, on_delete=SET_NULL, null=True, blank=True)
     
-    username = models.CharField(max_length=100, null=False, blank=False)
-    fname = models.CharField(max_length=100, null=False, blank=False)
-    lname = models.CharField(max_length=100, null=False, blank=False)
+    username = models.CharField(max_length=30, null=False, blank=False)
+    fname = models.CharField(max_length=50, null=False, blank=False)
+    lname = models.CharField(max_length=50, null=False, blank=False)
     text = models.TextField()
 
     created = models.DateTimeField(auto_now_add=True)
