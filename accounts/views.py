@@ -5,9 +5,19 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.contrib import messages
-from .models import IP_Address, Profile
+from .models import IP_Address
 from .forms import CustomUserCreationForm
-import os
+
+
+def check_ip_exists(ip_address, user):
+    ips = IP_Address.objects.filter(user=user)
+
+    for ip in ips:
+        print(str(ip.ip))
+        if ip.ip == ip_address:
+            return True
+        
+    return False
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -24,7 +34,7 @@ def index(request):
 def loginUser(request):
 
     ipaddr = get_client_ip(request)
-    print(ipaddr)
+
 
     if request.user.is_authenticated:
         return redirect('index')
@@ -48,9 +58,12 @@ def loginUser(request):
         # Checks if user exists
         if user is not None:
 
-            ip = IP_Address.objects.create(user=user, ip=get_client_ip(request))
-            ip.save()
-            # creates a session for the users in the database
+            ip_exists = check_ip_exists(ipaddr, user)  # replace with the IP you want to check
+            if not ip_exists:
+                ip = IP_Address.objects.create(user=user, ip=get_client_ip(request))
+                ip.save()
+
+            # logs in the user
             login(request, user)
                 
             # returns the user if there is a next route. Otherwise, the user is redirected to the accounts page.
@@ -85,8 +98,10 @@ def registerUser(request):
             user.username = user.username.lower() # Ensures all usernames are lower case to prevent duplicates with different cases.
             user.save() # Finally saves 
 
-            ip = IP_Address.objects.create(user=user, ip=get_client_ip(request))
-            ip.save()
+            ip_exists = check_ip_exists(ipaddr, user)  # replace with the IP you want to check
+            if not ip_exists:
+                ip = IP_Address.objects.create(user=user, ip=get_client_ip(request))
+                ip.save()
 
             send_mail(
                 ('User ' + str(user.username) + ' was successfully created'),
