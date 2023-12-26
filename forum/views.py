@@ -24,7 +24,7 @@ def createForumPost(request):
             form.save()
             return redirect(request.GET['next'] if 'next' in request.GET else 'index')
 
-    return render(request, 'forum/create_forum_post.html', {'form':form, 'site_key':settings.RECAPTCHA_SITE_KEY})
+    return render(request, 'forum/create_forum_post.html', {'form':form})
 
 #NOTE: depth and max_depth are used to control the amount of replies in some fashion. Will work on using these for something in the future.
 def build_comment_tree(comments, depth=0, max_depth=10):
@@ -63,7 +63,7 @@ def viewPost(request, pk, parent_comment_id=None):
         else:
             return redirect(request.GET['next'] if 'next' in request.GET else 'list-posts')
 
-    return render(request, 'forum/view_post.html', {'post':post, 'comments': comments, 'comment_tree':comment_tree, 'form': form, 'site_key':settings.RECAPTCHA_SITE_KEY })
+    return render(request, 'forum/view_post.html', {'post':post, 'comments': comments, 'comment_tree':comment_tree, 'form': form})
 
 def editPost(request, pk):
     post = get_object_or_404(Post, pk=pk)

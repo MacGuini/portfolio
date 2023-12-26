@@ -2,16 +2,17 @@
 
 {% block content %}
 
-    <h3>Password Reset</h3>
+<div class="container mx-auto text-slate-500 text-center max-w-lg">
+    <h3 class="my-2 text-slate-300">Password Reset</h3>
 
-    <p>Please create a new password.</p>
+    <p class="my-2">Please create a new password.</p>
     
-    <form>
+    <form class="my-2 text-blue-500" method="POST">
         {% csrf_token %}
-        {{form.as_p}}
-        <input type="submit" />
+        {{form.errors}}
+        {{form}}
+        <input class="my-2 p-2 rounded hover:bg-blue-700 hover:text-slate-300" type="submit" value="Submit"/>
     </form>
-
-
+</div>
 
 {% endblock content %}

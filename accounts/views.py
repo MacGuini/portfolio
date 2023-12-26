@@ -72,7 +72,7 @@ def loginUser(request):
         else:
             messages.error(request, 'Invalid password')
         
-    return render(request, 'accounts/login.html', {'site_key':settings.RECAPTCHA_SITE_KEY})
+    return render(request, 'accounts/login.html')
 
 
 @login_required(login_url='login')
@@ -123,6 +123,6 @@ def registerUser(request):
         else:
             messages.success(request, "An error has occured during registration")
 
-    context = {'form':form, 'site_key':settings.RECAPTCHA_SITE_KEY}
+    context = {'form':form}
     return render (request, 'accounts/register_account.html', context)
 
