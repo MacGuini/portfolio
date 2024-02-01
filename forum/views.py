@@ -1,8 +1,12 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_protect
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
+from forum import mail_control
 
 # Create your views here.
 
@@ -58,6 +62,7 @@ def viewPost(request, pk, parent_comment_id=None):
             # Adds reply to comment if there is a parent_comment_id in the URL pattern
             if parent_comment_id:
                 form.parent = Comment.objects.get(id=parent_comment_id)
+
             form.save()
             return redirect('view-post', pk=post.pk)  # Redirect after POST
         else:
@@ -66,11 +71,11 @@ def viewPost(request, pk, parent_comment_id=None):
     return render(request, 'forum/view_post.html', {'post':post, 'comments': comments, 'comment_tree':comment_tree, 'form': form})
 
 def editPost(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    form = PostForm()
+    post = get_object_or_404(Post, id=pk)
+    form = PostForm(instance=post)
 
-    if request.method == 'POST' and post.username == request.user.username or request.user.is_staff:
-        form = PostForm(request.POST)
+    if request.method == 'POST' and post.username == request.user.username:
+        form = PostForm(request.POST, instance=post)
         if form.is_valid():
             form.save()
             return redirect(request.GET['next'] if 'next' in request.GET else 'view-post', pk=pk)
@@ -78,3 +83,35 @@ def editPost(request, pk):
         else:
             return redirect(request.GET['next'] if 'next' in request.GET else 'view-post', pk=pk)
     return render(request, 'forum/edit_post.html', {"post":post, "form":form})
+
+@csrf_protect
+def updateComment(request, comment_id):
+    if request.method == 'POST':
+        print("\n\n\nIf statement triggered!")
+        data = json.loads(request.body)
+        edited_text = data.get('edited_text', '')
+
+        # Update the comment in the database
+        comment = Comment.objects.get(id=comment_id)
+        comment.text = edited_text
+        print("\n\n\ncomment.text = " + str(comment.text))
+        print("\n\n\nedited_text = " + str(edited_text))
+        comment.save()
+
+        return JsonResponse({'message': 'Comment updated successfully'})
+
+    return JsonResponse({'message': 'Invalid request'}, status=400)
+
+# NOTE: Might not need this view. Leaving it here for now until other possible solution can be fulfilled.
+# def editComment(request, pk):
+#     comment = get_object_or_404(Comment, id=pk)
+#     form = CommentForm(instance=comment)
+
+#     if request.method == 'POST' and comment.username == request.user.username:
+#         form = CommentForm(request.POST, instance=comment)
+#         if form.is_valid():
+#             form.save()
+#             return redirect(request.GET['next'] if 'next' in request.GET else 'view-post', pk=pk)
+#         else:
+#             return redirect(request.GET['next'] if 'next' in request.GET else 'view-post', pk=pk)
+#     return render(request, 'forum/edit_comment.html', {'comment':comment, 'form':form})

@@ -20,8 +20,26 @@
         <div class="text-lg flex justify-between">
             {{post.title}}
             {% if request.user.username == post.username %}
-            <a href="{% url "edit-post" pk=post.id %}">Edit Post</a>
-        {% endif %}
+
+                <button id="post-dropdownMenuIconButton" data-dropdown-toggle="post-dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
+                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+                    <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+                    </svg>
+                    </button>
+                    
+                    <!-- Dropdown menu -->
+                    <div id="post-dropdownDots" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                        <ul class="py-2 text-sm text-gray-700 dark:text-slate-400" aria-labelledby="post-dropdownMenuIconButton">
+                        <li>
+                            <a href="{% url "edit-post" pk=post.id %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Edit Post</a>
+                        </li>
+                        </ul>
+                        <div class="py-2">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-slate-200 dark:hover:text-white">Delete</a>
+                        </div>
+                    </div>
+                    
+            {% endif %}
         </div>
         <hr>
         <br>
@@ -39,7 +57,6 @@
             {% csrf_token %}
             <div class="relative">
                 {{ form.text }}
-                {{form.captcha}}
                 <input class="absolute bottom-0 left-0 text-blue-500 p-3 hover:underline hover:text-slate-400" type="submit" value="Comment">
             </div>
         </form>
@@ -58,7 +75,7 @@
                 <div>
                     {{node.comment.username}}
                 </div>
-                <div>
+                <div id="comment-text-{{node.comment.id}}">
                     {{node.comment.text|linebreaksbr}}
                 </div>
                 <div class="text-slate-400">
@@ -66,16 +83,26 @@
                 </div>
                 <!-- display reply button with unique id -->
                 <button id="reply-button-{{ node.comment.id }}" class="bg-transparent hover:underline pt-1 text-slate-500 hover:text-slate-300" onclick="showReplyForm('{{ node.comment.id }}')">Reply</button>
-                            <!-- display reply form here -->
+                <!-- display reply form here -->
                 <form id="reply-form-{{node.comment.id}}" method="POST" action="{% url "reply" post.id node.comment.id %}" style="display: none;">
                     <div class="relative">
                         {% csrf_token %}
                         {{ form.text }}
-                        {{form.captcha}}
                         <input class="absolute bottom-0 left-0 text-blue-500 p-3 hover:underline hover:text-slate-400" type="submit" value="Reply">
                     </div>
 
                 </form> 
+                <!--display edit comment form-->
+                <form id="edit-comment-form-{{ node.comment.id }}" method="POST" style="display: none;">
+                    {% csrf_token %}
+                    <div>
+                        <textarea name="edited_text">{{ node.comment.text }}</textarea>
+                    </div>
+                    <input class="text-blue-500 p-3 hover:underline hover:text-slate-400" type="submit" value="Submit">
+                </form>
+                <!--display Edit Comment button-->
+                <button id="edit-comment-button-{{ node.comment.id }}" class="bg-transparent hover:underline text-blue-500 hover:text-blue-300" onclick="showEditCommentForm('{{ node.comment.id }}')">Edit Comment</button>
+                
             </div>
 
 
@@ -92,35 +119,85 @@
 
 </div>
 
+
 {% include "recaptcha_script.html" %}
 
+
 <script>
+    // Variables for forms and buttons
+    var forms = document.getElementsByTagName('form');
+    var buttons = document.getElementsByTagName('button');
+    var csrf_token = "{{ csrf_token }}";
+
     function showReplyForm(commentId) {
-        // Hide all reply forms
-        var forms = document.getElementsByTagName('form');
+        // Hide all reply forms and show the specific one
         for (var i = 0; i < forms.length; i++) {
             if (forms[i].id.startsWith('reply-form-')) {
                 forms[i].style.display = 'none';
             }
         }
-    
+
         // Show all reply buttons
-        var buttons = document.getElementsByTagName('button');
         for (var i = 0; i < buttons.length; i++) {
             if (buttons[i].id.startsWith('reply-button-')) {
                 buttons[i].style.display = 'block';
             }
         }
-    
+
         // Show the reply form for the clicked reply button
         document.getElementById('reply-form-' + commentId).style.display = 'block';
         // Hide the clicked reply button
         document.getElementById('reply-button-' + commentId).style.display = 'none';
     }
-    
-    
+        
+    function showEditCommentForm(commentId) {
+        // Show the edit form for the clicked comment
+        // Hide all other edit comment forms
+        for (var i = 0; i < forms.length; i++) {
+            if (forms[i].id.startsWith('edit-comment-form-')) {
+                forms[i].style.display = 'none';
+            }
+        }
+        document.getElementById('edit-comment-form-' + commentId).style.display = 'block';
+    }
+
+    // Add event listeners to edit forms when the page loads
+    window.onload = function() {
+        for (var i = 0; i < forms.length; i++) {
+            if (forms[i].id.startsWith('edit-comment-form-')) {
+                forms[i].addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    var formId = this.id;
+                    var commentId = formId.replace('edit-comment-form-', '');
+                    var editedText = this.querySelector('textarea[name="edited_text"]').value;
+
+                    fetch('/forum/update-comment/' + commentId + '/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrf_token,
+                        },
+                        body: JSON.stringify({ edited_text: editedText }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Data recieved: ", data);
+                        console.log("Edited Text: ", editedText);
+                        var commentDisplayElement = document.getElementById('comment-text-' + commentId);
+                        console.log("Comment Display Element ", commentDisplayElement);
+                        if (commentDisplayElement) {
+                            commentDisplayElement.innerText = editedText;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            }
+        }
+    }
 </script>
-    
+
 
 
 {% endblock content %}
