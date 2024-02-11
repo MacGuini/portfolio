@@ -82,7 +82,7 @@ def editPost(request, pk):
         
         else:
             return redirect(request.GET['next'] if 'next' in request.GET else 'view-post', pk=pk)
-    return render(request, 'forum/edit_post.html', {"post":post, "form":form})
+    return render(request, 'forum/create_forum_post.html', {"post":post, "form":form})
 
 @csrf_protect
 def updateComment(request, comment_id):
@@ -98,6 +98,7 @@ def updateComment(request, comment_id):
         print("\n\n\nedited_text = " + str(edited_text))
         comment.save()
 
+        print(f'\n\nComment saved! pk = {comment.post.id}\n\n')
         return JsonResponse({'message': 'Comment updated successfully'})
 
     return JsonResponse({'message': 'Invalid request'}, status=400)

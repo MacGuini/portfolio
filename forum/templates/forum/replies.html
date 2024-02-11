@@ -8,8 +8,8 @@
         <div class="">
             {{node.comment.username}}
         </div>
-        <div class="">
-            {{ node.comment.text }}
+        <div id="comment-text-{{node.comment.id}}">
+            {{ node.comment.text|linebreaksbr }}
         </div>
         <div class="">
             {{node.comment.created}}
@@ -26,6 +26,20 @@
         </form>
     </div>
 
+    <!--display edit comment form-->
+    <form id="edit-comment-form-{{ node.comment.id }}" action="{% url 'update-comment' node.comment.id %}" method="POST" style="display: none;">
+        {% csrf_token %}
+        <div>
+            <textarea class="w-full h-32 text-black bg-white p-2 border border-gray-300 rounded" name="edited_text">{{ node.comment.text }}</textarea>
+        </div>
+        <input class="text-blue-500 p-3 hover:underline hover:text-slate-400" type="submit" value="Submit">
+    </form>
+
+    <!--display Edit Comment button-->
+    {% if request.user == node.comment.author.user  %}
+        <button id="edit-comment-button-{{ node.comment.id }}" class="bg-transparent hover:underline text-blue-500 hover:text-blue-300" onclick="showEditCommentForm('{{ node.comment.id }}')">Edit Comment</button>
+    {% endif %}
+    
 
     {% if node.replies %}
         <div class="replies">
@@ -34,5 +48,8 @@
     {% endif %}
 </div>
 
-{% include "recaptcha_script.html" %}
+{% comment %} 
+probably don't need this. But leaving it commented incase it is.
+{% include "recaptcha_script.html" %} 
+{% endcomment %}
 {% endfor %}

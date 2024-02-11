@@ -9,7 +9,5 @@ urlpatterns = [
     path('post/<uuid:pk>/comment/<uuid:parent_comment_id>/', views.viewPost, name='reply'),
     path('edit-post/<uuid:pk>/', views.editPost, name="edit-post"),
     path('update-comment/<uuid:comment_id>/', views.updateComment, name='update-comment'),
-    # NOTE: Might not need this view or URL depending if another solution works better.
-    # path('edit-comment/<uuid:pk>/', views.editComment, name="edit-reply"),
 
 ]

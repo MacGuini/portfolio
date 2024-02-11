@@ -18,7 +18,8 @@
         </div>
         <br>
         <div class="text-lg flex justify-between">
-            {{post.title}}
+            <p>Subject: {{post.title}}</p>
+            
             {% if request.user.username == post.username %}
 
                 <button id="post-dropdownMenuIconButton" data-dropdown-toggle="post-dropdownDots" class="inline-flex items-center p-2 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
@@ -93,15 +94,19 @@
 
                 </form> 
                 <!--display edit comment form-->
-                <form id="edit-comment-form-{{ node.comment.id }}" method="POST" style="display: none;">
+                <form id="edit-comment-form-{{ node.comment.id }}" action="{% url 'update-comment' node.comment.id %}" method="POST" style="display: none;">
                     {% csrf_token %}
                     <div>
-                        <textarea name="edited_text">{{ node.comment.text }}</textarea>
+                        <textarea class="w-full h-32 text-black bg-white p-2 border border-gray-300 rounded" name="edited_text">{{ node.comment.text }}</textarea>
                     </div>
                     <input class="text-blue-500 p-3 hover:underline hover:text-slate-400" type="submit" value="Submit">
                 </form>
+
                 <!--display Edit Comment button-->
+                {% if request.user == node.comment.author.user %}
                 <button id="edit-comment-button-{{ node.comment.id }}" class="bg-transparent hover:underline text-blue-500 hover:text-blue-300" onclick="showEditCommentForm('{{ node.comment.id }}')">Edit Comment</button>
+                {% endif %}
+                
                 
             </div>
 
@@ -124,79 +129,77 @@
 
 
 <script>
-    // Variables for forms and buttons
-    var forms = document.getElementsByTagName('form');
-    var buttons = document.getElementsByTagName('button');
-    var csrf_token = "{{ csrf_token }}";
+    function resetUIState() {
+        var forms = document.querySelectorAll('form');
+        var buttons = document.querySelectorAll('button[id^="reply-button-"], button[id^="edit-comment-button-"]');
+        forms.forEach(function(form) {
+            form.style.display = 'none';
+        });
+        buttons.forEach(function(button) {
+            button.style.display = 'block';
+        });
+    }
 
     function showReplyForm(commentId) {
-        // Hide all reply forms and show the specific one
-        for (var i = 0; i < forms.length; i++) {
-            if (forms[i].id.startsWith('reply-form-')) {
-                forms[i].style.display = 'none';
-            }
+        resetUIState();
+        var form = document.getElementById('reply-form-' + commentId);
+        var button = document.getElementById('reply-button-' + commentId);
+        if (form && button) {
+            form.style.display = 'block';
+            button.style.display = 'none';
         }
-
-        // Show all reply buttons
-        for (var i = 0; i < buttons.length; i++) {
-            if (buttons[i].id.startsWith('reply-button-')) {
-                buttons[i].style.display = 'block';
-            }
-        }
-
-        // Show the reply form for the clicked reply button
-        document.getElementById('reply-form-' + commentId).style.display = 'block';
-        // Hide the clicked reply button
-        document.getElementById('reply-button-' + commentId).style.display = 'none';
     }
-        
+
     function showEditCommentForm(commentId) {
-        // Show the edit form for the clicked comment
-        // Hide all other edit comment forms
-        for (var i = 0; i < forms.length; i++) {
-            if (forms[i].id.startsWith('edit-comment-form-')) {
-                forms[i].style.display = 'none';
-            }
+        resetUIState();
+        var form = document.getElementById('edit-comment-form-' + commentId);
+        var editButton = document.getElementById('edit-comment-button-' + commentId);
+        var replyButton = document.getElementById('reply-button-' + commentId);
+        if (form && editButton && replyButton) {
+            form.style.display = 'block';
+            editButton.style.display = 'none';
+            replyButton.style.display = 'none';
         }
-        document.getElementById('edit-comment-form-' + commentId).style.display = 'block';
     }
 
-    // Add event listeners to edit forms when the page loads
     window.onload = function() {
-        for (var i = 0; i < forms.length; i++) {
-            if (forms[i].id.startsWith('edit-comment-form-')) {
-                forms[i].addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    var formId = this.id;
-                    var commentId = formId.replace('edit-comment-form-', '');
-                    var editedText = this.querySelector('textarea[name="edited_text"]').value;
+        var editForms = document.querySelectorAll('form[id^="edit-comment-form-"]');
+        editForms.forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var commentId = form.id.replace('edit-comment-form-', '');
+                var editedText = form.querySelector('textarea[name="edited_text"]').value;
 
-                    fetch('/forum/update-comment/' + commentId + '/', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': csrf_token,
-                        },
-                        body: JSON.stringify({ edited_text: editedText }),
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log("Data recieved: ", data);
-                        console.log("Edited Text: ", editedText);
-                        var commentDisplayElement = document.getElementById('comment-text-' + commentId);
-                        console.log("Comment Display Element ", commentDisplayElement);
-                        if (commentDisplayElement) {
-                            commentDisplayElement.innerText = editedText;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+                fetch('/forum/update-comment/' + commentId + '/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                    body: JSON.stringify({ edited_text: editedText }),
+                })
+                .then(response => {
+                    console.log("Response headers:", response.headers); // Add this line for debugging
+                    if (response.headers.get("content-type").includes("application/json")) {
+                        return response.json();
+                    } else {
+                        throw new Error('Expected JSON response from the server');
+                    }
+                })
+                .then(data => {
+                    console.log("Data received from server:", data);
+                    window.location.reload(); // Reload the page
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 });
-            }
-        }
-    }
+                
+            });
+        });
+    };
 </script>
+
+
 
 
 
