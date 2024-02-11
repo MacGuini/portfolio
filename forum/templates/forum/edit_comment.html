@@ -1,6 +1,21 @@
-{% extends "main.html" %}
+<!--display edit comment form-->
+<form id="edit-comment-form-{{ node.comment.id }}" action="{% url 'update-comment' node.comment.id %}" method="POST" style="display: none;">
+    {% csrf_token %}
+    <div>
+        <textarea class="input block pb-32 w-full text-sm rounded-lg border bg-gradient-to-t from-slate-700 to-blue-950 border-slate-600 placeholder-slate-400 text-cyan-200 focus:ring-blue-500 focus:border-blue-500 relative" name="edited_text">{{ node.comment.text }}</textarea>
+    </div>
+    <input class="text-blue-500 p-3 hover:underline hover:text-slate-400" type="submit" value="Submit">
+</form>
+<button id="edit-cancel-button-{{ node.comment.id }}" class="text-blue-700 p-3 hover:underline hover:text-slate-400" onclick="hideEditCommentForm('{{ node.comment.id }}')" style="display: none;">Cancel</button>
 
-{% block content %}
+<!--display Edit Comment button-->
+{% if request.user == node.comment.author.user %}
+    <button id="edit-comment-button-{{ node.comment.id }}" class="bg-transparent hover:underline text-blue-500 hover:text-blue-300" onclick="showEditCommentForm('{{ node.comment.id }}')">Edit Comment</button>
+{% endif %}
+            
 
-
-{% endblock content %}
+{% if node.replies %}
+    <div class="replies">
+        {% include 'forum/replies.html' with comment_tree=node.replies %}
+    </div>
+{% endif %}

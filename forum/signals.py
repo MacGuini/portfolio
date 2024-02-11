@@ -6,7 +6,7 @@ from . import mail_control
 
 @receiver(post_save, sender=Comment)
 def repliedComment(sender, instance, created, **kwargs):
-    print("\n\n\nSignal triggered\n\n\n")
+    
     comment = instance 
 
     mail_control.commentReplied(comment)

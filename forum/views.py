@@ -87,18 +87,15 @@ def editPost(request, pk):
 @csrf_protect
 def updateComment(request, comment_id):
     if request.method == 'POST':
-        print("\n\n\nIf statement triggered!")
+        
         data = json.loads(request.body)
         edited_text = data.get('edited_text', '')
 
         # Update the comment in the database
         comment = Comment.objects.get(id=comment_id)
         comment.text = edited_text
-        print("\n\n\ncomment.text = " + str(comment.text))
-        print("\n\n\nedited_text = " + str(edited_text))
         comment.save()
 
-        print(f'\n\nComment saved! pk = {comment.post.id}\n\n')
         return JsonResponse({'message': 'Comment updated successfully'})
 
     return JsonResponse({'message': 'Invalid request'}, status=400)

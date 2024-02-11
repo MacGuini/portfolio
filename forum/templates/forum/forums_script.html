@@ -1,0 +1,86 @@
+
+<script>
+    function resetUIState() {
+        var forms = document.querySelectorAll('form');
+        var buttons = document.querySelectorAll('button[id^="reply-button-"], button[id^="edit-comment-button-"]');
+        forms.forEach(function(form) {
+            form.style.display = 'none';
+        });
+        buttons.forEach(function(button) {
+            button.style.display = 'block';
+        });
+    }
+
+    function showReplyForm(commentId) {
+        resetUIState();
+        var form = document.getElementById('reply-form-' + commentId);
+        var button = document.getElementById('reply-button-' + commentId);
+        if (form && button) {
+            form.style.display = 'block';
+            button.style.display = 'none';
+        }
+    }
+
+    function showEditCommentForm(commentId) {
+        resetUIState();
+        var form = document.getElementById('edit-comment-form-' + commentId);
+        var editButton = document.getElementById('edit-comment-button-' + commentId);
+        var replyButton = document.getElementById('reply-button-' + commentId);
+        var cancelButton = document.getElementById('edit-cancel-button-' + commentId)
+        if (form && editButton && replyButton && cancelButton) {
+            form.style.display = 'block';
+            cancelButton.style.display = 'block';
+            editButton.style.display = 'none';
+            replyButton.style.display = 'none';
+        }
+    }
+    function hideEditCommentForm(commentId) {
+        resetUIState();
+        var form = document.getElementById('edit-comment-form-' + commentId);
+        var editButton = document.getElementById('edit-comment-button-' + commentId);
+        var replyButton = document.getElementById('reply-button-' + commentId);
+        var cancelButton = document.getElementById('edit-cancel-button-' + commentId)
+        if (form && editButton && replyButton && cancelButton) {
+            form.style.display = 'none';
+            cancelButton.style.display = 'none';
+            editButton.style.display = 'block';
+            replyButton.style.display = 'block';
+        }
+    }
+
+    window.onload = function() {
+        var editForms = document.querySelectorAll('form[id^="edit-comment-form-"]');
+        editForms.forEach(function(form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var commentId = form.id.replace('edit-comment-form-', '');
+                var editedText = form.querySelector('textarea[name="edited_text"]').value;
+
+                fetch('/forum/update-comment/' + commentId + '/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                    },
+                    body: JSON.stringify({ edited_text: editedText }),
+                })
+                .then(response => {
+                    console.log("Response headers:", response.headers); // Add this line for debugging
+                    if (response.headers.get("content-type").includes("application/json")) {
+                        return response.json();
+                    } else {
+                        throw new Error('Expected JSON response from the server');
+                    }
+                })
+                .then(data => {
+                    console.log("Data received from server:", data);
+                    window.location.reload(); // Reload the page
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+                
+            });
+        });
+    };
+</script>

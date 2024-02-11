@@ -13,7 +13,7 @@ def check_ip_exists(ip_address, user):
     ips = IP_Address.objects.filter(user=user)
 
     for ip in ips:
-        print(str(ip.ip))
+        
         if ip.ip == ip_address:
             return True
         

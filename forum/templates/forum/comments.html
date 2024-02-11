@@ -1,0 +1,61 @@
+
+    <!--Displays comments-->
+    <div class="relative">
+        {% for node in comment_tree %}
+        <!-- display comment here -->
+        <div class="p-1 mx-auto container">
+            <!--Comment-->
+            <div class="text-slate-300 ps-2 py-3 border-s border-b border-blue-400">
+                <div>
+                    {{node.comment.username}}
+                </div>
+                <div id="comment-text-{{node.comment.id}}">
+                    {{node.comment.text|linebreaksbr}}
+                </div>
+                <div class="text-slate-400">
+                    {{node.comment.created}}
+                </div>
+                <!-- display reply button with unique id -->
+                <button id="reply-button-{{ node.comment.id }}" class="bg-transparent hover:underline pt-1 text-indigo-600 hover:text-slate-300" onclick="showReplyForm('{{ node.comment.id }}')">Reply</button>
+                <!-- display reply form here -->
+                <form id="reply-form-{{node.comment.id}}" method="POST" action="{% url "reply" post.id node.comment.id %}" style="display: none;">
+                    <div class="relative">
+                        {% csrf_token %}
+                        {{ form.text }}
+                        <input class="absolute bottom-0 left-0 text-blue-500 p-3 hover:underline hover:text-slate-400" type="submit" value="Reply">
+                    </div>
+
+                </form> 
+
+
+                <br>
+                <!--Edit Comment Section-->
+                <div class="">
+                    <!--display edit comment form-->
+                    <form id="edit-comment-form-{{ node.comment.id }}" action="{% url 'update-comment' node.comment.id %}" method="POST" style="display: none;">
+                        {% csrf_token %}
+                        <div>
+                            <textarea class="input block pb-32 w-full text-sm rounded-lg border bg-gradient-to-t from-slate-700 to-blue-950 border-slate-600 placeholder-slate-400 text-cyan-200 focus:ring-blue-500 focus:border-blue-500 relative" name="edited_text">{{ node.comment.text }}</textarea>
+                        </div>
+                        <input class="text-blue-500 p-3 hover:underline hover:text-slate-400" type="submit" value="Submit">
+                    </form>
+                    <button id="edit-cancel-button-{{ node.comment.id }}" class="text-blue-700 p-3 hover:underline hover:text-slate-400" onclick="hideEditCommentForm('{{ node.comment.id }}')" style="display: none;">Cancel</button>
+        
+                    <!--display Edit Comment button-->
+                    {% if request.user == node.comment.author.user %}
+                        <button id="edit-comment-button-{{ node.comment.id }}" class="bg-transparent hover:underline text-slate-500 hover:text-blue-300" onclick="showEditCommentForm('{{ node.comment.id }}')">Edit Comment</button>
+                    {% endif %}
+                </div>
+                
+            </div>
+
+
+
+
+            <div class="replies static">
+                {% include 'forum/replies.html' with comment_tree=node.replies %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+

@@ -66,138 +66,15 @@
 
 
 <hr class="p-3">
-    <!--Displays comments-->
-    <div class="relative">
-        {% for node in comment_tree %}
-        <!-- display comment here -->
-        <div class="p-1 mx-auto container">
-            <!--Comment-->
-            <div class="text-slate-300 ps-2 py-3 border-s border-b border-blue-400">
-                <div>
-                    {{node.comment.username}}
-                </div>
-                <div id="comment-text-{{node.comment.id}}">
-                    {{node.comment.text|linebreaksbr}}
-                </div>
-                <div class="text-slate-400">
-                    {{node.comment.created}}
-                </div>
-                <!-- display reply button with unique id -->
-                <button id="reply-button-{{ node.comment.id }}" class="bg-transparent hover:underline pt-1 text-slate-500 hover:text-slate-300" onclick="showReplyForm('{{ node.comment.id }}')">Reply</button>
-                <!-- display reply form here -->
-                <form id="reply-form-{{node.comment.id}}" method="POST" action="{% url "reply" post.id node.comment.id %}" style="display: none;">
-                    <div class="relative">
-                        {% csrf_token %}
-                        {{ form.text }}
-                        <input class="absolute bottom-0 left-0 text-blue-500 p-3 hover:underline hover:text-slate-400" type="submit" value="Reply">
-                    </div>
 
-                </form> 
-                <!--display edit comment form-->
-                <form id="edit-comment-form-{{ node.comment.id }}" action="{% url 'update-comment' node.comment.id %}" method="POST" style="display: none;">
-                    {% csrf_token %}
-                    <div>
-                        <textarea class="w-full h-32 text-black bg-white p-2 border border-gray-300 rounded" name="edited_text">{{ node.comment.text }}</textarea>
-                    </div>
-                    <input class="text-blue-500 p-3 hover:underline hover:text-slate-400" type="submit" value="Submit">
-                </form>
-
-                <!--display Edit Comment button-->
-                {% if request.user == node.comment.author.user %}
-                <button id="edit-comment-button-{{ node.comment.id }}" class="bg-transparent hover:underline text-blue-500 hover:text-blue-300" onclick="showEditCommentForm('{{ node.comment.id }}')">Edit Comment</button>
-                {% endif %}
-                
-                
-            </div>
-
-
-
-
-            <div class="replies static">
-                {% include 'forum/replies.html' with comment_tree=node.replies %}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-
+{% include "forum/comments.html" %}
 
 </div>
 
+{% include "forum/forums_script.html" %}
 
 {% include "recaptcha_script.html" %}
 
-
-<script>
-    function resetUIState() {
-        var forms = document.querySelectorAll('form');
-        var buttons = document.querySelectorAll('button[id^="reply-button-"], button[id^="edit-comment-button-"]');
-        forms.forEach(function(form) {
-            form.style.display = 'none';
-        });
-        buttons.forEach(function(button) {
-            button.style.display = 'block';
-        });
-    }
-
-    function showReplyForm(commentId) {
-        resetUIState();
-        var form = document.getElementById('reply-form-' + commentId);
-        var button = document.getElementById('reply-button-' + commentId);
-        if (form && button) {
-            form.style.display = 'block';
-            button.style.display = 'none';
-        }
-    }
-
-    function showEditCommentForm(commentId) {
-        resetUIState();
-        var form = document.getElementById('edit-comment-form-' + commentId);
-        var editButton = document.getElementById('edit-comment-button-' + commentId);
-        var replyButton = document.getElementById('reply-button-' + commentId);
-        if (form && editButton && replyButton) {
-            form.style.display = 'block';
-            editButton.style.display = 'none';
-            replyButton.style.display = 'none';
-        }
-    }
-
-    window.onload = function() {
-        var editForms = document.querySelectorAll('form[id^="edit-comment-form-"]');
-        editForms.forEach(function(form) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                var commentId = form.id.replace('edit-comment-form-', '');
-                var editedText = form.querySelector('textarea[name="edited_text"]').value;
-
-                fetch('/forum/update-comment/' + commentId + '/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                    },
-                    body: JSON.stringify({ edited_text: editedText }),
-                })
-                .then(response => {
-                    console.log("Response headers:", response.headers); // Add this line for debugging
-                    if (response.headers.get("content-type").includes("application/json")) {
-                        return response.json();
-                    } else {
-                        throw new Error('Expected JSON response from the server');
-                    }
-                })
-                .then(data => {
-                    console.log("Data received from server:", data);
-                    window.location.reload(); // Reload the page
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-                
-            });
-        });
-    };
-</script>
 
 
 
