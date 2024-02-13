@@ -2,12 +2,10 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Profile
-# from django_recaptcha.fields import ReCaptchaField
-# from django_recaptcha.widgets import ReCaptchaV3
 
-# class LoginForm(forms.Form):
-#     captcha = ReCaptchaField(widget=ReCaptchaV3())
-
+class EmailVerificationForm(forms.Form):
+	email = forms.EmailField()
+	email.widget.attrs.update({'placeholder': 'Enter your email here', "class": "bg-transparent focus:border-blue-600 focus:ring border-0 border-b-2 border-slate-300 text-slate-500 mx-auto"})
 
 class CustomUserCreationForm(UserCreationForm): # Inherets all aspects of the imported UserCreationForm
 	first_name = forms.CharField()
@@ -106,6 +104,3 @@ class ProfileForm(forms.ModelForm):
 			if work.isdigit()==False:
 				raise forms.ValidationError("Only Numbers")
 		return work
-
-
-	

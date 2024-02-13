@@ -28,13 +28,15 @@ SECRET_KEY = str(os.environ.get('DJANGO_SECRET_KEY'))
 # NOTE environmental variable to control production and development environments
 if str(os.environ.get('DEBUG_VALUE')) == "True":
     DEBUG = True
+    ALLOWED_HOSTS = ["127.0.0.1", "https://brian-lindsay.com", "https://www.brian-lindsay.com", "brian-lindsay.com", "www.brian-lindsay.com"]
 else:
     DEBUG = False
+    ALLOWED_HOSTS = ["https://brian-lindsay.com", "https://www.brian-lindsay.com", "brian-lindsay.com", "www.brian-lindsay.com"]
     # FORM SUBMISSION
     # Comment out the following line and place your railway URL, and your production URL in the array.
     CSRF_TRUSTED_ORIGINS = ["https://brian-lindsay.com", "https://www.brian-lindsay.com", "https://brianlindsay.up.railway.app/"]
 
-ALLOWED_HOSTS = ["127.0.0.1", "https://brian-lindsay.com", "https://www.brian-lindsay.com", "brian-lindsay.com", "www.brian-lindsay.com"]
+
 
 
 

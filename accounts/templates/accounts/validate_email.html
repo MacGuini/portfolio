@@ -1,0 +1,27 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+<div class="container text-center max-w-3xl bg-blue-700 rounded-lg mx-auto my-8 p-4">
+    <p>You were directed to this page because you must validate your email.</p>
+    <br>
+    <p>Please check your inbox and spam folder for an email from <a href="mailto:brian.s.lindsay829@gmail.com">brian.s.lindsay829@gmail.com</a></p>
+    <br>
+    <p>If you want to have another verification email sent to you. Enter your email below.</p>
+    <br>
+    <p>Please contact Brian Lindsay at <a href="mailto:brian.s.lindsay829@gmail.com">brian.s.lindsay829@gmail.com</a> if you have any issues or questions.</p>
+</div>
+
+<div>
+    <form method="POST" class="text-center">
+        {% csrf_token %}
+        {{form.email}}
+        <br>
+        <br>
+        <div class="text-center">
+            <input class="text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center bg-blue-600 hover:bg-blue-700 focus:ring-blue-800" type="submit" value="Send Verification">
+        </div>
+    </form>
+</div>
+
+{% endblock content %}

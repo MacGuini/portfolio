@@ -1,0 +1,15 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+<div class="max-w-3xl mx-auto mt-12 bg-blue-700 px-6 py-4 rounded-lg text-center">
+    <p class="text-cyan-400 text-3xl">Success!</p>
+    <br>
+    <p>You are now registered to Brian Lindsay's portfolio page. Thank you for taking a look at my work. Feel free to browse and click around. Please be mindful, this site is under constant construction.</p>
+    <br>
+    <p>If you have any questions or wish to contact me, please email me at <a class="text-cyan-400" href="mailto:brian.s.lindsay829@gmail.com">brian.s.lindsay829@gmail.com</a></p>
+    <br>
+    <a class="shadow text-blue-400 bg-cyan-800 px-4 py-2 rounded" href="{% url "login" %}">Login Here</a>
+</div>
+
+{% endblock content %}

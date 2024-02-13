@@ -1,0 +1,17 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+<div class="text-center bg-blue-900 text-slate-400 mx-auto px-5 py-3 rounded-xl max-w-2xl">
+    <p>Thank you for signing up for my website! A confirmation email will be sent to you from <a class="text-cyan-400" href="mailto:brian.s.lindsay829@gmail.com">brian.s.lindsay829@gmail.com</a></p>
+    <br>
+    <p>If you don't see the email in your inbox. Check your spam folder. If you have any issues or questions. Please contact me or email me at <a class="text-cyan-400" href="mailto:brian.s.lindsay829@gmail.com">brian.s.lindsay829@gmail.com</a></p>
+    <br>
+    <hr>
+    <br>
+    <a class="bg-blue-400 text-slate-800 px-3 py-2 mx-auto rounded" href="{% url "index" %}">Return to Home Page</a>
+</div>
+
+{% endblock content %}
+
+

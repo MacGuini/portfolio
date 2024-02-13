@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.deletion import CASCADE
+from django.utils import timezone
 import uuid
+from accounts import validation_control
 
 # Create your models here.
 
@@ -34,8 +36,14 @@ class Profile(models.Model):
 	email = models.EmailField(max_length=200, null=True, blank=True, unique=True)
 	preference = models.CharField(max_length=6, choices=CONTACT_TYPE, default='home', null=True, blank=True)
 
+	verification_token = models.CharField(max_length=100, blank=True, null=True)
+	token_created_at = models.DateTimeField(null=True, blank=True)
+
 	is_staff = models.BooleanField(default=False)
 	is_superuser = models.BooleanField(default=False)
+	is_approved = models.BooleanField(default=False)
+	email_valid = models.BooleanField(default=False)
+	
 
 	created = models.DateTimeField(auto_now_add=True)
 	id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
@@ -44,6 +52,12 @@ class Profile(models.Model):
 
 	def __str__(self):
 		return f'{self.fname} {self.lname} - {self.username}'
+	
+	def save(self, *args, **kwargs):
+		if not self.verification_token:
+			self.verification_token = validation_control.generate_token()
+			self.token_created_at = timezone.now()
+		super(Profile, self).save(*args, **kwargs)
 	
 class IP_Address(models.Model):
 	user = models.ForeignKey(User, on_delete=CASCADE, null=False, blank=False)
