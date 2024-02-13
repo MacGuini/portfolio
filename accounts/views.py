@@ -33,8 +33,6 @@ def newEmailVerification(request):
                 
                 newToken = validation_control.generate_token()
 
-                print("\n\n\nOld token: " + profile.verification_token + "\n\nNew Token: " + newToken + "\n\n\n")
-
                 user = profile.user 
                 pk = profile.id
                 token = newToken
