@@ -142,7 +142,7 @@ def registerUser(request):
             mail_control.confirmEmail(user, pk, token)
             mail_control.notifyUserCreated(user, ipaddr)
 
-            return redirect('index')
+            return redirect('confirm-email-notice')
         else:
             messages.error(request, "An error has occured during registration")
 
