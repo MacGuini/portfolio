@@ -5,7 +5,9 @@ from .models import Profile
 
 class EmailVerificationForm(forms.Form):
 	email = forms.EmailField()
-	email.widget.attrs.update({'placeholder': 'Enter your email here', "class": "bg-transparent focus:border-blue-600 focus:ring border-0 border-b-2 border-slate-300 text-slate-500 mx-auto"})
+	email.widget.attrs.update({'name': 'floating_email', 'id': 'floating_email', 'type': 'text', 'class': 'input block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 appearance-none text-white border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-0 peer', 'placeholder': ' '})
+
+
 
 class CustomUserCreationForm(UserCreationForm): # Inherets all aspects of the imported UserCreationForm
 	first_name = forms.CharField()
