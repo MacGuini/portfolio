@@ -78,3 +78,6 @@ coverage.xml
 *.bak
 *.pyc
 *~
+
+# Ignore static files directory
+/staticfiles/

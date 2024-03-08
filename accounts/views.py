@@ -66,14 +66,14 @@ def loginUser(request):
             user = User.objects.get(username=username)
         except User.DoesNotExist:
             messages.error(request, 'User does not exist.')
+            return redirect('login')
 
         # Authenticate the user
         user = authenticate(request, username=username, password=password)
-        profile = Profile.objects.get(user=user)
 
         # Checks if user exists
         if user is not None and profile.email_valid:
-
+            profile = Profile.objects.get(user=user)
             ip_exists = ip_management.check_ip_exists(ipaddr, user)  # replace with the IP you want to check
             if not ip_exists:
                 ip = IP_Address.objects.create(user=user, ip=ip_management.get_client_ip(request))
