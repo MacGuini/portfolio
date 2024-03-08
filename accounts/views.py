@@ -72,25 +72,27 @@ def loginUser(request):
         user = authenticate(request, username=username, password=password)
 
         # Checks if user exists
-        if user is not None and profile.email_valid:
+        if user is not None:
             profile = Profile.objects.get(user=user)
-            ip_exists = ip_management.check_ip_exists(ipaddr, user)  # replace with the IP you want to check
-            if not ip_exists:
-                ip = IP_Address.objects.create(user=user, ip=ip_management.get_client_ip(request))
-                ip.save()
 
-            # logs in the user
-            login(request, user)
-                
-            # returns the user if there is a next route. Otherwise, the user is redirected to the accounts page.
-            return redirect(request.GET['next'] if 'next' in request.GET else 'index')
-        elif profile.email_valid == False:
+            # Check email validation
+            if profile.email_valid:
+                ip_exists = ip_management.check_ip_exists(ipaddr, user)  # replace with the IP you want to check
+                if not ip_exists:
+                    ip = IP_Address.objects.create(user=user, ip=ip_management.get_client_ip(request))
+                    ip.save()
 
-            # messages.error(request, 'You must validate your email!')
-            return redirect(request.GET['next'] if 'next' in request.GET else 'validate-email')
+                # logs in the user
+                login(request, user)
+                    
+                # returns the user if there is a next route. Otherwise, the user is redirected to the accounts page.
+                return redirect(request.GET['next'] if 'next' in request.GET else 'index')
+            else:
+                # messages.error(request, 'You must validate your email!')
+                return redirect(request.GET['next'] if 'next' in request.GET else 'validate-email')
             
         else:
-            messages.error(request, 'Invalid password')
+            messages.error(request, 'Invalid username or password')
             # Debugging: Check current messages
             current_messages = messages.get_messages(request)
             for msg in current_messages:
