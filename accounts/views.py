@@ -119,9 +119,22 @@ def registerUser(request):
     
     if request.method == 'POST':
         
+        # Checks to ensure only certain hosts are allowed to sign up.
+        email_allowed = False
+        email = request.POST.get('email').lower()
+        allowed_domains = ['gmail.com','yahoo.com','hotmail.com','outlook.com','aol.com','icloud.com']
+        domain = email.split('@')[1]
+
+        if domain not in allowed_domains:
+            email_allowed=False
+            messages.error(request, "Must use reputable domain.")
+        else:
+            email_allowed=True
+
+
         form = CustomUserCreationForm(request.POST)
         
-        if form.is_valid():
+        if form.is_valid() and email_allowed:
             
             user = form.save(commit=False) # Instead of committing data to database, it suspends it temporarily
             user.username = user.username.lower() # Ensures all usernames are lower case to prevent duplicates with different cases.

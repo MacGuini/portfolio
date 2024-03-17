@@ -3,22 +3,6 @@
 
 {% block content %}
 
-{% if messages %}
-    {% for message in messages %}
-        {% if 'error' in message.tags %}
-            <div class="bg-red-500 text-slate-900 px-2 py-1 rounded max-w-2xl text-center mx-auto{% if message.tags %}{{ message.tags }}{% endif %}">
-                {{ message }}
-            </div>
-        {% endif %}
-
-        {% if 'success' in message.tags %}
-            <div class="bg-blue-500 text-slate-900 px-2 py-1 rounded max-w-2xl text-center mx-auto{% if message.tags %}{{ message.tags }}{% endif %}">
-                {{ message }}
-            </div>
-        {% endif %}
-    {% endfor %}
-{% endif %}
-
 
 <div class="text-slate-500 pt-20 px-5">
 	<form id="recaptcha-form" method="POST" class="max-w-md mx-auto">

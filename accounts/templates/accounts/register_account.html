@@ -4,7 +4,7 @@
 {% block content %}
 
 <div class="px-5">
-    <form id="recaptcha-form" method="POST" class="max-w-md mx-auto pt-16">
+    <form id="recaptcha-form" method="POST" class="max-w-md mx-auto pt-16" action="{% url "register-account" %}">
         {% csrf_token %}
         
         <div class="grid md:grid-cols-2 md:gap-6">
@@ -47,7 +47,20 @@
 
         
     </form>
+    <div class="text-slate-300 max-w-sm mx-auto pt-10">
+        <p>Do to security, only the following email domains will be accepted to register.</p>
+        <br>
+        <ul class="text-slate-200">
+            <li>gmail.com</li>
+            <li>yahoo.com</li>
+            <li>hotmail.com</li>
+            <li>outlook.com</li>
+            <li>aol.com</li>
+            <li>icloud.com</li>
+        </ul>
+    </div>
 </div>
+
 
 {% include "recaptcha_script.html" %}
 {% endblock content %}
