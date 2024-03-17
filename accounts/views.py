@@ -28,7 +28,6 @@ def newEmailVerification(request):
             email = form.cleaned_data['email']
             try:
                 profile = Profile.objects.get(email=email)
-
                 
                 newToken = validation_control.generate_token()
 
@@ -125,12 +124,17 @@ def registerUser(request):
         allowed_domains = ['gmail.com','yahoo.com','hotmail.com','outlook.com','aol.com','icloud.com']
         domain = email.split('@')[1]
 
+        # 1st email check point verifies if email is allowed by domain
         if domain not in allowed_domains:
             email_allowed=False
-            messages.error(request, "Must use reputable domain.")
+            messages.error(request, "You cannot use that domain.")
         else:
             email_allowed=True
 
+        # 2nd email checkpoint verifying unique email was used
+        if User.objects.filter(email=email).exists():
+            email_allowed=False
+            messages.error(request, "Email already in use.")
 
         form = CustomUserCreationForm(request.POST)
         
