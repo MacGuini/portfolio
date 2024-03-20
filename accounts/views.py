@@ -4,9 +4,27 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import IP_Address, Profile
-from .forms import CustomUserCreationForm, EmailVerificationForm
+from .models import IP_Address, Profile, Blacklist
+from .forms import CustomUserCreationForm, EmailVerificationForm, BlacklistForm
 from accounts import ip_management, mail_control, validation_control
+
+
+@login_required(login_url='login')
+def blacklistIP(request):
+    if request.method == "POST":
+        form = BlacklistForm(request.POST)
+        if form.is_valid():
+            selected_ips = form.cleaned_data['ip_address']
+            for ip_address in selected_ips:
+                Blacklist.objects.get_or_create(ip=ip_address.ip)
+            return redirect('index')
+    else:
+        form = BlacklistForm()
+    
+    return render(request, 'accounts/blacklist.html', {'form':form})
+
+def blacklisted(request):
+    return render(request, 'accounts/blacklisted.html')
 
 def verifyEmail(request, pk, token):
     profile = get_object_or_404(Profile, id=pk)
@@ -43,18 +61,31 @@ def newEmailVerification(request):
 
 # Create your views here.
 def index(request):
-	return render(request, 'index.html')
+
+    ipaddr = ip_management.get_client_ip(request)
+
+    # Checks if user is blacklisted and prevents login
+    blacklisted = Blacklist.objects.filter(ip=ipaddr).exists()
+
+    if blacklisted:
+        return redirect('blacklisted')
+    else:
+	    return render(request, 'index.html')
 
 def loginUser(request):
 
     ipaddr = ip_management.get_client_ip(request)
 
+    # Checks if user is blacklisted and prevents login
+    blacklisted = Blacklist.objects.filter(ip=ipaddr).exists()
 
+    if blacklisted:
+        return redirect('blacklisted')
+    
     if request.user.is_authenticated:
         return redirect('index')
-    
 
-    if request.method == 'POST':
+    if request.method == 'POST' and not blacklisted:
         
         # Username forced lower case to prevent repeat users
         username = request.POST['username'].lower()
@@ -112,11 +143,17 @@ def logoutUser(request):
 def registerUser(request):
     ipaddr = ip_management.get_client_ip(request)
 
+    # Checks if user is blacklisted and prevents login
+    blacklisted = Blacklist.objects.filter(ip=ipaddr).exists()
+
+    if blacklisted:
+        return redirect('blacklisted')
+    
     if request.user.is_authenticated:
         return redirect('index')
     form = CustomUserCreationForm(request.POST or None)
     
-    if request.method == 'POST':
+    if request.method == 'POST' and not blacklisted:
         
         # Checks to ensure only certain hosts are allowed to sign up.
         email_allowed = False

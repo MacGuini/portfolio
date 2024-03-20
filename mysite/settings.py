@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 
     'accounts.apps.AccountsConfig',
     'forum.apps.ForumConfig',
-
+    
     'django_cleanup.apps.CleanupConfig',
 ]
 
@@ -169,6 +169,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 RECAPTCHA_SITE_KEY = str(os.getenv('RECAPTCHA_PUBLIC_KEY'))
 RECAPTCHA_SECRET_KEY = str(os.getenv('RECAPTCHA_PRIVATE_KEY'))
 
-RECAPTCHA_REQUIRED_SCORE = 0.80
+RECAPTCHA_REQUIRED_SCORE = 0.95
+
+SESSION_COOKIE_AGE = 1800
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 # SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']

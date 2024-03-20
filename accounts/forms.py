@@ -1,13 +1,19 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, IP_Address, Blacklist
 
 class EmailVerificationForm(forms.Form):
 	email = forms.EmailField()
 	email.widget.attrs.update({'name': 'floating_email', 'id': 'floating_email', 'type': 'text', 'class': 'input block py-2.5 px-0 w-full text-sm bg-transparent border-0 border-b-2 appearance-none text-white border-gray-600 focus:border-blue-500 focus:outline-none focus:ring-0 peer', 'placeholder': ' '})
 
-
+class BlacklistForm(forms.Form):
+	ip_address = forms.ModelMultipleChoiceField(
+		queryset=IP_Address.objects.all(),
+		widget=forms.CheckboxSelectMultiple,
+		required=False,
+		label="Select IP Addresses to Blacklist"
+	)
 
 class CustomUserCreationForm(UserCreationForm): # Inherets all aspects of the imported UserCreationForm
 	first_name = forms.CharField()

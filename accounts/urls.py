@@ -11,4 +11,6 @@ urlpatterns = [
     path('verify-success/', TemplateView.as_view(template_name="accounts/verify_success.html"), name="verify-success"),
     path('validate-email/', views.newEmailVerification, name="validate-email"),
     path("confirm-email-notice/", TemplateView.as_view(template_name="accounts/confirm_email_notice.html"), name="confirm-email-notice"),
+    path('blacklist/', views.blacklistIP, name='blacklist'),
+    path('blacklisted/', views.blacklisted, name='blacklisted'),
 ] 
