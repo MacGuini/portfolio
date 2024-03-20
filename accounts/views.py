@@ -24,6 +24,9 @@ def blacklistIP(request):
     return render(request, 'accounts/blacklist.html', {'form':form})
 
 def blacklisted(request):
+    ipaddr = ip_management.get_client_ip(request)
+    mail_control.blacklistBlocked(ipaddr)
+    
     return render(request, 'accounts/blacklisted.html')
 
 def verifyEmail(request, pk, token):

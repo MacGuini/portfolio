@@ -18,3 +18,12 @@ def confirmEmail(user, pk, token):
         [str(user.email)],
         fail_silently=False,
     )
+
+def blacklistBlocked(ipaddr):
+    send_mail(
+        (f'Blacklist blocked IP Address: {ipaddr}'),
+        (f'This message sent to alert you that the IP blocker has successfully blocked a request from {ipaddr}'),
+        'brian.s.lindsay829@gmail.com',
+        ['brian.s.lindsay829@gmail.com'],
+        fail_silently=False
+    )
