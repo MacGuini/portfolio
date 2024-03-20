@@ -12,7 +12,7 @@ class BlockIPMiddleware:
         
         # Check if the IP is in the blacklist
         if Blacklist.objects.filter(ip=ip_addr).exists():
-            # If the IP is blacklisted, return a forbidden response
+            # If the IP is blacklisted, return a forbidden response and sends verification email
             mail_control.blacklistMiddlewareActivated(ip_addr)
             return HttpResponseForbidden('Access denied.')
 

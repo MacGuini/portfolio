@@ -71,12 +71,12 @@ def index(request):
     # Checks if user is blacklisted and prevents login
     blacklisted = Blacklist.objects.filter(ip=ipaddr).exists()
 
-    # if blacklisted:
-    #     logout(request)
-    #     return redirect('blacklisted')
-    # else:
-	#     return render(request, 'index.html')
-    return render(request, 'index.html')
+    if blacklisted:
+        logout(request)
+        return redirect('blacklisted')
+    else:
+	    return render(request, 'index.html')
+
 
 def loginUser(request):
 
@@ -85,8 +85,8 @@ def loginUser(request):
     # Checks if user is blacklisted and prevents login
     blacklisted = Blacklist.objects.filter(ip=ipaddr).exists()
 
-    # if blacklisted:
-    #     return redirect('blacklisted')
+    if blacklisted:
+        return redirect('blacklisted')
     
     if request.user.is_authenticated:
         return redirect('index')
@@ -152,8 +152,8 @@ def registerUser(request):
     # Checks if user is blacklisted and prevents login
     blacklisted = Blacklist.objects.filter(ip=ipaddr).exists()
 
-    # if blacklisted:
-    #     return redirect('blacklisted')
+    if blacklisted:
+        return redirect('blacklisted')
     
     if request.user.is_authenticated:
         return redirect('index')
