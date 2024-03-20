@@ -27,3 +27,12 @@ def blacklistBlocked(ipaddr):
         ['brian.s.lindsay829@gmail.com'],
         fail_silently=False
     )
+
+def blacklistMiddlewareActivated(ipaddr):
+    send_mail(
+        f'Blacklist Middleware activated, blocking {ipaddr}',
+        f'This email was sent to verify that the middleware blacklisting is functioning correctly. The IP address {ipaddr} has been blocked.',
+        'brian.s.lindsay829@gmail.com',
+        ['brian.s.lindsay829@gmail.com'],
+        fail_silently=False
+    )
