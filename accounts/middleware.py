@@ -1,6 +1,6 @@
 from django.http import HttpResponseForbidden
 from .models import Blacklist
-from accounts import mail_control
+from accounts import mail_control, ip_management
 
 class BlockIPMiddleware:
     def __init__(self, get_response):
@@ -8,7 +8,7 @@ class BlockIPMiddleware:
 
     def __call__(self, request):
         # Get the IP address from the request
-        ip_addr = request.META.get('REMOTE_ADDR', None)
+        ip_addr = ip_management.get_client_ip(request)
         
         # Check if the IP is in the blacklist
         if Blacklist.objects.filter(ip=ip_addr).exists():
