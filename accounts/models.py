@@ -70,7 +70,7 @@ class IP_Address(models.Model):
 		return f"{self.user} logged in from {self.ip} on {self.created}"
 
 class Blacklist(models.Model):
-	ip = models.GenericIPAddressField(editable=False)
+	ip = models.GenericIPAddressField()
 
 	created = models.DateTimeField(auto_now_add=True, editable=False)
 	id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
