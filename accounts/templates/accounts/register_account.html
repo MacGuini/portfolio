@@ -45,8 +45,13 @@
         </div>
         
 
-        
+        <input type="hidden" name="g-recaptcha_response" id="recaptchaResponse">
+        <div class="flex justify-center mt-6">
+            <div class="g-recaptcha" data-sitekey="6LcPVqEpAAAAAGTH-85NMF-pN_MVbFYwuDfJ0qJu"></div>
+            <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        </div>
     </form>
+
     <div class="text-slate-300 max-w-sm mx-auto pt-10">
         <p>Do to security, only the following email domains will be accepted to register.</p>
         <br>
@@ -62,5 +67,5 @@
 </div>
 
 
-{% include "recaptcha_script.html" %}
+
 {% endblock content %}

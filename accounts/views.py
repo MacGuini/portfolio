@@ -4,6 +4,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
+import requests
 from .models import IP_Address, Profile, Blacklist
 from .forms import CustomUserCreationForm, EmailVerificationForm, BlacklistForm
 from accounts import ip_management, mail_control, validation_control
@@ -161,6 +162,15 @@ def registerUser(request):
     
     if request.method == 'POST' and not blacklisted:
         
+        recaptcha_response = request.POST.get('g-recaptcha-response')
+        data = {
+            'secret': settings.RECAPTCHA_SECRET_KEY_V2,
+            'response': recaptcha_response
+        }
+
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result = r.json()
+
         # Checks to ensure only certain hosts are allowed to sign up.
         email_allowed = False
         email = request.POST.get('email').lower()
@@ -180,31 +190,33 @@ def registerUser(request):
             messages.error(request, "Email already in use.")
 
         form = CustomUserCreationForm(request.POST)
-        
-        if form.is_valid() and email_allowed:
-            
-            user = form.save(commit=False) # Instead of committing data to database, it suspends it temporarily
-            user.username = user.username.lower() # Ensures all usernames are lower case to prevent duplicates with different cases.
-            user.save() # Finally saves 
-
-            ip_exists = ip_management.check_ip_exists(ipaddr, user)  # replace with the IP you want to check
-            if not ip_exists:
-                ip = IP_Address.objects.create(user=user, ip=ip_management.get_client_ip(request))
-                ip.save()
+        if result['success']:
                 
+            if form.is_valid() and email_allowed:
+                
+                user = form.save(commit=False) # Instead of committing data to database, it suspends it temporarily
+                user.username = user.username.lower() # Ensures all usernames are lower case to prevent duplicates with different cases.
+                user.save() # Finally saves 
 
-            
-            profile = Profile.objects.get(user=user)
-            pk = profile.id
-            token = profile.verification_token
+                ip_exists = ip_management.check_ip_exists(ipaddr, user)  # replace with the IP you want to check
+                if not ip_exists:
+                    ip = IP_Address.objects.create(user=user, ip=ip_management.get_client_ip(request))
+                    ip.save()
+                    
 
-            mail_control.confirmEmail(user, pk, token)
-            mail_control.notifyUserCreated(user, ipaddr)
+                
+                profile = Profile.objects.get(user=user)
+                pk = profile.id
+                token = profile.verification_token
 
-            return redirect('confirm-email-notice')
+                mail_control.confirmEmail(user, pk, token)
+                mail_control.notifyUserCreated(user, ipaddr)
+
+                return redirect('confirm-email-notice')
+            else:
+                messages.error(request, "An error has occured during registration")
         else:
-            messages.error(request, "An error has occured during registration")
-
+            messages.error(request, 'Please complete recaptcha challenge')
     context = {'form':form}
     return render (request, 'accounts/register_account.html', context)
 

@@ -85,6 +85,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'mysite.context_processors.site_key', # Custom context processor for reCAPTCHA
+                'mysite.context_processors.recaptcha_v2_key',
             ],
         },
     },
@@ -169,6 +170,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 RECAPTCHA_SITE_KEY = str(os.getenv('RECAPTCHA_PUBLIC_KEY'))
 RECAPTCHA_SECRET_KEY = str(os.getenv('RECAPTCHA_PRIVATE_KEY'))
+
+RECAPTCHA_SITE_KEY_V2 = str(os.getenv('RECAPTCHA_PUBLIC_KEY_V2'))
+RECAPTCHA_SECRET_KEY_V2 = str(os.getenv('RECAPTCHA_PRIVATE_KEY_V2'))
 
 RECAPTCHA_REQUIRED_SCORE = 0.95
 
