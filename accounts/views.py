@@ -217,6 +217,7 @@ def registerUser(request):
                 messages.error(request, "An error has occured during registration")
         else:
             messages.error(request, 'Please complete recaptcha challenge')
+            mail_control.captchaFail()
     context = {'form':form}
     return render (request, 'accounts/register_account.html', context)
 

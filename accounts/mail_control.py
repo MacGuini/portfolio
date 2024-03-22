@@ -36,3 +36,11 @@ def blacklistMiddlewareActivated(ipaddr):
         ['brian.s.lindsay829@gmail.com'],
         fail_silently=False
     )
+def captchaFail():
+    send_mail(
+        f'Captcha failed',
+        f'Someone failed the captcha test on brian-lindsay.com',
+        'brian.s.lindsay829@gmail.com',
+        ['brian.s.lindsay829@gmail.com'],
+        fail_silently=False
+    )
