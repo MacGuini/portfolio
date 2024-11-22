@@ -36,6 +36,12 @@ else:
     # Comment out the following line and place your railway URL, and your production URL in the array.
     CSRF_TRUSTED_ORIGINS = ["https://brian-lindsay.com", "https://www.brian-lindsay.com", "https://brianlindsay.up.railway.app/"]
 
+DEBUG = False
+ALLOWED_HOSTS = ["https://brian-lindsay.com", "https://www.brian-lindsay.com", "brian-lindsay.com", "www.brian-lindsay.com"]
+# FORM SUBMISSION
+# Comment out the following line and place your railway URL, and your production URL in the array.
+CSRF_TRUSTED_ORIGINS = ["https://brian-lindsay.com", "https://www.brian-lindsay.com", "https://brianlindsay.up.railway.app/"]
+
 
 
 
