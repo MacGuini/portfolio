@@ -13,4 +13,3 @@ typing_extensions==4.12.2
 urllib3==2.2.3
 whitenoise==6.8.2
 psycopg2==2.9.9
-psycopg2-binary==2.9.9
