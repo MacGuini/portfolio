@@ -103,7 +103,7 @@ if DEBUG == False or use_pgdb == "True":
             'NAME': os.environ["PGDATABASE"],
             'USER': os.environ["PGUSER"],
             'PASSWORD': os.environ["PGPASSWORD"],
-            'HOST': os.environ["PGHOST"],
+            'HOST': os.environ["RAILWAY_PRIVATE_DOMAIN"],
             'PORT': os.environ["PGPORT"],
         }
     }
