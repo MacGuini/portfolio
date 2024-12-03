@@ -31,7 +31,7 @@ if str(os.environ.get('DEBUG_VALUE')) == "True":
     ALLOWED_HOSTS = ["brian-lindsay.com", "www.brian-lindsay.com", "127.0.0.1"]
 else:
     DEBUG = False
-    ALLOWED_HOSTS = ["brian-lindsay.com", "www.brian-lindsay.com"]
+    ALLOWED_HOSTS = ["brian-lindsay.com", "www.brian-lindsay.com", "https://brianlindsay.up.railway.app"]
     # FORM SUBMISSION
     # Comment out the following line and place your railway URL, and your production URL in the array.
     CSRF_TRUSTED_ORIGINS = ["https://brian-lindsay.com", "https://www.brian-lindsay.com", "https://brianlindsay.up.railway.app"]
