@@ -19,7 +19,7 @@ if str(os.environ.get('DEBUG_VALUE')) == "True":
     ALLOWED_HOSTS = ["*"]
 else:
     DEBUG = False
-    ALLOWED_HOSTS = ["brian-lindsay.com", "www.brian-lindsay.com", "https://brianlindsay.up.railway.app", "https://blindsay-portfolio-nj2bm.ondigitalocean.app"]
+    ALLOWED_HOSTS = ["*"]
     # FORM SUBMISSION
     # Comment out the following line and place your railway URL, and your production URL in the array.
     CSRF_TRUSTED_ORIGINS = ["https://brian-lindsay.com", "https://www.brian-lindsay.com", "https://brianlindsay.up.railway.app", "https://blindsay-portfolio-nj2bm.ondigitalocean.app"]
@@ -79,32 +79,32 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 
 use_pgdb = os.getenv("USE_PGDB")
 
-# # Database
-# # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-# if DEBUG == False or use_pgdb == "True":
-#     # Original Setup
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#             'NAME': os.environ["PGDATABASE"],
-#             'USER': os.environ["PGUSER"],
-#             'PASSWORD': os.environ["PGPASSWORD"],
-#             'HOST': os.environ["PGHOST"],
-#             'PORT': os.environ["PGPORT"],
-#         }
-#     }
-#     # Possible solution
-#     # DATABASES = {
-#     #     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
-#     # }
-# else:
+# Database
+# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+if DEBUG == False or use_pgdb == "True":
+    # Original Setup
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ["PGDATABASE"],
+            'USER': os.environ["PGUSER"],
+            'PASSWORD': os.environ["PGPASSWORD"],
+            'HOST': os.environ["PGHOST"],
+            'PORT': os.environ["PGPORT"],
+        }
+    }
+    # Possible solution to database missconnection
+    # DATABASES = {
+    #     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+    # }
+else:
 
-#     DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # Testing Database issues
 DATABASES = {
