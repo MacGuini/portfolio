@@ -82,18 +82,29 @@ use_pgdb = os.getenv("USE_PGDB")
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 if DEBUG == False or use_pgdb == "True":
-    # Original Setup
+    # # Original Setup
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #         'NAME': os.environ["PGDATABASE"],
+    #         'USER': os.environ["PGUSER"],
+    #         'PASSWORD': os.environ["PGPASSWORD"],
+    #         'HOST': os.environ["PGHOST"],
+    #         'PORT': os.environ["PGPORT"],
+    #     }
+    # }
+    # Updated new variables
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.environ["PGDATABASE"],
-            'USER': os.environ["PGUSER"],
-            'PASSWORD': os.environ["RAILWAY_PRIVATE_DOMAIN"],
-            'HOST': os.environ["PGHOST"],
+            'NAME': os.environ["POSTGRES_DB"],
+            'USER': os.environ["POSTGRES_USER"],
+            'PASSWORD': os.environ["POSTGRES_PASSWORD"],
+            'HOST': os.environ["RAILWAY_PRIVATE_DOMAIN"],
             'PORT': os.environ["PGPORT"],
         }
     }
-    # Possible solution to database missconnection
+    # # Possible solution to database missconnection
     # DATABASES = {
     #     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
     # }
