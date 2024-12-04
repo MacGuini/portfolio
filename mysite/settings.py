@@ -93,7 +93,7 @@ if DEBUG == False or use_pgdb == "True":
             'PORT': os.environ["PGPORT"],
         }
     }
-    print(os.environ["RAILWAY_PRIVATE_DOMAIN"])
+    
     # Updated new variables
     # DATABASES = {
     #     'default': {
