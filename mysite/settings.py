@@ -77,11 +77,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
+# use_pgdb allows debuging the PG database while in DEBUG mode
 use_pgdb = os.getenv("USE_PGDB")
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-if DEBUG == False or use_pgdb == "True":
+if use_pgdb == "True":
     # # Original Setup
     DATABASES = {
         'default': {
