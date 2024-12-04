@@ -89,10 +89,11 @@ if DEBUG == False or use_pgdb == "True":
             'NAME': os.environ["PGDATABASE"],
             'USER': os.environ["PGUSER"],
             'PASSWORD': os.environ["PGPASSWORD"],
-            'HOST': os.environ["postgres.railway.internal"],
+            'HOST': os.environ["RAILWAY_PRIVATE_DOMAIN"],
             'PORT': os.environ["PGPORT"],
         }
     }
+    print(os.environ["RAILWAY_PRIVATE_DOMAIN"])
     # Updated new variables
     # DATABASES = {
     #     'default': {
