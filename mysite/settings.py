@@ -106,13 +106,13 @@ else:
     }
 }
 
-# Testing Database issues
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# # Testing Database issues
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
