@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -82,45 +83,44 @@ use_pgdb = os.getenv("USE_PGDB")
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
+# if use_pgdb == "True":
+#     # # Original Setup
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': os.environ["PGDATABASE"],
+#             'USER': os.environ["PGUSER"],
+#             'PASSWORD': os.environ["PGPASSWORD"],
+#             'HOST': os.environ["PGHOST"],
+#             'PORT': os.environ["PGPORT"],
+#             'OPTIONS': {
+#                 'sslmode': 'require',
+#             }
+#         }
+#     }
+
+# else:
+
+#     DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 if use_pgdb == "True":
-    # # Original Setup
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL')
+        )
+    }
+else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ["PGDATABASE"],
-            'USER': os.environ["PGUSER"],
-            'PASSWORD': os.environ["PGPASSWORD"],
-            'HOST': os.environ["PGHOST"],
-            'PORT': os.environ["PGPORT"],
-            'OPTIONS': {
-                'sslmode': 'require',
-            }
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-    
-    # Testing other variable names
-    # DATABASES = {
-    #     'default': {
-    #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    #         'NAME': os.environ["POSTGRES_DB"],
-    #         'USER': os.environ["POSTGRES_USER"],
-    #         'PASSWORD': os.environ["POSTGRES_PASSWORD"],
-    #         'HOST': os.environ["RAILWAY_PRIVATE_DOMAIN"],
-    #         'PORT': os.environ["PGPORT"],
-    #     }
-    # }
-    # # Possible solution to database missconnection
-    # DATABASES = {
-    #     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
-    # }
-else:
-
-    DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 # # Testing Database issues
 # DATABASES = {
@@ -189,8 +189,21 @@ RECAPTCHA_SECRET_KEY_V2 = str(os.getenv('RECAPTCHA_PRIVATE_KEY_V2'))
 
 RECAPTCHA_REQUIRED_SCORE = 0.95
 
+
+# Session settings
 SESSION_COOKIE_AGE = 1800
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+# Security hardening for production
+if not DEBUG:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000  # Enforce HTTPS for 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_SSL_REDIRECT = True  # Redirect HTTP to HTTPS
 
 # SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
