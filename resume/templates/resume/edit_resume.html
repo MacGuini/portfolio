@@ -1,0 +1,180 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+
+    <!-- Resume Section-->
+    <form class="pt-8 lg:px-32 xl:px-64 mx-auto" method="POST">
+        {% csrf_token %}
+        <div class="text-center my-8">
+
+            <span class="px-4 text-blue-700 font-medium text-2xl">Edit Resume</span>
+
+        </div>
+        {{ form.as_p }}
+        <div class="flex justify-center my-4">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Update</button>
+        </div>
+    </form>
+
+    <div class="pt-8 lg:px-32 xl:px-64 mx-auto px-6 text-blue-300">
+        <ul>
+            <!-- Experiences Section-->
+            <div class="section-container">
+                <div class="flex items-center my-8">
+                    <hr class="flex-grow border-t border-blue-300">
+                    <span class="px-4 text-blue-500 font-medium text-2xl">Experiences</span>
+                    <hr class="flex-grow border-t border-blue-300">
+                </div>
+                <div class="container">
+                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-2xl font-bold"> + </button>
+                    <div class="content" style="display:none;">
+                        {% include "resume/add_experience.html" %}
+                    </div>
+                </div>
+                <br>
+
+                <div class="container">
+                    {% for experience in experiences %}
+                    
+                        <li class="my-4">
+                            <p>Title: {{ experience.job_title }}</p>
+                            <p>Company: {{ experience.company_name }}</p>
+                            <p>Start Date: {{ experience.start_date }}</p>
+                            <p>End Date: {{ experience.end_date }}</p>
+                            <p>Description: {{ experience.description }}</p>
+                            <p>Currently Employed: {{ experience.is_current }}</p>
+                            {% comment %} <a href="{% url 'edit_experience' experience.id %}">Edit</a>
+                            <a href="{% url 'delete_experience' experience.id %}">Delete</a> {% endcomment %}
+                        </li>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Education Section -->
+            <div class="section-container">
+                <div class="flex items-center my-8">
+                    <hr class="flex-grow border-t border-blue-300">
+                    <span class="px-4 text-blue-500 font-medium text-2xl">Education</span>
+                    <hr class="flex-grow border-t border-blue-300">
+                </div>
+                <div class="container">
+                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-2xl font-bold"> + </button>
+                    <div class="content" style="display:none;">
+                        {% include "resume/add_education.html" %}
+                    </div>
+                </div>
+                {% for education in educations %}
+                
+                    <li class="my-4">
+                        <p>{{ education.institution_name }}</p>
+                        <p>{{ education.degree }}</p>
+                        <p>{{ education.field_of_study }}</p>
+                        <p>{{ education.start_date }}</p>
+                        <p>{{ education.end_date }}</p>
+                        <p>{{ education.description }}</p>
+                        {% comment %} <a href="{% url 'edit_education' education.id %}">Edit</a>
+                        <a href="{% url 'delete_education' education.id %}">Delete</a> {% endcomment %}
+                    </li>
+                {% endfor %}
+            </div>
+
+            <!-- Skills Section -->
+            <div class="section-container">
+                <div class="flex items-center my-8">
+                    <hr class="flex-grow border-t border-blue-300">
+                    <span class="px-4 text-blue-500 font-medium text-2xl">Skills</span>
+                    <hr class="flex-grow border-t border-blue-300">
+                </div>
+                <div class="container">
+                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-2xl font-bold"> + </button>
+                    <div class="content" style="display:none;">
+                        {% include "resume/add_skill.html" %}
+                    </div>
+                </div>
+                {% for skill in skills %}
+                
+                    <li class="my-4">
+                        <p>{{ skill.name }}</p>
+                        <p>{{ skill.proficiency }}</p>
+                        {% comment %} <a href="{% url 'edit_skill' skill.id %}">Edit</a>
+                        <a href="{% url 'delete_skill' skill.id %}">Delete</a> {% endcomment %}
+                    </li>
+                {% endfor %}
+            </div>
+
+            <!-- Projects Section -->
+            <div class="section-container">
+                <div class="flex items-center my-8">
+                    <hr class="flex-grow border-t border-blue-300">
+                    <span class="px-4 text-blue-500 font-medium text-2xl">Projects</span>
+                    <hr class="flex-grow border-t border-blue-300">
+                </div>
+                <div class="container">
+                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-2xl font-bold"> + </button>
+                    <div class="content" style="display:none;">
+                        {% include "resume/add_project.html" %}
+                    </div>
+                </div>
+                {% for project in projects %}
+                    <li class="my-4">
+                        <p>{{ project.title }}</p>
+                        <p>{{ project.description }}</p>
+                        <p>{{ project.link }}</p>
+                        {% comment %} <a href="{% url 'edit_project' project.id %}">Edit</a>
+                        <a href="{% url 'delete_project' project.id %}">Delete</a> {% endcomment %}
+                    </li>
+                {% endfor %}
+            </div>
+
+            <!-- Certifications Section -->
+            <div class="section-container">
+                <div class="flex items-center my-8">
+                    <hr class="flex-grow border-t border-blue-300">
+                    <span class="px-4 text-blue-500 font-medium text-2xl">Certifications</span>
+                    <hr class="flex-grow border-t border-blue-300">
+                </div>
+                <div class="container">
+                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-2xl font-bold"> + </button>
+                    <div class="content" style="display:none;">
+                        {% include "resume/add_certification.html" %}
+                    </div>
+                </div>
+                {% for certification in certifications %}
+                    <li class="my-4"> 
+                        <p>{{ certification.name }}</p>
+                        <p>{{ certification.issuer }}</p>
+                        <p>{{ certification.issue_date }}</p>
+                        <p>{{ certification.expiration_date }}</p>
+                        <p>{{ certification.credential_id }}</p>
+                        <p>{{ certification.credential_url }}</p>
+                        {% comment %} <a href="{% url 'edit_certification' certification.id %}">Edit</a>
+                        <a href="{% url 'delete_certification' certification.id %}">Delete</a> {% endcomment %}
+                    </li>
+                {% endfor %}
+            </div>
+        </ul>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var coll = document.getElementsByClassName("collapsible");
+            for (var i = 0; i < coll.length; i++) {
+                coll[i].addEventListener("click", function() {
+                    this.classList.toggle("active");
+                    var content = this.nextElementSibling;
+                    if (content.style.display === "block") {
+                        content.style.display = "none";
+                        this.innerHTML = this.getAttribute("data-original-text")
+                    } else {
+                        // Save the original text in a data attribute
+                        if (!this.getAttribute("data-original-text")) {
+                            this.setAttribute("data-original-text", this.innerHTML);
+                        }
+                        content.style.display = "block";
+                        this.innerHTML = " − ";
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock content %}   

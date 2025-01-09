@@ -1,0 +1,23 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+<div>
+    <form class="pt-8 px-8 lg:px-32 xl:px-64 mx-auto" method="POST">
+        {% csrf_token %}
+
+        <label for="title" class="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Title</label>
+        {{form.title}}
+        <br>
+        <label for="summary" class="block mb-2 text-lg font-medium text-gray-900 dark:text-white">Summary</label>
+        {{form.summary}}
+        <br>
+        <div class="text-center">
+            <input class="text-white focus:ring-4 focus:outline-none text-lg font-medium rounded-lg w-full sm:w-auto px-10 py-5 text-center bg-blue-600 hover:bg-blue-700 focus:ring-blue-800 mx-auto" type="submit" value="Create New Resume">
+        </div>
+
+    </form>
+</div>
+
+
+{% endblock content %}

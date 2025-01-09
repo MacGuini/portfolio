@@ -23,7 +23,7 @@ else:
     ALLOWED_HOSTS = ["brian-lindsay.com", "https://brian-lindsay.com", "https://www.brian-lindsay.com", "https://blindsay-portfolio-nj2bm.ondigitalocean.app/"]
     # FORM SUBMISSION
     # Comment out the following line and place your railway URL, and your production URL in the array.
-    CSRF_TRUSTED_ORIGINS = ["https://brian-lindsay.com", "https://www.brian-lindsay.com", "https://brianlindsay.up.railway.app", "https://blindsay-portfolio-nj2bm.ondigitalocean.app"]
+    CSRF_TRUSTED_ORIGINS = ["https://brian-lindsay.com", "https://www.brian-lindsay.com", "https://blindsay-portfolio-nj2bm.ondigitalocean.app"]
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 
     'accounts.apps.AccountsConfig',
     'forum.apps.ForumConfig',
+    'resume.apps.ResumeConfig',
     
     'django_cleanup.apps.CleanupConfig',
 ]
