@@ -1,6 +1,11 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Resume
+from django.views.decorators.csrf import csrf_protect
+from django.http import JsonResponse
+
+from accounts import apps
+from .models import Resume, Experience, Education, Skill, Project, Certification
 
 from .forms import ResumeForm, EducationForm, ExperienceForm, SkillForm, ProjectForm, CertificationForm
 
@@ -39,7 +44,7 @@ def editResume(request, pk):
     skill_form = SkillForm()
     project_form = ProjectForm()
     certification_form = CertificationForm()
-    print("Edit Resume ID: " + str(resume.id))
+
     if request.method == "POST":
         form = ResumeForm(request.POST, instance=resume)
         if form.is_valid():
@@ -76,6 +81,71 @@ def editResume(request, pk):
 
     return render(request, 'resume/edit_resume.html', context)
 
+# Update the order of experiences
+@csrf_protect
+def update_experience_order(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        for item in data['order']:
+            experience = Experience.objects.get(id=item['id'])
+            experience.position = item['position']
+            experience.save()
+        return JsonResponse({'status': 'success'})
+
+    return JsonResponse({'status': 'error'}, status=400)
+
+# Update the order of educations
+@csrf_protect
+def update_education_order(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        for item in data['order']:
+            education = Education.objects.get(id=item['id'])
+            education.position = item['position']
+            education.save()
+        return JsonResponse({'status': 'success'})
+
+    return JsonResponse({'status': 'error'}, status=400)
+
+# Update the order of skills
+@csrf_protect
+def update_skill_order(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        for item in data['order']:
+            skill = Skill.objects.get(id=item['id'])
+            skill.position = item['position']
+            skill.save()
+        return JsonResponse({'status': 'success'})
+
+    return JsonResponse({'status': 'error'}, status=400)
+
+# Update the order of projects
+@csrf_protect
+def update_project_order(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        for item in data['order']:
+            project = Project.objects.get(id=item['id'])
+            project.position = item['position']
+            project.save()
+        return JsonResponse({'status': 'success'})
+
+    return JsonResponse({'status': 'error'}, status=400)
+
+# Update the order of certifications
+@csrf_protect
+def update_certification_order(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        for item in data['order']:
+            certification = Certification.objects.get(id=item['id'])
+            certification.position = item['position']
+            certification.save()
+        return JsonResponse({'status': 'success'})
+
+    return JsonResponse({'status': 'error'}, status=400)
+
 # Delete user resume
 @login_required(login_url='login')
 def deleteResume(request, pk):
@@ -83,7 +153,58 @@ def deleteResume(request, pk):
     if request.method == "POST":
         resume.delete()
         return redirect('list-resumes')
-    return render(request, 'resume/delete_resume.html', {'resume':resume})
+    return render(request, 'delete_template.html', {'object':resume})
+
+# Delete Expereince from resume
+@login_required(login_url='login')
+def deleteExperience(request, pk):
+    experience = get_object_or_404(Experience, id=pk)
+    next_url = request.GET.get('next', 'edit-resume')
+    if request.method == "POST":
+        experience.delete()
+        
+        return redirect(next_url)
+    return render(request, 'delete_template.html', {'object': experience})
+
+# Delete Education from resume
+@login_required(login_url='login')
+def deleteEducation(request, pk):
+    education = get_object_or_404(Education, id=pk)
+    resume = education.resume
+    if request.method == "POST":
+        education.delete()
+        return redirect('edit-resume', pk=resume.id)
+    return render(request, 'delete_template.html', {'object':education})
+
+# Delete Skill from resume
+@login_required(login_url='login')
+def deleteSkill(request, pk):
+    skill = get_object_or_404(Skill, id=pk)
+    resume = skill.resume
+    if request.method == "POST":
+        skill.delete()
+        return redirect('edit-resume', pk=resume.id)
+    return render(request, 'delete_template.html', {'object':skill})
+
+# Delete Project from resume
+@login_required(login_url='login')
+def deleteProject(request, pk):
+    project = get_object_or_404(Project, id=pk)
+    resume = project.resume
+    if request.method == "POST":
+        project.delete()
+        return redirect('edit-resume', pk=resume.id)
+    return render(request, 'delete_template.html', {'object':project})
+
+# Delete Certification from resume
+@login_required(login_url='login')
+def deleteCertification(request, pk):
+    certification = get_object_or_404(Certification, id=pk)
+    resume = certification.resume
+    if request.method == "POST":
+        certification.delete()
+        return redirect('edit-resume', pk=resume.id)
+    return render(request, 'delete_template.html', {'object':certification})
 
 # Add experience to user resume
 @login_required(login_url='login')
@@ -108,7 +229,7 @@ def addExperience(request, pk):
             'resume': resume
         }
 
-    return render(request, 'resume/add_experience.html', context)
+    return render(request, 'resume/experience_form.html', context)
 
 # Add education to user resume
 @login_required(login_url='login')
@@ -129,7 +250,7 @@ def addEducation(request, pk):
         else:
             print(f"Form errors: {form.errors}")
     
-    return render(request, 'resume/add_education.html', {'education_form':form, 'resume':resume})
+    return render(request, 'resume/education_form.html', {'education_form':form, 'resume':resume})
 
 # Add skill to user resume
 @login_required(login_url='login')
@@ -150,7 +271,7 @@ def addSkill(request, pk):
         else:
             print(f"Form errors: {form.errors}")
     
-    return render(request, 'resume/add_skill.html', {'skill_form':form, 'resume':resume})
+    return render(request, 'resume/skill_form.html', {'skill_form':form, 'resume':resume})
 
 # Add project to user resume
 @login_required(login_url='login')
@@ -171,7 +292,7 @@ def addProject(request, pk):
         else:
             print(f"Form errors: {form.errors}")
     
-    return render(request, 'resume/add_project.html', {'project_form':form, 'resume':resume})
+    return render(request, 'resume/project_form.html', {'project_form':form, 'resume':resume})
 
 # Add certification to user resume
 @login_required(login_url='login')
@@ -192,4 +313,4 @@ def addCertification(request, pk):
         else:
             print(f"Form errors: {form.errors}")
     
-    return render(request, 'resume/add_certification.html', {'certification_form':form, 'resume':resume})
+    return render(request, 'resume/certification_form.html', {'certification_form':form, 'resume':resume})

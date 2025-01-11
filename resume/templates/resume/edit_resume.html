@@ -1,71 +1,87 @@
 {% extends "main.html" %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 
+<!-- Resume Section-->
+<form class="pt-8 lg:px-32 mx-auto px-16 lg:px-32 xl:px-64" method="POST">
+    {% csrf_token %}
+    <div class="text-center my-8">
+        <span class="px-4 text-blue-700 font-medium text-2xl">Edit Resume</span>
+    </div>
+    {{ form.as_p }}
+    <div class="flex justify-center my-4">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Update</button>
+    </div>
+</form>
 
-    <!-- Resume Section-->
-    <form class="pt-8 lg:px-32 xl:px-64 mx-auto" method="POST">
-        {% csrf_token %}
-        <div class="text-center my-8">
-
-            <span class="px-4 text-blue-700 font-medium text-2xl">Edit Resume</span>
-
-        </div>
-        {{ form.as_p }}
-        <div class="flex justify-center my-4">
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Update</button>
-        </div>
-    </form>
-
-    <div class="pt-8 lg:px-32 xl:px-64 mx-auto px-6 text-blue-300">
-        <ul>
-            <!-- Experiences Section-->
-            <div class="section-container">
-                <div class="flex items-center my-8">
-                    <hr class="flex-grow border-t border-blue-300">
-                    <span class="px-4 text-blue-500 font-medium text-2xl">Experiences</span>
-                    <hr class="flex-grow border-t border-blue-300">
-                </div>
-                <div class="container">
-                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-2xl font-bold"> + </button>
-                    <div class="content" style="display:none;">
-                        {% include "resume/add_experience.html" %}
+<div class="pt-8 lg:px-32 xl:px-64 mx-auto px-6 text-blue-300">
+    <div class="text-center">
+        <span class="text-blue-200 italic">Drag items to reorder them</span>
+    </div>
+    <ul>
+        <!-- Experiences Section -->
+        <div class="section-container">
+            <div class="flex items-center my-8">
+                <hr class="flex-grow border-t border-blue-300">
+                <span class="px-4 text-blue-500 font-medium text-2xl">Experiences</span>
+                <hr class="flex-grow border-t border-blue-300">
+            </div>
+            <br>
+            <div class="container mx-auto" id="experiences-list">
+                <div class="mx-auto">
+                    <div class="container text-center">
+                        <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl font-bold"> + </button>
+                        <div class="content" style="display:none;">
+                            {% include "resume/experience_form.html" %}
+                        </div>
                     </div>
                 </div>
-                <br>
+                {% for experience in experiences %}
+                    <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600 grid grid-cols-12 gap-2">
+                        <div class="col-span-8">
+                            <li class="my-4">
+                                <p>Title: {{ experience.job_title }}</p>
+                                <p>Company: {{ experience.company_name }}</p>
+                                <p>Start Date: {{ experience.start_date }}</p>
+                                <p>End Date: {{ experience.end_date }}</p>
+                                <p>Description: {{ experience.description }}</p>
+                                <p>Currently Employed: {{ experience.is_current }}</p>
+                            </li>
+                        </div>
+                        <div class="col-span-2 my-auto mx-auto">
+                            <button onclick="location.href='{% url 'delete-experience' experience.id %}?next={{ request.path }}'" class="bg-green-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Edit</button>
+                        </div>
+                        <div class="col-span-2 my-auto mx-auto">
+                            <button onclick="location.href='{% url 'delete-experience' experience.id %}?next={{ request.path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                        </div>
 
-                <div class="container">
-                    {% for experience in experiences %}
-                    
-                        <li class="my-4">
-                            <p>Title: {{ experience.job_title }}</p>
-                            <p>Company: {{ experience.company_name }}</p>
-                            <p>Start Date: {{ experience.start_date }}</p>
-                            <p>End Date: {{ experience.end_date }}</p>
-                            <p>Description: {{ experience.description }}</p>
-                            <p>Currently Employed: {{ experience.is_current }}</p>
-                            {% comment %} <a href="{% url 'edit_experience' experience.id %}">Edit</a>
-                            <a href="{% url 'delete_experience' experience.id %}">Delete</a> {% endcomment %}
-                        </li>
-                    {% endfor %}
-                </div>
+                    </div>
+                {% endfor %}
             </div>
+        </div>
 
-            <!-- Education Section -->
-            <div class="section-container">
-                <div class="flex items-center my-8">
-                    <hr class="flex-grow border-t border-blue-300">
-                    <span class="px-4 text-blue-500 font-medium text-2xl">Education</span>
-                    <hr class="flex-grow border-t border-blue-300">
-                </div>
-                <div class="container">
-                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-2xl font-bold"> + </button>
-                    <div class="content" style="display:none;">
-                        {% include "resume/add_education.html" %}
+        <!-- Education Section -->
+        <div class="section-container">
+            <div class="flex items-center my-8">
+                <hr class="flex-grow border-t border-blue-300">
+                <span class="px-4 text-blue-500 font-medium text-2xl">Education</span>
+                <hr class="flex-grow border-t border-blue-300">
+            </div>
+            <br>
+            <div class="container mx-auto" id="educations-list">
+                <div class="mx-auto">
+                    <div class="container text-center">
+                        <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl font-bold"> + </button>
+                        <div class="content" style="display:none;">
+                            {% include "resume/education_form.html" %}
+                        </div>
                     </div>
                 </div>
                 {% for education in educations %}
-                
+                <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600">
                     <li class="my-4">
                         <p>{{ education.institution_name }}</p>
                         <p>{{ education.degree }}</p>
@@ -73,108 +89,163 @@
                         <p>{{ education.start_date }}</p>
                         <p>{{ education.end_date }}</p>
                         <p>{{ education.description }}</p>
-                        {% comment %} <a href="{% url 'edit_education' education.id %}">Edit</a>
-                        <a href="{% url 'delete_education' education.id %}">Delete</a> {% endcomment %}
+                        <button onclick="location.href='{% url 'delete-education' education.id %}?next={{ request.path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
                     </li>
+                </div>
                 {% endfor %}
             </div>
+        </div>
 
-            <!-- Skills Section -->
-            <div class="section-container">
-                <div class="flex items-center my-8">
-                    <hr class="flex-grow border-t border-blue-300">
-                    <span class="px-4 text-blue-500 font-medium text-2xl">Skills</span>
-                    <hr class="flex-grow border-t border-blue-300">
-                </div>
-                <div class="container">
-                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-2xl font-bold"> + </button>
-                    <div class="content" style="display:none;">
-                        {% include "resume/add_skill.html" %}
+        <!-- Skills Section -->
+        <div class="section-container">
+            <div class="flex items-center my-8">
+                <hr class="flex-grow border-t border-blue-300">
+                <span class="px-4 text-blue-500 font-medium text-2xl">Skills</span>
+                <hr class="flex-grow border-t border-blue-300">
+            </div>
+            <br>
+            <div class="container mx-auto" id="skills-list">
+                <div class="mx-auto">
+                    <div class="container text-center">
+                        <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl font-bold"> + </button>
+                        <div class="content" style="display:none;">
+                            {% include "resume/skill_form.html" %}
+                        </div>
                     </div>
                 </div>
                 {% for skill in skills %}
-                
-                    <li class="my-4">
-                        <p>{{ skill.name }}</p>
-                        <p>{{ skill.proficiency }}</p>
-                        {% comment %} <a href="{% url 'edit_skill' skill.id %}">Edit</a>
-                        <a href="{% url 'delete_skill' skill.id %}">Delete</a> {% endcomment %}
-                    </li>
+                    <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600">
+                        <li class="my-4">
+                            <p>{{ skill.name }}</p>
+                            <p>{{ skill.proficiency }}</p>
+                            <button onclick="location.href='{% url 'delete-skill' skill.id %}?next={{ request.path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                        </li>
+                    </div>
                 {% endfor %}
             </div>
+        </div>
 
-            <!-- Projects Section -->
-            <div class="section-container">
-                <div class="flex items-center my-8">
-                    <hr class="flex-grow border-t border-blue-300">
-                    <span class="px-4 text-blue-500 font-medium text-2xl">Projects</span>
-                    <hr class="flex-grow border-t border-blue-300">
-                </div>
-                <div class="container">
-                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-2xl font-bold"> + </button>
-                    <div class="content" style="display:none;">
-                        {% include "resume/add_project.html" %}
+        <!-- Projects Section -->
+        <div class="section-container">
+            <div class="flex items-center my-8">
+                <hr class="flex-grow border-t border-blue-300">
+                <span class="px-4 text-blue-500 font-medium text-2xl">Projects</span>
+                <hr class="flex-grow border-t border-blue-300">
+            </div>
+            <br>
+            <div class="container mx-auto" id="projects-list">
+                <div class="mx-auto">
+                    <div class="container text-center">
+                        <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl font-bold"> + </button>
+                        <div class="content" style="display:none;">
+                            {% include "resume/project_form.html" %}
+                        </div>
                     </div>
                 </div>
                 {% for project in projects %}
-                    <li class="my-4">
-                        <p>{{ project.title }}</p>
-                        <p>{{ project.description }}</p>
-                        <p>{{ project.link }}</p>
-                        {% comment %} <a href="{% url 'edit_project' project.id %}">Edit</a>
-                        <a href="{% url 'delete_project' project.id %}">Delete</a> {% endcomment %}
-                    </li>
+                    <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600">
+                        <li class="my-4">
+                            <p>{{ project.title }}</p>
+                            <p>{{ project.description }}</p>
+                            <p>{{ project.link }}</p>
+                            <button onclick="location.href='{% url 'delete-project' project.id %}?next={{ request.path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                        </li>
+                    </div>
                 {% endfor %}
             </div>
+        </div>
 
-            <!-- Certifications Section -->
-            <div class="section-container">
-                <div class="flex items-center my-8">
-                    <hr class="flex-grow border-t border-blue-300">
-                    <span class="px-4 text-blue-500 font-medium text-2xl">Certifications</span>
-                    <hr class="flex-grow border-t border-blue-300">
-                </div>
-                <div class="container">
-                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-2xl font-bold"> + </button>
-                    <div class="content" style="display:none;">
-                        {% include "resume/add_certification.html" %}
+        <!-- Certifications Section -->
+        <div class="section-container">
+            <div class="flex items-center my-8">
+                <hr class="flex-grow border-t border-blue-300">
+                <span class="px-4 text-blue-500 font-medium text-2xl">Certifications</span>
+                <hr class="flex-grow border-t border-blue-300">
+            </div>
+            <br>
+            <div class="container mx-auto" id="certifications-list">
+                <div class="mx-auto">
+                    <div class="container text-center">
+                        <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl font-bold"> + </button>
+                        <div class="content" style="display:none;">
+                            {% include "resume/certification_form.html" %}
+                        </div>
                     </div>
                 </div>
                 {% for certification in certifications %}
-                    <li class="my-4"> 
-                        <p>{{ certification.name }}</p>
-                        <p>{{ certification.issuer }}</p>
-                        <p>{{ certification.issue_date }}</p>
-                        <p>{{ certification.expiration_date }}</p>
-                        <p>{{ certification.credential_id }}</p>
-                        <p>{{ certification.credential_url }}</p>
-                        {% comment %} <a href="{% url 'edit_certification' certification.id %}">Edit</a>
-                        <a href="{% url 'delete_certification' certification.id %}">Delete</a> {% endcomment %}
-                    </li>
+                    <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600">
+                        <li class="my-4"> 
+                            <p>{{ certification.name }}</p>
+                            <p>{{ certification.issuer }}</p>
+                            <p>{{ certification.issue_date }}</p>
+                            <p>{{ certification.expiration_date }}</p>
+                            <p>{{ certification.credential_id }}</p>
+                            <p>{{ certification.credential_url }}</p>
+                            <button onclick="location.href='{% url 'delete-certification' certification.id %}?next={{ request.path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                        </li>
+                    </div>
                 {% endfor %}
             </div>
-        </ul>
-    </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var coll = document.getElementsByClassName("collapsible");
-            for (var i = 0; i < coll.length; i++) {
-                coll[i].addEventListener("click", function() {
-                    this.classList.toggle("active");
-                    var content = this.nextElementSibling;
-                    if (content.style.display === "block") {
-                        content.style.display = "none";
-                        this.innerHTML = this.getAttribute("data-original-text")
-                    } else {
-                        // Save the original text in a data attribute
-                        if (!this.getAttribute("data-original-text")) {
-                            this.setAttribute("data-original-text", this.innerHTML);
-                        }
-                        content.style.display = "block";
-                        this.innerHTML = " − ";
+        </div>
+    </ul>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var coll = document.getElementsByClassName("collapsible");
+        for (var i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                    this.innerHTML = this.getAttribute("data-original-text")
+                } else {
+                    // Save the original text in a data attribute
+                    if (!this.getAttribute("data-original-text")) {
+                        this.setAttribute("data-original-text", this.innerHTML);
+                    }
+                    content.style.display = "block";
+                    this.innerHTML = " − ";
+                }
+            });
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+        flatpickr('input[name="start_date"]', { dateFormat: 'Y-m-d' });
+        flatpickr('input[name="end_date"]', { dateFormat: 'Y-m-d' });
+        flatpickr('input[name="issue_date"]', { dateFormat: 'Y-m-d' });
+        flatpickr('input[name="expiration_date"]', { dateFormat: 'Y-m-d' });
+    });
+    document.addEventListener("DOMContentLoaded", function() {
+        const sortableSections = ['experiences-list', 'educations-list', 'skills-list', 'projects-list', 'certifications-list'];
+
+        sortableSections.forEach(sectionId => {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                Sortable.create(section, {
+                    animation: 150,
+                    onEnd: function(evt) {
+                        const order = [];
+                        section.querySelectorAll('li').forEach((item, index) => {
+                            order.push({
+                                id: item.getAttribute('data-id'),
+                                position: index + 1
+                            });
+                        });
+                        // Send the new order to the server
+                        fetch(`/update-${sectionId}-order/`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            },
+                            body: JSON.stringify({order: order})
+                        });
                     }
                 });
             }
         });
-    </script>
-{% endblock content %}   
+    });
+</script>
+{% endblock content %}

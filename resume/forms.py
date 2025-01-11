@@ -49,12 +49,14 @@ class ExperienceForm(BaseForm):
             'start_date': {
                 'id': 'start_date',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
-                'placeholder': 'Start Date'
+                'placeholder': 'Start Date',
+                'type': 'date'
             },
             'end_date': {
                 'id': 'end_date',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
-                'placeholder': 'End Date'
+                'placeholder': 'End Date',
+                'type': 'date'
             },
             'is_current': {
                 'id': 'is_current',
@@ -94,12 +96,15 @@ class EducationForm(BaseForm):
             'start_date': {
                 'id': 'start_date',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
-                'placeholder': 'Start Date'
+                'placeholder': 'Start Date',
+                'type': 'date'
+
             },
             'end_date': {
                 'id': 'end_date',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
-                'placeholder': 'End Date'
+                'placeholder': 'End Date',
+                'type': 'date'
             },
             'description': {
                 'id': 'description',
@@ -151,7 +156,7 @@ class ProjectForm(BaseForm):
             'link': {
                 'id': 'link',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
-                'placeholder': 'Link'
+                'placeholder': 'https://example.com'
             }
         })
 
@@ -177,12 +182,14 @@ class CertificationForm(BaseForm):
             'issue_date': {
                 'id': 'issue_date',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
-                'placeholder': 'Issue Date'
+                'placeholder': 'Issue Date',
+                'type': 'date'
             },
             'expiration_date': {
                 'id': 'expiration_date',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
-                'placeholder': 'Expiration Date'
+                'placeholder': 'Expiration Date',
+                'type': 'date'
             },
             'credential_id': {
                 'id': 'credential_id',
@@ -192,6 +199,6 @@ class CertificationForm(BaseForm):
             'credential_url': {
                 'id': 'credential_url',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
-                'placeholder': 'Credential URL'
+                'placeholder': 'https://example.com'
             }
         })
