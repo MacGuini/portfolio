@@ -42,7 +42,7 @@
                 {% for experience in experiences %}
                     <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600 grid grid-cols-12 gap-2">
                         <div class="col-span-8">
-                            <li class="my-4">
+                            <li class="my-4" data-id="{{ experience.id }}">
                                 <p>Title: {{ experience.job_title }}</p>
                                 <p>Company: {{ experience.company_name }}</p>
                                 <p>Start Date: {{ experience.start_date }}</p>
@@ -82,7 +82,7 @@
                 </div>
                 {% for education in educations %}
                 <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600">
-                    <li class="my-4">
+                    <li class="my-4" data-id="{{ education.id }}">
                         <p>{{ education.institution_name }}</p>
                         <p>{{ education.degree }}</p>
                         <p>{{ education.field_of_study }}</p>
@@ -115,7 +115,7 @@
                 </div>
                 {% for skill in skills %}
                     <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600">
-                        <li class="my-4">
+                        <li class="my-4" data-id="{{ skill.id }}">
                             <p>{{ skill.name }}</p>
                             <p>{{ skill.proficiency }}</p>
                             <button onclick="location.href='{% url 'delete-skill' skill.id %}?next={{ request.path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
@@ -144,7 +144,7 @@
                 </div>
                 {% for project in projects %}
                     <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600">
-                        <li class="my-4">
+                        <li class="my-4" data-id="{{ project.id }}">
                             <p>{{ project.title }}</p>
                             <p>{{ project.description }}</p>
                             <p>{{ project.link }}</p>
@@ -174,7 +174,7 @@
                 </div>
                 {% for certification in certifications %}
                     <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600">
-                        <li class="my-4"> 
+                        <li class="my-4" data-id="{{ certification.id }}"> 
                             <p>{{ certification.name }}</p>
                             <p>{{ certification.issuer }}</p>
                             <p>{{ certification.issue_date }}</p>
@@ -218,29 +218,41 @@
         flatpickr('input[name="expiration_date"]', { dateFormat: 'Y-m-d' });
     });
     document.addEventListener("DOMContentLoaded", function() {
-        const sortableSections = ['experiences-list', 'educations-list', 'skills-list', 'projects-list', 'certifications-list'];
+        const sortableSections = [
+            {id: 'experiences-list', url: '{% url "update-experience-position" %}'},
+            {id: 'educations-list', url: '{% url "update-education-position" %}'},
+            {id: 'skills-list', url: '{% url "update-skill-position" %}'},
+            {id: 'projects-list', url: '{% url "update-project-position" %}'},
+            {id: 'certifications-list', url: '{% url "update-certification-position" %}'}
+        ];
 
-        sortableSections.forEach(sectionId => {
-            const section = document.getElementById(sectionId);
-            if (section) {
-                Sortable.create(section, {
+        sortableSections.forEach(section => {
+            const sectionElement = document.getElementById(section.id);
+            if (sectionElement) {
+                Sortable.create(sectionElement, {
                     animation: 150,
                     onEnd: function(evt) {
                         const order = [];
-                        section.querySelectorAll('li').forEach((item, index) => {
+                        sectionElement.querySelectorAll('li').forEach((item, index) => {
                             order.push({
                                 id: item.getAttribute('data-id'),
                                 position: index + 1
                             });
                         });
                         // Send the new order to the server
-                        fetch(`/update-${sectionId}-order/`, {
+                        fetch(section.url, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'X-CSRFToken': '{{ csrf_token }}'
                             },
                             body: JSON.stringify({order: order})
+                        }).then(response => {
+                            if (!response.ok) {
+                                console.error('Failed to update order');
+                            }
+                        }).catch(error => {
+                            console.error('Error:', error);
                         });
                     }
                 });

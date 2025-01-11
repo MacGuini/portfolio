@@ -314,3 +314,73 @@ def addCertification(request, pk):
             print(f"Form errors: {form.errors}")
     
     return render(request, 'resume/certification_form.html', {'certification_form':form, 'resume':resume})
+
+# Edit experience
+@login_required(login_url='login')
+def editExperience(request, pk):
+    experience = get_object_or_404(Experience, id=pk)
+    form = ExperienceForm(instance=experience)
+    if request.method == "POST":
+        form = ExperienceForm(request.POST, instance=experience)
+        if form.is_valid():
+            form.save()
+            return redirect('edit-resume', pk=experience.resume.id)
+        else:
+            print(f"Form errors: {form.errors}")
+    return render(request, 'resume/experience_form.html', {'experience_form':form, 'resume':experience.resume})
+
+# Edit education
+@login_required(login_url='login')
+def editEducation(request, pk):
+    education = get_object_or_404(Education, id=pk)
+    form = EducationForm(instance=education)
+    if request.method == "POST":
+        form = EducationForm(request.POST, instance=education)
+        if form.is_valid():
+            form.save()
+            return redirect('edit-resume', pk=education.resume.id)
+        else:
+            print(f"Form errors: {form.errors}")
+    return render(request, 'resume/education_form.html', {'education_form':form, 'resume':education.resume})
+
+# Edit skill
+@login_required(login_url='login')
+def editSkill(request, pk):
+    skill = get_object_or_404(Skill, id=pk)
+    form = SkillForm(instance=skill)
+    if request.method == "POST":
+        form = SkillForm(request.POST, instance=skill)
+        if form.is_valid():
+            form.save()
+            return redirect('edit-resume', pk=skill.resume.id)
+        else:
+            print(f"Form errors: {form.errors}")
+    return render(request, 'resume/skill_form.html', {'skill_form':form, 'resume':skill.resume})
+
+# Edit project
+@login_required(login_url='login')
+def editProject(request, pk):
+    project = get_object_or_404(Project, id=pk)
+    form = ProjectForm(instance=project)
+    if request.method == "POST":
+        form = ProjectForm(request.POST, instance=project)
+        if form.is_valid():
+            form.save()
+            return redirect('edit-resume', pk=project.resume.id)
+        else:
+            print(f"Form errors: {form.errors}")
+    return render(request, 'resume/project_form.html', {'project_form':form, 'resume':project.resume})
+
+# Edit certification
+@login_required(login_url='login')
+def editCertification(request, pk):
+    certification = get_object_or_404(Certification, id=pk)
+    form = CertificationForm(instance=certification)
+    if request.method == "POST":
+        form = CertificationForm(request.POST, instance=certification)
+        if form.is_valid():
+            form.save()
+            return redirect('edit-resume', pk=certification.resume.id)
+        else:
+            print(f"Form errors: {form.errors}")
+    return render(request, 'resume/certification_form.html', {'certification_form':form, 'resume':certification.resume})

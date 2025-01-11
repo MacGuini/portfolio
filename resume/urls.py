@@ -18,4 +18,12 @@ urlpatterns = [
     path('add-certification/<int:pk>/', views.addCertification, name='add-certification'),
     path('update-experience-position/', views.update_experience_order, name='update-experience-position'),
     path('update-education-position/', views.update_education_order, name='update-education-position'),
+    path('update-skill-position/', views.update_skill_order, name='update-skill-position'),
+    path('update-project-position/', views.update_project_order, name='update-project-position'),
+    path('update-certification-position/', views.update_certification_order, name='update-certification-position'),
+    path('edit-experience/<int:pk>/', views.editExperience, name='edit-experience'),
+    path('edit-education/<int:pk>/', views.editEducation, name='edit-education'),
+    path('edit-skill/<int:pk>/', views.editSkill, name='edit-skill'),
+    path('edit-project/<int:pk>/', views.editProject, name='edit-project'),
+    path('edit-certification/<int:pk>/', views.editCertification, name='edit-certification'),
 ]
