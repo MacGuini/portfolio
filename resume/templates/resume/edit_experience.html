@@ -1,0 +1,21 @@
+{% block content %}
+
+<div class="flex items-center my-8 mx-16">
+    <hr class="flex-grow border-t border-blue-100">
+    <span class="px-4 text-blue-500 font-medium text-lg">Edit Experience</span>
+    <hr class="flex-grow border-t border-blue-100">
+</div>
+<form method="POST" class="mx-auto flex flex-col items-center" id="edit-experience-form" action="{% url "edit-experience" experience.id %}">
+    {% csrf_token %}
+    <div class="w-full max-w-md">
+        {{ experience_form.as_p }}
+    </div>
+    <div class="flex justify-center mt-4">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Save
+        </button>
+    </div>
+</form>
+
+
+{% endblock content %}

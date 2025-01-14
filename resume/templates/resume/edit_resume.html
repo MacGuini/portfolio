@@ -34,31 +34,44 @@
                 <div class="mx-auto">
                     <div class="container text-center">
                         <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl font-bold"> + </button>
-                        <div class="content" style="display:none;">
-                            {% include "resume/experience_form.html" %}
+                        <div class="content text-center" style="display:none;">
+                            {% include "resume/add_experience.html" %}
                         </div>
                     </div>
                 </div>
                 {% for experience in experiences %}
-                    <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600 grid grid-cols-12 gap-2">
-                        <div class="col-span-8">
-                            <li class="my-4" data-id="{{ experience.id }}">
-                                <p>Title: {{ experience.job_title }}</p>
-                                <p>Company: {{ experience.company_name }}</p>
-                                <p>Start Date: {{ experience.start_date }}</p>
-                                <p>End Date: {{ experience.end_date }}</p>
-                                <p>Description: {{ experience.description }}</p>
-                                <p>Currently Employed: {{ experience.is_current }}</p>
-                            </li>
-                        </div>
-                        <div class="col-span-2 my-auto mx-auto">
-                            <button onclick="location.href='{% url 'delete-experience' experience.id %}?next={{ request.path }}'" class="bg-green-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Edit</button>
-                        </div>
-                        <div class="col-span-2 my-auto mx-auto">
-                            <button onclick="location.href='{% url 'delete-experience' experience.id %}?next={{ request.path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+
+                    <!-- Experience Section -->
+                    <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600">
+                        <div class="grid grid-cols-12 gap-2">
+                            <div class="col-span-10">
+                                <li class="my-4" data-id="{{ experience.id }}">
+                                    <p>Title: {{ experience.job_title }}</p>
+                                    <p>Company: {{ experience.company_name }}</p>
+                                    <p>Start Date: {{ experience.start_date }}</p>
+                                    <p>End Date: {{ experience.end_date }}</p>
+                                    <p>Description: {{ experience.description }}</p>
+                                    <p>Currently Employed: {{ experience.is_current }}</p>
+                                </li>
+                            </div>
+     
+                            <div class="col-span-2 my-auto mx-auto">
+                                <button onclick="location.href='{% url 'delete-experience' experience.id %}?next={{ request.path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                            </div>
                         </div>
 
+
+                    <div class="mx-auto">
+                        <div class="container text-center">
+                            <button type="button" class="collapsible bg-green-500 hover:bg-green-700 text-white font-bold px-6 py-4 rounded text-lg font-bold col-span-12"> Edit </button>
+                            <div class="content text-center" style="display:none;">
+                                {% include "resume/edit_experience.html" %}
+                            </div>
+                        </div>
                     </div>
+
+                    </div>
+
                 {% endfor %}
             </div>
         </div>
@@ -76,7 +89,7 @@
                     <div class="container text-center">
                         <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl font-bold"> + </button>
                         <div class="content" style="display:none;">
-                            {% include "resume/education_form.html" %}
+                            {% include "resume/add_education.html" %}
                         </div>
                     </div>
                 </div>
@@ -109,7 +122,7 @@
                     <div class="container text-center">
                         <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl font-bold"> + </button>
                         <div class="content" style="display:none;">
-                            {% include "resume/skill_form.html" %}
+                            {% include "resume/add_skill.html" %}
                         </div>
                     </div>
                 </div>
@@ -138,7 +151,7 @@
                     <div class="container text-center">
                         <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl font-bold"> + </button>
                         <div class="content" style="display:none;">
-                            {% include "resume/project_form.html" %}
+                            {% include "resume/add_project.html" %}
                         </div>
                     </div>
                 </div>
@@ -168,7 +181,7 @@
                     <div class="container text-center">
                         <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl font-bold"> + </button>
                         <div class="content" style="display:none;">
-                            {% include "resume/certification_form.html" %}
+                            {% include "resume/add_certification.html" %}
                         </div>
                     </div>
                 </div>
@@ -197,6 +210,7 @@
             coll[i].addEventListener("click", function() {
                 this.classList.toggle("active");
                 var content = this.nextElementSibling;
+
                 if (content.style.display === "block") {
                     content.style.display = "none";
                     this.innerHTML = this.getAttribute("data-original-text")

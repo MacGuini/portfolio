@@ -229,7 +229,7 @@ def addExperience(request, pk):
             'resume': resume
         }
 
-    return render(request, 'resume/experience_form.html', context)
+    return render(request, 'resume/add_experience.html', context)
 
 # Add education to user resume
 @login_required(login_url='login')
@@ -250,7 +250,7 @@ def addEducation(request, pk):
         else:
             print(f"Form errors: {form.errors}")
     
-    return render(request, 'resume/education_form.html', {'education_form':form, 'resume':resume})
+    return render(request, 'resume/add_education.html', {'education_form':form, 'resume':resume})
 
 # Add skill to user resume
 @login_required(login_url='login')
@@ -271,7 +271,7 @@ def addSkill(request, pk):
         else:
             print(f"Form errors: {form.errors}")
     
-    return render(request, 'resume/skill_form.html', {'skill_form':form, 'resume':resume})
+    return render(request, 'resume/add_skill.html', {'skill_form':form, 'resume':resume})
 
 # Add project to user resume
 @login_required(login_url='login')
@@ -292,7 +292,7 @@ def addProject(request, pk):
         else:
             print(f"Form errors: {form.errors}")
     
-    return render(request, 'resume/project_form.html', {'project_form':form, 'resume':resume})
+    return render(request, 'resume/add_project.html', {'project_form':form, 'resume':resume})
 
 # Add certification to user resume
 @login_required(login_url='login')
@@ -313,7 +313,7 @@ def addCertification(request, pk):
         else:
             print(f"Form errors: {form.errors}")
     
-    return render(request, 'resume/certification_form.html', {'certification_form':form, 'resume':resume})
+    return render(request, 'resume/add_certification.html', {'certification_form':form, 'resume':resume})
 
 # Edit experience
 @login_required(login_url='login')
@@ -324,10 +324,10 @@ def editExperience(request, pk):
         form = ExperienceForm(request.POST, instance=experience)
         if form.is_valid():
             form.save()
-            return redirect('edit-resume', pk=experience.resume.id)
+            return redirect(request.GET['next'] if 'next' in request.GET else 'list-resumes')
         else:
             print(f"Form errors: {form.errors}")
-    return render(request, 'resume/experience_form.html', {'experience_form':form, 'resume':experience.resume})
+    return render(request, 'resume/edit_experience.html', {'experience_form':form})
 
 # Edit education
 @login_required(login_url='login')
@@ -341,7 +341,7 @@ def editEducation(request, pk):
             return redirect('edit-resume', pk=education.resume.id)
         else:
             print(f"Form errors: {form.errors}")
-    return render(request, 'resume/education_form.html', {'education_form':form, 'resume':education.resume})
+    return render(request, 'resume/edit_education.html', {'education_form':form, 'resume':education.resume})
 
 # Edit skill
 @login_required(login_url='login')
@@ -355,7 +355,7 @@ def editSkill(request, pk):
             return redirect('edit-resume', pk=skill.resume.id)
         else:
             print(f"Form errors: {form.errors}")
-    return render(request, 'resume/skill_form.html', {'skill_form':form, 'resume':skill.resume})
+    return render(request, 'resume/edit_skill.html', {'skill_form':form, 'resume':skill.resume})
 
 # Edit project
 @login_required(login_url='login')
@@ -369,7 +369,7 @@ def editProject(request, pk):
             return redirect('edit-resume', pk=project.resume.id)
         else:
             print(f"Form errors: {form.errors}")
-    return render(request, 'resume/project_form.html', {'project_form':form, 'resume':project.resume})
+    return render(request, 'resume/edit_project.html', {'project_form':form, 'resume':project.resume})
 
 # Edit certification
 @login_required(login_url='login')
@@ -383,4 +383,4 @@ def editCertification(request, pk):
             return redirect('edit-resume', pk=certification.resume.id)
         else:
             print(f"Form errors: {form.errors}")
-    return render(request, 'resume/certification_form.html', {'certification_form':form, 'resume':certification.resume})
+    return render(request, 'resume/edit_certification.html', {'certification_form':form, 'resume':certification.resume})
