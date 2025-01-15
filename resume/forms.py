@@ -32,42 +32,42 @@ class ExperienceForm(BaseForm):
         model = Experience
         fields = '__all__'
         exclude = ['user', 'resumes']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.update_fields({
-            'job_title': {
+        widgets = {
+            'job_title': forms.TextInput(attrs={
                 'id': 'job_title',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
-                'placeholder': 'Job Title'
-            },
-            'company_name': {
+                'placeholder': 'Job Title',
+                'type': 'text',
+                'name':'job_title'
+            }),
+            'company_name': forms.TextInput(attrs={
                 'id': 'company_name',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
                 'placeholder': 'Company Name'
-            },
-            'start_date': {
+            }),
+            'start_date': forms.DateInput(attrs={
                 'id': 'start_date',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
                 'placeholder': 'Start Date',
                 'type': 'date'
-            },
-            'end_date': {
+            }),
+            'end_date': forms.DateInput(attrs={
                 'id': 'end_date',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
                 'placeholder': 'End Date',
                 'type': 'date'
-            },
-            'is_current': {
+            }),
+            'is_current': forms.CheckboxInput(attrs={
                 'id': 'is_current',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-            },
-            'description': {
+            }),
+            'description': forms.Textarea(attrs={
                 'id': 'description',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500',
                 'placeholder': 'Description'
-            }
-        })
+            }),
+        }
+
 
 class EducationForm(BaseForm):
     class Meta:

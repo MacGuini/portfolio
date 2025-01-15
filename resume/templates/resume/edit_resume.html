@@ -63,9 +63,18 @@
 
                     <div class="mx-auto">
                         <div class="container text-center">
-                            <button type="button" class="collapsible bg-green-500 hover:bg-green-700 text-white font-bold px-6 py-4 rounded text-lg font-bold col-span-12"> Edit </button>
+                        <button type="button" class="collapsible bg-green-500 hover:bg-green-700 text-white font-bold px-6 py-4 rounded text-lg font-bold col-span-12"
+                        data-job-title="{{ experience.job_title|escape }}"
+                        data-company-name="{{ experience.company_name|escape }}"
+                        data-start-date="{{ experience.start_date }}"
+                        data-end-date="{{ experience.end_date }}"
+                        data-description="{{ experience.description|escape }}"
+                        data-is-current="{{ experience.is_current }}">
+                        Edit
+                        </button>
+                    
                             <div class="content text-center" style="display:none;">
-                                {% include "resume/edit_experience.html" %}
+                                {% include "resume/edit_experience.html" with experience_form=experience_form experience=experience %}
                             </div>
                         </div>
                     </div>
@@ -204,40 +213,56 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var coll = document.getElementsByClassName("collapsible");
-        for (var i = 0; i < coll.length; i++) {
-            coll[i].addEventListener("click", function() {
-                this.classList.toggle("active");
-                var content = this.nextElementSibling;
+    document.addEventListener("DOMContentLoaded", function () {
+        // Handle collapsible buttons for opening forms
+        const coll = document.querySelectorAll(".collapsible");
 
+        coll.forEach(button => {
+            button.addEventListener("click", function () {
+                const content = this.nextElementSibling;
+
+                // Toggle visibility
                 if (content.style.display === "block") {
                     content.style.display = "none";
-                    this.innerHTML = this.getAttribute("data-original-text")
+                    return;
                 } else {
-                    // Save the original text in a data attribute
-                    if (!this.getAttribute("data-original-text")) {
-                        this.setAttribute("data-original-text", this.innerHTML);
-                    }
                     content.style.display = "block";
-                    this.innerHTML = " − ";
+                }
+
+                // Pre-fill form for edit buttons
+                const form = content.querySelector("form");
+                if (form) {
+                    const jobTitle = this.getAttribute("data-job-title") || "";
+                    const companyName = this.getAttribute("data-company-name") || "";
+                    const startDate = this.getAttribute("data-start-date") || "";
+                    const endDate = this.getAttribute("data-end-date") || "";
+                    const description = this.getAttribute("data-description") || "";
+                    const isCurrent = this.getAttribute("data-is-current") === "True";
+
+                    // Populate form fields
+                    form.querySelector('input[name="job_title"]').value = jobTitle;
+                    form.querySelector('input[name="company_name"]').value = companyName;
+                    form.querySelector('input[name="start_date"]').value = startDate;
+                    form.querySelector('input[name="end_date"]').value = endDate;
+                    form.querySelector('textarea[name="description"]').value = description;
+                    form.querySelector('input[name="is_current"]').checked = isCurrent;
                 }
             });
-        }
-    });
-    document.addEventListener('DOMContentLoaded', function () {
+        });
+
+        // Initialize flatpickr for date inputs
         flatpickr('input[name="start_date"]', { dateFormat: 'Y-m-d' });
         flatpickr('input[name="end_date"]', { dateFormat: 'Y-m-d' });
         flatpickr('input[name="issue_date"]', { dateFormat: 'Y-m-d' });
         flatpickr('input[name="expiration_date"]', { dateFormat: 'Y-m-d' });
-    });
-    document.addEventListener("DOMContentLoaded", function() {
+
+        // Sortable sections
         const sortableSections = [
-            {id: 'experiences-list', url: '{% url "update-experience-position" %}'},
-            {id: 'educations-list', url: '{% url "update-education-position" %}'},
-            {id: 'skills-list', url: '{% url "update-skill-position" %}'},
-            {id: 'projects-list', url: '{% url "update-project-position" %}'},
-            {id: 'certifications-list', url: '{% url "update-certification-position" %}'}
+            { id: 'experiences-list', url: '{% url "update-experience-position" %}' },
+            { id: 'educations-list', url: '{% url "update-education-position" %}' },
+            { id: 'skills-list', url: '{% url "update-skill-position" %}' },
+            { id: 'projects-list', url: '{% url "update-project-position" %}' },
+            { id: 'certifications-list', url: '{% url "update-certification-position" %}' }
         ];
 
         sortableSections.forEach(section => {
@@ -245,7 +270,7 @@
             if (sectionElement) {
                 Sortable.create(sectionElement, {
                     animation: 150,
-                    onEnd: function(evt) {
+                    onEnd: function (evt) {
                         const order = [];
                         sectionElement.querySelectorAll('li').forEach((item, index) => {
                             order.push({
@@ -253,6 +278,7 @@
                                 position: index + 1
                             });
                         });
+
                         // Send the new order to the server
                         fetch(section.url, {
                             method: 'POST',
@@ -260,7 +286,7 @@
                                 'Content-Type': 'application/json',
                                 'X-CSRFToken': '{{ csrf_token }}'
                             },
-                            body: JSON.stringify({order: order})
+                            body: JSON.stringify({ order: order })
                         }).then(response => {
                             if (!response.ok) {
                                 console.error('Failed to update order');
@@ -274,4 +300,6 @@
         });
     });
 </script>
+
+
 {% endblock content %}

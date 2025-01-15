@@ -318,7 +318,9 @@ def addCertification(request, pk):
 # Edit experience
 @login_required(login_url='login')
 def editExperience(request, pk):
+    print(f"Edit experience: {pk}")
     experience = get_object_or_404(Experience, id=pk)
+    print(f"Experience: {experience}")
     form = ExperienceForm(instance=experience)
     if request.method == "POST":
         form = ExperienceForm(request.POST, instance=experience)
@@ -327,7 +329,7 @@ def editExperience(request, pk):
             return redirect(request.GET['next'] if 'next' in request.GET else 'list-resumes')
         else:
             print(f"Form errors: {form.errors}")
-    return render(request, 'resume/edit_experience.html', {'experience_form':form})
+    return render(request, 'resume/edit_experience.html', {'experience_form': form, 'experience': experience})
 
 # Edit education
 @login_required(login_url='login')
