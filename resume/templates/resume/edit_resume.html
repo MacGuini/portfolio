@@ -1,9 +1,6 @@
 {% extends "main.html" %}
 
 {% block content %}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 
 <!-- Resume Section-->
 <form class="pt-8 lg:px-32 mx-auto px-16 lg:px-32 xl:px-64" method="POST">
@@ -31,14 +28,7 @@
             </div>
             <br>
             <div class="container mx-auto" id="experiences-list">
-                <div class="mx-auto">
-                    <div class="container text-center">
-                        <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl font-bold"> + </button>
-                        <div class="content" style="display:none;">
-                            {% include "resume/experience_form.html" %}
-                        </div>
-                    </div>
-                </div>
+
                 {% for experience in experiences %}
                     <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600 grid grid-cols-12 gap-2">
                         <div class="col-span-8">
@@ -60,6 +50,11 @@
 
                     </div>
                 {% endfor %}
+                <div class="mx-auto">
+                    <div class="text-center">
+                        <a class="bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl font-bold" href="{% url "list-experiences" resume.id %}?next={{ request.path }}">Manage Experiences</a>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -190,74 +185,6 @@
     </ul>
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var coll = document.getElementsByClassName("collapsible");
-        for (var i = 0; i < coll.length; i++) {
-            coll[i].addEventListener("click", function() {
-                this.classList.toggle("active");
-                var content = this.nextElementSibling;
-                if (content.style.display === "block") {
-                    content.style.display = "none";
-                    this.innerHTML = this.getAttribute("data-original-text")
-                } else {
-                    // Save the original text in a data attribute
-                    if (!this.getAttribute("data-original-text")) {
-                        this.setAttribute("data-original-text", this.innerHTML);
-                    }
-                    content.style.display = "block";
-                    this.innerHTML = " − ";
-                }
-            });
-        }
-    });
-    document.addEventListener('DOMContentLoaded', function () {
-        flatpickr('input[name="start_date"]', { dateFormat: 'Y-m-d' });
-        flatpickr('input[name="end_date"]', { dateFormat: 'Y-m-d' });
-        flatpickr('input[name="issue_date"]', { dateFormat: 'Y-m-d' });
-        flatpickr('input[name="expiration_date"]', { dateFormat: 'Y-m-d' });
-    });
-    document.addEventListener("DOMContentLoaded", function() {
-        const sortableSections = [
-            {id: 'experiences-list', url: '{% url "update-experience-position" %}'},
-            {id: 'educations-list', url: '{% url "update-education-position" %}'},
-            {id: 'skills-list', url: '{% url "update-skill-position" %}'},
-            {id: 'projects-list', url: '{% url "update-project-position" %}'},
-            {id: 'certifications-list', url: '{% url "update-certification-position" %}'}
-        ];
+{% include "resume/sortable_script.html" %}
 
-        sortableSections.forEach(section => {
-            const sectionElement = document.getElementById(section.id);
-            if (sectionElement) {
-                Sortable.create(sectionElement, {
-                    animation: 150,
-                    onEnd: function(evt) {
-                        const order = [];
-                        sectionElement.querySelectorAll('li').forEach((item, index) => {
-                            order.push({
-                                id: item.getAttribute('data-id'),
-                                position: index + 1
-                            });
-                        });
-                        // Send the new order to the server
-                        fetch(section.url, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRFToken': '{{ csrf_token }}'
-                            },
-                            body: JSON.stringify({order: order})
-                        }).then(response => {
-                            if (!response.ok) {
-                                console.error('Failed to update order');
-                            }
-                        }).catch(error => {
-                            console.error('Error:', error);
-                        });
-                    }
-                });
-            }
-        });
-    });
-</script>
 {% endblock content %}

@@ -1,0 +1,50 @@
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var coll = document.getElementsByClassName("collapsible");
+        for (var i = 0; i < coll.length; i++) {
+            coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                    this.innerHTML = this.getAttribute("data-original-text")
+                } else {
+                    // Save the original text in a data attribute
+                    if (!this.getAttribute("data-original-text")) {
+                        this.setAttribute("data-original-text", this.innerHTML);
+                    }
+                    content.style.display = "block";
+                    this.innerHTML = " − ";
+                }
+            });
+        }
+
+        // Debugging: Check if flatpickr is loaded
+        if (typeof flatpickr !== 'undefined') {
+            console.log('flatpickr is loaded');
+        } else {
+            console.error('flatpickr is not loaded');
+        }
+
+        // Initialize flatpickr
+        const startDateInputs = document.querySelectorAll('input[name="start_date"]');
+        const endDateInputs = document.querySelectorAll('input[name="end_date"]');
+        const issueDateInputs = document.querySelectorAll('input[name="issue_date"]');
+        const expirationDateInputs = document.querySelectorAll('input[name="expiration_date"]');
+
+        flatpickr(startDateInputs, { dateFormat: 'Y-m-d' });
+        flatpickr(endDateInputs, { dateFormat: 'Y-m-d' });
+        flatpickr(issueDateInputs, { dateFormat: 'Y-m-d' });
+        flatpickr(expirationDateInputs, { dateFormat: 'Y-m-d' });
+
+        // Initialize sortable sections
+        const sortableSections = [
+            {id: 'experiences-list', url: '{% url "update-experience-position" %}'},
+            {id: 'educations-list', url: '{% url "update-education-position" %}'},
+            {id: 'skills-list', url: '{% url "update-skill-position" %}'},
+            {id: 'projects-list', url: '{% url "update-project-position" %}'},
+            {id: 'certifications-list', url: '{% url "update-certification-position" %}'}
+        ];
+
+    });
+</script>

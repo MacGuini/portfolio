@@ -1,0 +1,28 @@
+{% extends "main.html" %}
+
+{% block content %}
+
+
+<div class="container text-center">
+    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl font-bold"> + </button>
+    <div class="content" style="display:none;">
+        <form method="POST" action="{% url 'list-experiences' resume_id %}">
+            {% csrf_token %}
+            {{ experience_form.as_p }}
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add Experience</button>
+        </form>
+    </div>
+</div>
+
+{% for experience in experiences %}
+<div>
+    <p class="text-blue-500 font-medium">{{ experience.job_title }} at {{ experience.company_name }}</p>
+    <p>{{ experience.start_date }} - {{ experience.end_date }}</p>
+    <p>{{ experience.description }}</p>
+</div>
+{% endfor %}
+
+{% include "resume/collapse_script.html" %}
+{% include "resume/sortable_script.html" %}
+
+{% endblock content %}
