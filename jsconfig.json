@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+      "target": "ES6", // Or any version of JavaScript you’re using
+      "module": "commonjs",
+      "allowSyntheticDefaultImports": true,
+      "baseUrl": "./static", // Set this to the directory containing your static files
+      "paths": {
+        "*": ["*"]
+      }
+    },
+    "include": ["static/**/*.js"]
+  }
+  
