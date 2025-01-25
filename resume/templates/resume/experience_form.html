@@ -1,4 +1,3 @@
-<!-- filepath: /home/macguini/Django Projects/portfolio/resume/templates/resume/list_experiences.html -->
 {% extends "main.html" %}
 
 {% block content %}
@@ -21,30 +20,6 @@
 </div>
 {% endfor %}
 
-
-
-
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var coll = document.getElementsByClassName("collapsible");
-        for (var i = 0; i < coll.length; i++) {
-            coll[i].addEventListener("click", function() {
-                this.classList.toggle("active");
-                var content = this.nextElementSibling;
-                if (content.style.display === "block") {
-                    content.style.display = "none";
-                    this.innerHTML = this.getAttribute("data-original-text")
-                } else {
-                    // Save the original text in a data attribute
-                    if (!this.getAttribute("data-original-text")) {
-                        this.setAttribute("data-original-text", this.innerHTML);
-                    }
-                    content.style.display = "block";
-                    this.innerHTML = " − ";
-                }
-            });
-        }
-    });
-</script>
+{% include "resume/collapse_script.html" %}
+{% include "resume/sortable_script.html" %}
 {% endblock content %}
