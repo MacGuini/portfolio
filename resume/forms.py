@@ -27,14 +27,25 @@ class ResumeForm(BaseForm):
             }
         })
 
+from django import forms
+from .models import Experience, Resume
+
 class ExperienceForm(BaseForm):
     class Meta:
         model = Experience
         fields = '__all__'
-        exclude = ['user', 'resumes', 'position']
+        exclude = ['user', 'position']
+
+    # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
+    resumes = forms.ModelMultipleChoiceField(
+        queryset=Resume.objects.all(),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         self.update_fields({
             'job_title': {
                 'id': 'job_title',
@@ -60,8 +71,7 @@ class ExperienceForm(BaseForm):
             },
             'is_current': {
                 'id': 'is_current',
-                'class': 'form-check-input my-2',
-                'label': 'Current Job',
+                'class': 'form-check-input my-2 text-gray-800s ',
                 'type': 'checkbox'
             },
             'description': {
@@ -70,10 +80,15 @@ class ExperienceForm(BaseForm):
                 'placeholder': 'Description'
             }
         })
+
         self.fields['is_current'].widget = forms.CheckboxInput(attrs={
             'id': 'is_current',
             'class': 'form-check-input'
         })
+
+        self.fields['is_current'].label = 'Currently Employed?'
+        self.fields['resumes'].label = 'Resumes to include this experience in:'
+
 
 class EducationForm(BaseForm):
     class Meta:

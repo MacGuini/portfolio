@@ -1,25 +1,18 @@
-{% extends "main.html" %}
-
 {% block content %}
-<div class="container text-center">
-    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl font-bold"> + </button>
-    <div class="content" style="display:none;">
-        <form method="POST" action="{% url 'list-experiences' resume_id %}">
-            {% csrf_token %}
-            {{ experience_form.as_p }}
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add Experience</button>
-        </form>
+<div class="flex items-center my-8 mx-16">
+    <hr class="flex-grow border-t border-blue-100">
+    <span class="px-4 text-blue-500 font-medium text-lg">Add Experience</span>
+    <hr class="flex-grow border-t border-blue-100">
+</div>
+<form method="POST" class="mx-auto flex flex-col items-center" id="add-experience-form" action="{% url 'add-experience' resume.id %}">
+    {% csrf_token %}
+    <div class="w-full max-w-md">
+        {{ experience_form.as_p }}
     </div>
-</div>
-
-{% for experience in experiences %}
-<div>
-    <p class="text-blue-500 font-medium">{{ experience.job_title }} at {{ experience.company_name }}</p>
-    <p>{{ experience.start_date }} - {{ experience.end_date }}</p>
-    <p>{{ experience.description }}</p>
-</div>
-{% endfor %}
-
-{% include "resume/collapse_script.html" %}
-{% include "resume/sortable_script.html" %}
+    <div class="flex justify-center mt-4">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Add Experience
+        </button>
+    </div>
+</form>
 {% endblock content %}

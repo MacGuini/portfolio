@@ -4,7 +4,6 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
 
-from accounts import apps
 from .models import Resume, Experience, Education, Skill, Project, Certification
 
 from .forms import ResumeForm, EducationForm, ExperienceForm, SkillForm, ProjectForm, CertificationForm
@@ -101,8 +100,8 @@ def editExperience(request, pk):
         form = ExperienceForm(request.POST, instance=experience)
         if form.is_valid():
             form.save()
-            return redirect('edit-resume', pk=experience.resume.id)
-    return render(request, 'resume/experience_form.html', {'experience_form': form, 'resume': experience.resume})
+            return redirect('edit-resume', pk=experience.id)
+    return render(request, 'resume/experience_form.html', {'experience_form': form})
 
 @login_required(login_url='login')
 def deleteExperience(request, pk):
@@ -116,7 +115,8 @@ def deleteExperience(request, pk):
 @login_required(login_url='login')
 def listExperiences(request, pk):
     resume = get_object_or_404(Resume, id=pk)
-    experiences = Experience.objects.filter(resumes=resume).order_by('position')
+    user = resume.user
+    experiences = Experience.objects.filter(user=user).order_by('position')
     experience_form = ExperienceForm()
     if request.method == "POST":
         experience_form = ExperienceForm(request.POST)
