@@ -1,3 +1,4 @@
+{% extends "main.html" %}
 {% block content %}
 
 <div class="flex items-center my-8 mx-16">
@@ -5,7 +6,7 @@
     <span class="px-4 text-blue-500 font-medium text-lg">Edit Experience</span>
     <hr class="flex-grow border-t border-blue-100">
 </div>
-<form method="POST" class="mx-auto flex flex-col items-center" id="edit-experience-form" action="{% url 'edit-experience' experience.id %}">
+<form method="POST" class="mx-auto flex flex-col items-center text-slate-300" id="edit-experience-form" action="">
     {% csrf_token %}
     <div class="w-full max-w-md">
         {{ experience_form.as_p }}

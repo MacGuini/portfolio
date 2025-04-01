@@ -60,7 +60,7 @@
                     <div class="mx-auto">
                         <div class="container content text-center">
                         <!-- Pre filled collapsible edit function -->
-                         <!-- Couldn't get this function to work properly. Leaving original code for future progression -->
+                         <!-- Couldn't get this function to work properly. Leaving original markup for future progression -->
                         {% comment %} <button type="button" class="collapsible bg-green-500 hover:bg-green-700 text-white font-bold px-6 py-4 rounded text-lg font-bold col-span-12"
                         data-job-title="{{ experience.job_title|escape }}"
                         data-company-name="{{ experience.company_name|escape }}"
@@ -76,7 +76,7 @@
                             </div> {% endcomment %}
                             <div class="content text-center">
                                 <button onclick="location.href='{% url 'edit-experience' experience.id %}?next={{ request.path }}'" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mx-auto">Edit</button>
-                                <a href="{% url "edit-experience" experience.id %}?next={{ request.path }}"class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mx-auto">Edit</a>
+                                {% comment %} <a href="{% url "edit-experience" experience.id %}?next={{ request.path }}"class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mx-auto">Edit</a> {% endcomment %}
                             </div>
                             
                         </div>

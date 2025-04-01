@@ -101,7 +101,7 @@ def editExperience(request, pk):
         if form.is_valid():
             form.save()
             return redirect('edit-resume', pk=experience.id)
-    return render(request, 'resume/experience_form.html', {'experience_form': form})
+    return render(request, 'resume/edit_experience.html', {'experience_form': form})
 
 @login_required(login_url='login')
 def deleteExperience(request, pk):
