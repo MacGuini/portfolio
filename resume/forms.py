@@ -27,8 +27,6 @@ class ResumeForm(BaseForm):
             }
         })
 
-from django import forms
-from .models import Experience, Resume
 
 class ExperienceForm(BaseForm):
     class Meta:
@@ -94,7 +92,14 @@ class EducationForm(BaseForm):
     class Meta:
         model = Education
         fields = '__all__'
-        exclude = ['user', 'resumes']
+        exclude = ['user']
+
+    # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
+    resumes = forms.ModelMultipleChoiceField(
+        queryset=Resume.objects.all(),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -138,7 +143,14 @@ class SkillForm(BaseForm):
     class Meta:
         model = Skill
         fields = '__all__'
-        exclude = ['user', 'resumes']
+        exclude = ['user']
+
+    # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
+    resumes = forms.ModelMultipleChoiceField(
+        queryset=Resume.objects.all(),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -159,7 +171,14 @@ class ProjectForm(BaseForm):
     class Meta:
         model = Project
         fields = '__all__'
-        exclude = ['user', 'resumes']
+        exclude = ['user']
+
+    # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
+    resumes = forms.ModelMultipleChoiceField(
+        queryset=Resume.objects.all(),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -185,7 +204,14 @@ class CertificationForm(BaseForm):
     class Meta:
         model = Certification
         fields = '__all__'
-        exclude = ['user', 'resumes']
+        exclude = ['user']
+
+    # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
+    resumes = forms.ModelMultipleChoiceField(
+        queryset=Resume.objects.all(),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False
+    )
 
     def __init__(self, *args, **kwargs):
         super(CertificationForm, self).__init__(*args, **kwargs)

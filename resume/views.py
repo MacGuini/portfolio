@@ -90,7 +90,7 @@ def addExperience(request, pk):
             experience.save()
             resume.experiences.add(experience)
             return redirect('edit-resume', pk=resume.id)
-    return render(request, 'resume/experience_form.html', {'experience_form': form, 'resume': resume})
+    return render(request, 'resume/add_experience.html', {'experience_form': form, 'resume': resume})
 
 @login_required(login_url='login')
 def editExperience(request, pk):
@@ -100,7 +100,7 @@ def editExperience(request, pk):
         form = ExperienceForm(request.POST, instance=experience)
         if form.is_valid():
             form.save()
-            return redirect('edit-resume', pk=experience.id)
+            return redirect(request.GET.get('next') or request.POST.get('next') or 'reverse(index)')
     return render(request, 'resume/edit_experience.html', {'experience_form': form})
 
 @login_required(login_url='login')
