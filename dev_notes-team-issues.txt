@@ -7,9 +7,9 @@ All other known and solved issues should be listed here
 
 ====================================================================KNOWN ISSUES====================================================================
 
-Sorting by dragging is no longer working
+Sorting by dragging fore resume objects is no longer working
 Multi Function resumes not working.
-Delete function for objects other than Experiences redirects incorrectly
+Delete function for resume objects other than Experiences redirects incorrectly
 
 
 ====================================================================SOLVED ISSUES====================================================================
