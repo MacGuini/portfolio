@@ -83,4 +83,4 @@ coverage.xml
 
 # Ignore local notes
 dev_notes-local.txt
-dev_notes-local-errors.txt
+dev_notes-local-issues.txt
