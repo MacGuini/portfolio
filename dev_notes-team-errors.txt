@@ -1,0 +1,11 @@
+Create a txt file named "dev_notes-local-errors.txt" for notes to address on issues during local development. This name is listed in .gitignore
+All other known issues and fixes should be listed here.
+
+
+===============================================================KNOWN ISSUES===============================================================
+
+Sorting by dragging is no longer working
+Multi Function resumes not working.
+
+
+===============================================================SOLVED ISSUES===============================================================

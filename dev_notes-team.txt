@@ -1,0 +1,2 @@
+Create a txt fille called "dev_notes-local.txt" for any personal notes you wish to write that won't be pushed to the dev branch. This name is listed in .gitignore
+This file will be used for ideas and notes for future development.
