@@ -157,10 +157,10 @@ def editEducation(request, pk):
 @login_required(login_url='login')
 def deleteEducation(request, pk):
     education = get_object_or_404(Education, id=pk)
-    resume = education.resume
+    next_url = request.GET.get('next', 'edit-resume')
     if request.method == "POST":
         education.delete()
-        return redirect('edit-resume', pk=resume.id)
+        return redirect(next_url)    
     return render(request, 'delete_template.html', {'object': education})
 
 # Skill views
@@ -192,10 +192,10 @@ def editSkill(request, pk):
 @login_required(login_url='login')
 def deleteSkill(request, pk):
     skill = get_object_or_404(Skill, id=pk)
-    resume = skill.resume
+    next_url = request.GET.get('next', 'edit-resume')
     if request.method == "POST":
         skill.delete()
-        return redirect('edit-resume', pk=resume.id)
+        return redirect(next_url)
     return render(request, 'delete_template.html', {'object': skill})
 
 # Project views
@@ -227,10 +227,10 @@ def editProject(request, pk):
 @login_required(login_url='login')
 def deleteProject(request, pk):
     project = get_object_or_404(Project, id=pk)
-    resume = project.resume
+    next_url = request.GET.get('next', 'edit-resume')
     if request.method == "POST":
         project.delete()
-        return redirect('edit-resume', pk=resume.id)
+        return redirect(next_url)
     return render(request, 'delete_template.html', {'object': project})
 
 # Certification views
@@ -262,10 +262,10 @@ def editCertification(request, pk):
 @login_required(login_url='login')
 def deleteCertification(request, pk):
     certification = get_object_or_404(Certification, id=pk)
-    resume = certification.resume
+    next_url = request.GET.get('next', 'edit-resume')
     if request.method == "POST":
         certification.delete()
-        return redirect('edit-resume', pk=resume.id)
+        return redirect(next_url)
     return render(request, 'delete_template.html', {'object': certification})
 
 # Update order views

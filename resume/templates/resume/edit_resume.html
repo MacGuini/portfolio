@@ -101,7 +101,7 @@
                 <p>{{ education.start_date }}</p>
                 <p>{{ education.end_date }}</p>
                 <p>{{ education.description }}</p>
-                <button onclick="location.href='{% url 'delete-education' education.id %}?next={{ request.path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                <button onclick="location.href='{% url 'delete-education' education.id %}?next={{ request.get_full_path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
             </div>
             {% endfor %}
         </div>
