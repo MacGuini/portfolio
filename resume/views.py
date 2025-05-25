@@ -80,17 +80,30 @@ def deleteResume(request, pk):
 # Experience views
 @login_required(login_url='login')
 def addExperience(request, pk):
-    resume = get_object_or_404(Resume, id=pk)
-    form = ExperienceForm()
+    form = ExperienceForm(user=request.user.profile)
+    user = request.user.profile
+
     if request.method == "POST":
-        form = ExperienceForm(request.POST)
+        form = ExperienceForm(request.POST, user=request.user.profile)
+
         if form.is_valid():
             experience = form.save(commit=False)
             experience.user = request.user.profile
             experience.save()
-            resume.experiences.add(experience)
-            return redirect('edit-resume', pk=resume.id)
-    return render(request, 'resume/add_experience.html', {'experience_form': form, 'resume': resume})
+
+            # Add experience to all selected resumes from form
+            selected_resumes = form.cleaned_data.get('resumes')
+            for resume in selected_resumes:
+                resume.experiences.add(experience)
+
+            # Optional: redirect to the first selected resume, or fallback
+            if selected_resumes:
+                return redirect('edit-resume', pk=selected_resumes[0].id)
+            else:
+                return redirect('index')  # fallback
+
+    return render(request, 'resume/add_experience.html', {'experience_form': form}, {'user': user})
+
 
 @login_required(login_url='login')
 def editExperience(request, pk):
@@ -131,7 +144,6 @@ def listExperiences(request, pk):
 # Education views
 @login_required(login_url='login')
 def addEducation(request, pk):
-    resume = get_object_or_404(Resume, id=pk)
     form = EducationForm()
     if request.method == "POST":
         form = EducationForm(request.POST)

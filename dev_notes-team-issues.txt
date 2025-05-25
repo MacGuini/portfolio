@@ -8,9 +8,10 @@ All other known and solved issues should be listed here
 ====================================================================KNOWN ISSUES====================================================================
 
 -Sorting by dragging for resume objects is no longer working
--Multi Function resumes not working. Checking off boxes to save an item to multiple resumes doesn't seem to work all the time. Test between creating and updating
+-Multi Function resumes not working. 
+    Checking the boxes for multiple resumes doesn't work when creating an object. But it does work with updating it.
 
 
 ====================================================================SOLVED ISSUES====================================================================
-(Solution was in the view of the delete functions. the skill would be stored in a variable named resume and redirected to the edit-resume using the objects id instead of the resume id.)
+(Solution was in the view of the delete functions. The skill would be stored in a variable named resume and redirected to the edit-resume using the objects id instead of the resume id.)
 -Delete function for resume objects other than Experiences redirects incorrectly 

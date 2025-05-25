@@ -41,8 +41,18 @@ class ExperienceForm(BaseForm):
         required=False
     )
 
+    
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
+
+        
+        # Ensures that the resumes field is populated with the resumes of the user
+        if user:
+            self.fields['resumes'].queryset = Resume.objects.filter(user=user)
+        else:
+            self.fields['resumes'].queryset = Resume.objects.none()
+
 
         self.update_fields({
             'job_title': {
