@@ -88,7 +88,17 @@ def addExperience(request, pk):
             experience = form.save(commit=False)
             experience.user = request.user.profile
             experience.save()
-            resume.experiences.add(experience)
+
+            # Check if any resumes are selected
+            selected_resumes = request.POST.getlist('resumes')
+            if selected_resumes:
+                for resume_id in selected_resumes:
+                    selected_resume = get_object_or_404(Resume, id=resume_id)
+                    experience.resumes.add(selected_resume)
+            else:
+                # If no resumes are selected, add to the current resume
+                experience.resumes.add(resume)
+
             return redirect('edit-resume', pk=resume.id)
     return render(request, 'resume/add_experience.html', {'experience_form': form, 'resume': resume})
 
@@ -139,7 +149,16 @@ def addEducation(request, pk):
             education = form.save(commit=False)
             education.user = request.user.profile
             education.save()
-            resume.educations.add(education)
+            # Check if any resumes are selected
+            selected_resumes = request.POST.getlist('resumes')
+            if selected_resumes:
+                for resume_id in selected_resumes:
+                    selected_resume = get_object_or_404(Resume, id=resume_id)
+                    education.resumes.add(selected_resume)
+            else:
+                # If no resumes are selected, add to the current resume
+                education.resumes.add(resume)
+
             return redirect('edit-resume', pk=resume.id)
     return render(request, 'resume/education_form.html', {'education_form': form, 'resume': resume})
 
@@ -174,7 +193,15 @@ def addSkill(request, pk):
             skill = form.save(commit=False)
             skill.user = request.user.profile
             skill.save()
-            resume.skills.add(skill)
+            # Check if any resumes are selected
+            selected_resumes = request.POST.getlist('resumes')
+            if selected_resumes:
+                for resume_id in selected_resumes:
+                    selected_resume = get_object_or_404(Resume, id=resume_id)
+                    skill.resumes.add(selected_resume)
+            else:
+                # If no resumes are selected, add to the current resume
+                skill.resumes.add(resume)
             return redirect('edit-resume', pk=resume.id)
     return render(request, 'resume/skill_form.html', {'skill_form': form, 'resume': resume})
 
@@ -209,7 +236,15 @@ def addProject(request, pk):
             project = form.save(commit=False)
             project.user = request.user.profile
             project.save()
-            resume.projects.add(project)
+            # Check if any resumes are selected
+            selected_resumes = request.POST.getlist('resumes')
+            if selected_resumes:
+                for resume_id in selected_resumes:
+                    selected_resume = get_object_or_404(Resume, id=resume_id)
+                    project.resumes.add(selected_resume)
+            else:
+                # If no resumes are selected, add to the current resume
+                project.resumes.add(resume)
             return redirect('edit-resume', pk=resume.id)
     return render(request, 'resume/project_form.html', {'project_form': form, 'resume': resume})
 
@@ -244,7 +279,15 @@ def addCertification(request, pk):
             certification = form.save(commit=False)
             certification.user = request.user.profile
             certification.save()
-            resume.certifications.add(certification)
+            # Check if any resumes are selected
+            selected_resumes = request.POST.getlist('resumes')
+            if selected_resumes:
+                for resume_id in selected_resumes:
+                    selected_resume = get_object_or_404(Resume, id=resume_id)
+                    certification.resumes.add(selected_resume)
+            else:
+                # If no resumes are selected, add to the current resume
+                certification.resumes.add(resume)
             return redirect('edit-resume', pk=resume.id)
     return render(request, 'resume/certification_form.html', {'certification_form': form, 'resume': resume})
 
