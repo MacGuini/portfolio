@@ -29,9 +29,12 @@ def createResume(request):
 
 @login_required(login_url='login')
 def editResume(request, pk):
+
+    current_user = request.user.profile
     resume = get_object_or_404(Resume, id=pk)
     form = ResumeForm(instance=resume)
-    experience_form = ExperienceForm()
+
+    experience_form = ExperienceForm(user=current_user)
     education_form = EducationForm()
     skill_form = SkillForm()
     project_form = ProjectForm()
@@ -80,40 +83,51 @@ def deleteResume(request, pk):
 # Experience views
 @login_required(login_url='login')
 def addExperience(request, pk):
-    form = ExperienceForm(user=request.user.profile)
-    user = request.user.profile
-
+    current_user = request.user.profile
+    # Ensure the resume belongs to the current user
+    resume = get_object_or_404(Resume, id=pk, user=current_user)
+    print(f"Outputting request.user.profile: {request.user.profile}")
+    print(f"Outputting resume.user: {request.user}")
+    print(f"Outputting current_user: {current_user}")
+    # Initialize the form with the user profile to prevent unauthorized access
+    form = ExperienceForm(user=current_user)
     if request.method == "POST":
-        form = ExperienceForm(request.POST, user=request.user.profile)
-
+        
+        form = ExperienceForm(request.POST, user=current_user)
         if form.is_valid():
             experience = form.save(commit=False)
             experience.user = request.user.profile
             experience.save()
 
-            # Add experience to all selected resumes from form
-            selected_resumes = form.cleaned_data.get('resumes')
-            for resume in selected_resumes:
-                resume.experiences.add(experience)
 
-            # Optional: redirect to the first selected resume, or fallback
+            # Check if any resumes are selected
+            resume_ids = request.POST.getlist('resumes')
+            selected_resumes = Resume.objects.filter(id__in=resume_ids, user=current_user)
+
+            # If resumes are selected, add to those resumes
             if selected_resumes:
-                return redirect('edit-resume', pk=selected_resumes[0].id)
+                for selected_resume in selected_resumes:
+                    experience.resumes.add(selected_resume)
             else:
-                return redirect('index')  # fallback
+                # If no resumes are selected, add to the current resume
+                experience.resumes.add(resume)
 
-    return render(request, 'resume/add_experience.html', {'experience_form': form}, {'user': user})
-
+            return redirect('edit-resume', pk=resume.id)
+    return render(request, 'resume/add_experience.html', {'experience_form': form, 'resume': resume})
 
 @login_required(login_url='login')
 def editExperience(request, pk):
-    experience = get_object_or_404(Experience, id=pk)
+    current_user = request.user.profile
+    # Ensure the experience belongs to the current user
+    experience = get_object_or_404(Experience, id=pk, user=current_user)
     form = ExperienceForm(instance=experience)
     if request.method == "POST":
-        form = ExperienceForm(request.POST, instance=experience)
+        form = ExperienceForm(request.POST, instance=experience, user=current_user)
         if form.is_valid():
             form.save()
             return redirect(request.GET.get('next') or request.POST.get('next') or 'reverse(index)')
+    else:
+        form = ExperienceForm(instance=experience, user=current_user)
     return render(request, 'resume/edit_experience.html', {'experience_form': form})
 
 @login_required(login_url='login')
@@ -151,7 +165,16 @@ def addEducation(request, pk):
             education = form.save(commit=False)
             education.user = request.user.profile
             education.save()
-            resume.educations.add(education)
+            # Check if any resumes are selected
+            selected_resumes = request.POST.getlist('resumes')
+            if selected_resumes:
+                for resume_id in selected_resumes:
+                    selected_resume = get_object_or_404(Resume, id=resume_id)
+                    education.resumes.add(selected_resume)
+            else:
+                # If no resumes are selected, add to the current resume
+                education.resumes.add(resume)
+
             return redirect('edit-resume', pk=resume.id)
     return render(request, 'resume/education_form.html', {'education_form': form, 'resume': resume})
 
@@ -186,7 +209,15 @@ def addSkill(request, pk):
             skill = form.save(commit=False)
             skill.user = request.user.profile
             skill.save()
-            resume.skills.add(skill)
+            # Check if any resumes are selected
+            selected_resumes = request.POST.getlist('resumes')
+            if selected_resumes:
+                for resume_id in selected_resumes:
+                    selected_resume = get_object_or_404(Resume, id=resume_id)
+                    skill.resumes.add(selected_resume)
+            else:
+                # If no resumes are selected, add to the current resume
+                skill.resumes.add(resume)
             return redirect('edit-resume', pk=resume.id)
     return render(request, 'resume/skill_form.html', {'skill_form': form, 'resume': resume})
 
@@ -221,7 +252,15 @@ def addProject(request, pk):
             project = form.save(commit=False)
             project.user = request.user.profile
             project.save()
-            resume.projects.add(project)
+            # Check if any resumes are selected
+            selected_resumes = request.POST.getlist('resumes')
+            if selected_resumes:
+                for resume_id in selected_resumes:
+                    selected_resume = get_object_or_404(Resume, id=resume_id)
+                    project.resumes.add(selected_resume)
+            else:
+                # If no resumes are selected, add to the current resume
+                project.resumes.add(resume)
             return redirect('edit-resume', pk=resume.id)
     return render(request, 'resume/project_form.html', {'project_form': form, 'resume': resume})
 
@@ -256,7 +295,15 @@ def addCertification(request, pk):
             certification = form.save(commit=False)
             certification.user = request.user.profile
             certification.save()
-            resume.certifications.add(certification)
+            # Check if any resumes are selected
+            selected_resumes = request.POST.getlist('resumes')
+            if selected_resumes:
+                for resume_id in selected_resumes:
+                    selected_resume = get_object_or_404(Resume, id=resume_id)
+                    certification.resumes.add(selected_resume)
+            else:
+                # If no resumes are selected, add to the current resume
+                certification.resumes.add(resume)
             return redirect('edit-resume', pk=resume.id)
     return render(request, 'resume/certification_form.html', {'certification_form': form, 'resume': resume})
 

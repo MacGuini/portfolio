@@ -36,23 +36,22 @@ class ExperienceForm(BaseForm):
 
     # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
     resumes = forms.ModelMultipleChoiceField(
-        queryset=Resume.objects.all(),
+        queryset=Resume.objects.none(),
         widget=forms.CheckboxSelectMultiple(),
         required=False
     )
-
-    
+    print(f"ExperienceForm resumes: {resumes}")
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
+        user = kwargs.pop('user', None)  # get user passed from the view
         super().__init__(*args, **kwargs)
 
-        
-        # Ensures that the resumes field is populated with the resumes of the user
         if user:
+            # Filter resumes by the user passed to the form
+            print("✅ ExperienceForm got user:", user)
+            print("✅ Available resumes:", Resume.objects.filter(user=user))
             self.fields['resumes'].queryset = Resume.objects.filter(user=user)
         else:
-            self.fields['resumes'].queryset = Resume.objects.none()
-
+            print("❌ No user passed to ExperienceForm")
 
         self.update_fields({
             'job_title': {
