@@ -29,9 +29,12 @@ def createResume(request):
 
 @login_required(login_url='login')
 def editResume(request, pk):
+
+    current_user = request.user.profile
     resume = get_object_or_404(Resume, id=pk)
     form = ResumeForm(instance=resume)
-    experience_form = ExperienceForm()
+
+    experience_form = ExperienceForm(user=current_user)
     education_form = EducationForm()
     skill_form = SkillForm()
     project_form = ProjectForm()
@@ -80,20 +83,30 @@ def deleteResume(request, pk):
 # Experience views
 @login_required(login_url='login')
 def addExperience(request, pk):
-    resume = get_object_or_404(Resume, id=pk)
-    form = ExperienceForm()
+    current_user = request.user.profile
+    # Ensure the resume belongs to the current user
+    resume = get_object_or_404(Resume, id=pk, user=current_user)
+    print(f"Outputting request.user.profile: {request.user.profile}")
+    print(f"Outputting resume.user: {request.user}")
+    print(f"Outputting current_user: {current_user}")
+    # Initialize the form with the user profile to prevent unauthorized access
+    form = ExperienceForm(user=current_user)
     if request.method == "POST":
-        form = ExperienceForm(request.POST)
+        
+        form = ExperienceForm(request.POST, user=current_user)
         if form.is_valid():
             experience = form.save(commit=False)
             experience.user = request.user.profile
             experience.save()
 
+
             # Check if any resumes are selected
-            selected_resumes = request.POST.getlist('resumes')
+            resume_ids = request.POST.getlist('resumes')
+            selected_resumes = Resume.objects.filter(id__in=resume_ids, user=current_user)
+
+            # If resumes are selected, add to those resumes
             if selected_resumes:
-                for resume_id in selected_resumes:
-                    selected_resume = get_object_or_404(Resume, id=resume_id)
+                for selected_resume in selected_resumes:
                     experience.resumes.add(selected_resume)
             else:
                 # If no resumes are selected, add to the current resume
@@ -104,13 +117,17 @@ def addExperience(request, pk):
 
 @login_required(login_url='login')
 def editExperience(request, pk):
-    experience = get_object_or_404(Experience, id=pk)
+    current_user = request.user.profile
+    # Ensure the experience belongs to the current user
+    experience = get_object_or_404(Experience, id=pk, user=current_user)
     form = ExperienceForm(instance=experience)
     if request.method == "POST":
-        form = ExperienceForm(request.POST, instance=experience)
+        form = ExperienceForm(request.POST, instance=experience, user=current_user)
         if form.is_valid():
             form.save()
             return redirect(request.GET.get('next') or request.POST.get('next') or 'reverse(index)')
+    else:
+        form = ExperienceForm(instance=experience, user=current_user)
     return render(request, 'resume/edit_experience.html', {'experience_form': form})
 
 @login_required(login_url='login')
