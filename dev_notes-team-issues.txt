@@ -5,13 +5,19 @@ Create a txt file named "dev_notes-local-issues.txt" for notes to address on iss
 All other known and solved issues should be listed here
 
 
-====================================================================KNOWN ISSUES====================================================================
+KNOWN ISSUES====================================================================
 
 -Sorting by dragging for resume objects is no longer working
+
+
+SOLVED ISSUES===================================================================
+
+-All but the experiences are secured to only allow saving to the currently logged in user. Logic was solved in experiences but was never carried over to other resume objects.
+(Solution: Used Gemini to match the logic with all of the add views and clean up the file as it was getting messy. Tested the add views after. They all work.)
+
+-Delete function for resume objects other than Experiences redirects incorrectly 
+(Solution was in the view of the delete functions. The skill would be stored in a variable named resume and redirected to the edit-resume using the objects id instead of the resume id.)
+
 -Multi Function resumes not working. 
     Checking the boxes for multiple resumes doesn't work when creating an object. But it does work with updating it.
-
-
-====================================================================SOLVED ISSUES====================================================================
-(Solution was in the view of the delete functions. The skill would be stored in a variable named resume and redirected to the edit-resume using the objects id instead of the resume id.)
--Delete function for resume objects other than Experiences redirects incorrectly 
+(Solution user was not being passed correctly through forms)

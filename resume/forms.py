@@ -44,14 +44,13 @@ class ExperienceForm(BaseForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)  # get user passed from the view
         super().__init__(*args, **kwargs)
-
+        # Check if a user is passed to the form
         if user:
             # Filter resumes by the user passed to the form
-            print("✅ ExperienceForm got user:", user)
-            print("✅ Available resumes:", Resume.objects.filter(user=user))
+            print(f"User passed to ExperienceForm: {user}")
             self.fields['resumes'].queryset = Resume.objects.filter(user=user)
         else:
-            print("❌ No user passed to ExperienceForm")
+            self.fields['resumes'].queryset = Resume.objects.none()
 
         self.update_fields({
             'job_title': {
@@ -105,13 +104,24 @@ class EducationForm(BaseForm):
 
     # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
     resumes = forms.ModelMultipleChoiceField(
-        queryset=Resume.objects.all(),
+        queryset=Resume.objects.none(),
         widget=forms.CheckboxSelectMultiple(),
         required=False
     )
-
+    print(f"EducationForm resumes: {resumes}")
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # get user passed from the view
         super().__init__(*args, **kwargs)
+        # Check if a user is passed to the form
+        if user:
+            # Filter resumes by the user passed to the form
+            print(f"User passed to EducationForm: {user}")
+            self.fields['resumes'].queryset = Resume.objects.filter(user=user)
+        else:
+            self.fields['resumes'].queryset = Resume.objects.none()
+            print("No user passed to EducationForm, queryset is empty")
+
+       
         self.update_fields({
             'institution_name': {
                 'id': 'institution_name',
@@ -156,13 +166,22 @@ class SkillForm(BaseForm):
 
     # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
     resumes = forms.ModelMultipleChoiceField(
-        queryset=Resume.objects.all(),
+        queryset=Resume.objects.none(),
         widget=forms.CheckboxSelectMultiple(),
         required=False
     )
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # get user passed from the view
         super().__init__(*args, **kwargs)
+
+        # Check if a user is passed to the form
+        if user:
+            # Filter resumes by the user passed to the form
+            self.fields['resumes'].queryset = Resume.objects.filter(user=user)
+        else:
+            self.fields['resumes'].queryset = Resume.objects.none()
+
         self.update_fields({
             'name': {
                 'id': 'name',
@@ -184,13 +203,21 @@ class ProjectForm(BaseForm):
 
     # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
     resumes = forms.ModelMultipleChoiceField(
-        queryset=Resume.objects.all(),
+        queryset=Resume.objects.none(),
         widget=forms.CheckboxSelectMultiple(),
         required=False
     )
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # get user passed from the view
         super().__init__(*args, **kwargs)
+        # Check if a user is passed to the form
+        if user:
+            # Filter resumes by the user passed to the form
+            self.fields['resumes'].queryset = Resume.objects.filter(user=user)
+        else:
+            self.fields['resumes'].queryset = Resume.objects.none()
+
         self.update_fields({
             'title': {
                 'id': 'title',
@@ -217,13 +244,20 @@ class CertificationForm(BaseForm):
 
     # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
     resumes = forms.ModelMultipleChoiceField(
-        queryset=Resume.objects.all(),
+        queryset=Resume.objects.none(),
         widget=forms.CheckboxSelectMultiple(),
         required=False
     )
 
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # get user passed from the view
         super(CertificationForm, self).__init__(*args, **kwargs)
+        # Check if a user is passed to the form
+        if user:
+            # Filter resumes by the user passed to the form
+            self.fields['resumes'].queryset = Resume.objects.filter(user=user)
+        else:
+            self.fields['resumes'].queryset = Resume.objects.none()
         self.update_fields({
             'name': {
                 'id': 'name',

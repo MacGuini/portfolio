@@ -1,53 +1,64 @@
 import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect # Keep for your AJAX views
 from django.http import JsonResponse
+from django.urls import reverse # For safer redirects
 
 from .models import Resume, Experience, Education, Skill, Project, Certification
+from .forms import (
+    ResumeForm, EducationForm, ExperienceForm, SkillForm, ProjectForm, CertificationForm
+)
 
-from .forms import ResumeForm, EducationForm, ExperienceForm, SkillForm, ProjectForm, CertificationForm
-
-# Resume views
+# === Resume Views ===
 @login_required(login_url='login')
 def listResumes(request):
-    resumes = Resume.objects.filter(user=request.user.profile)
-    return render(request, 'resume/list_resumes.html', {'resumes':resumes})
+    # Fetches and displays resumes belonging to the currently logged-in user's profile.
+    current_user_profile = request.user.profile
+    resumes = Resume.objects.filter(user=current_user_profile)
+    return render(request, 'resume/list_resumes.html', {'resumes': resumes})
 
 @login_required(login_url='login')
 def createResume(request):
-    profile = request.user.profile
-    form = ResumeForm()
+    # Handles the creation of a new resume.
+    current_user_profile = request.user.profile
     if request.method == "POST":
         form = ResumeForm(request.POST)
         if form.is_valid():
             resume = form.save(commit=False)
-            resume.user = profile
-            form.save()
+            resume.user = current_user_profile # Assign ownership to the current user's profile
+            resume.save() # Save the resume instance to get an ID
+            # If ResumeForm had ManyToMany fields, you would call form.save_m2m() here
             return redirect('edit-resume', pk=resume.id)
-    return render(request, 'resume/create_resume.html', {'form':form})
+    else:
+        form = ResumeForm()
+    return render(request, 'resume/create_resume.html', {'form': form})
 
 @login_required(login_url='login')
 def editResume(request, pk):
-
-    current_user = request.user.profile
-    resume = get_object_or_404(Resume, id=pk)
-    form = ResumeForm(instance=resume)
-
-    experience_form = ExperienceForm(user=current_user)
-    education_form = EducationForm()
-    skill_form = SkillForm()
-    project_form = ProjectForm()
-    certification_form = CertificationForm()
+    # Handles editing of an existing resume and serves as a dashboard for its sections.
+    current_user_profile = request.user.profile
+    # Ensure the resume belongs to the current user
+    resume = get_object_or_404(Resume, id=pk, user=current_user_profile)
 
     if request.method == "POST":
+        # This POST request is for updating the main Resume object itself
         form = ResumeForm(request.POST, instance=resume)
         if form.is_valid():
             form.save()
-            return redirect('edit-resume', pk=resume.id)
+            return redirect('edit-resume', pk=resume.id) # Redirect back to the same edit page
     else:
-        form = ResumeForm(instance=resume)
+        form = ResumeForm(instance=resume) # For GET request, pre-fill with resume instance
+
+    # Initialize forms for related sections, passing the user profile for context
+    # This allows these forms to correctly list the user's other resumes if they have such a field.
+    experience_form = ExperienceForm(user=current_user_profile)
+    education_form = EducationForm(user=current_user_profile)
+    skill_form = SkillForm(user=current_user_profile)
+    project_form = ProjectForm(user=current_user_profile)
+    certification_form = CertificationForm(user=current_user_profile)
     
+    # Fetch related items for display
     experiences = resume.experiences.all()
     educations = resume.educations.all()
     skills = resume.skills.all()
@@ -55,9 +66,9 @@ def editResume(request, pk):
     certifications = resume.certifications.all()
     
     context = {
-        'form': form,
+        'form': form, # Form for editing the Resume model
         'resume': resume,
-        'resume_id': pk,
+        'resume_id': pk, # Same as resume.id, for convenience in template
         'experience_form': experience_form,
         'education_form': education_form,
         'skill_form': skill_form,
@@ -69,316 +80,546 @@ def editResume(request, pk):
         'projects': projects,
         'certifications': certifications
     }
-
     return render(request, 'resume/edit_resume.html', context)
 
 @login_required(login_url='login')
 def deleteResume(request, pk):
-    resume = get_object_or_404(Resume, id=pk)
+    # Handles deletion of a resume.
+    current_user_profile = request.user.profile
+    # Ensure the user can only delete their own resumes
+    resume = get_object_or_404(Resume, id=pk, user=current_user_profile)
     if request.method == "POST":
         resume.delete()
-        return redirect('list-resumes')
-    return render(request, 'delete_template.html', {'object':resume})
+        return redirect('list-resumes') # Redirect to the list of resumes
+    return render(request, 'delete_template.html', {'object': resume})
 
-# Experience views
+# === Experience Views ===
 @login_required(login_url='login')
 def addExperience(request, pk):
-    current_user = request.user.profile
-    # Ensure the resume belongs to the current user
-    resume = get_object_or_404(Resume, id=pk, user=current_user)
-    print(f"Outputting request.user.profile: {request.user.profile}")
-    print(f"Outputting resume.user: {request.user}")
-    print(f"Outputting current_user: {current_user}")
-    # Initialize the form with the user profile to prevent unauthorized access
-    form = ExperienceForm(user=current_user)
+    # Adds a new experience, potentially associating it with one or more resumes.
+    # 'pk' is the ID of the primary resume this experience is being added in context of.
+    current_user_profile = request.user.profile
+    # Ensure the context resume belongs to the current user
+    resume_context = get_object_or_404(Resume, id=pk, user=current_user_profile)
+
     if request.method == "POST":
-        
-        form = ExperienceForm(request.POST, user=current_user)
+        form = ExperienceForm(request.POST, user=current_user_profile)
         if form.is_valid():
             experience = form.save(commit=False)
-            experience.user = request.user.profile
-            experience.save()
+            experience.user = current_user_profile # Assign ownership
+            experience.save() # Save the experience object to get an ID
 
+            # Handle association with selected resumes
+            # form.cleaned_data['resumes'] should contain valid Resume instances if form is ModelForm
+            # and resumes field is set up correctly and validated.
+            selected_resume_objects = form.cleaned_data.get('resumes', [])
+            if selected_resume_objects:
+                experience.resumes.set(selected_resume_objects) # Use set() for M2M assignment
+            elif resume_context: # If no resumes selected in form, associate with the context resume
+                experience.resumes.add(resume_context)
+            # If you want to ensure it's always added to resume_context regardless of selection:
+            # experience.resumes.add(resume_context) # Add this line after .set() or .add() if needed
 
-            # Check if any resumes are selected
-            resume_ids = request.POST.getlist('resumes')
-            selected_resumes = Resume.objects.filter(id__in=resume_ids, user=current_user)
-
-            # If resumes are selected, add to those resumes
-            if selected_resumes:
-                for selected_resume in selected_resumes:
-                    experience.resumes.add(selected_resume)
-            else:
-                # If no resumes are selected, add to the current resume
-                experience.resumes.add(resume)
-
-            return redirect('edit-resume', pk=resume.id)
-    return render(request, 'resume/add_experience.html', {'experience_form': form, 'resume': resume})
+            return redirect('edit-resume', pk=resume_context.id)
+    else: # GET request
+        # Initialize the form, passing user profile to populate resume choices
+        form = ExperienceForm(user=current_user_profile)
+        
+    return render(request, 'resume/add_experience.html', {'experience_form': form, 'resume': resume_context})
 
 @login_required(login_url='login')
 def editExperience(request, pk):
-    current_user = request.user.profile
-    # Ensure the experience belongs to the current user
-    experience = get_object_or_404(Experience, id=pk, user=current_user)
-    form = ExperienceForm(instance=experience)
+    # Edits an existing experience. 'pk' is the ID of the Experience object.
+    current_user_profile = request.user.profile
+    # Ensure the experience being edited belongs to the current user
+    experience_instance = get_object_or_404(Experience, id=pk, user=current_user_profile)
+
     if request.method == "POST":
-        form = ExperienceForm(request.POST, instance=experience, user=current_user)
+        # Pass instance for editing and user profile for resume choices
+        form = ExperienceForm(request.POST, instance=experience_instance, user=current_user_profile)
         if form.is_valid():
-            form.save()
-            return redirect(request.GET.get('next') or request.POST.get('next') or 'reverse(index)')
-    else:
-        form = ExperienceForm(instance=experience, user=current_user)
-    return render(request, 'resume/edit_experience.html', {'experience_form': form})
+            form.save() # ModelForm's save() handles M2M if 'resumes' field is part of the form
+            
+            next_url = request.GET.get('next') or request.POST.get('next')
+            if next_url: # TODO: Validate next_url to prevent open redirect vulnerabilities
+                return redirect(next_url)
+            else:
+                # Sensible default redirect if 'next' is not provided
+                primary_resume = experience_instance.resumes.first()
+                if primary_resume:
+                    return redirect('edit-resume', pk=primary_resume.id)
+                return redirect(reverse('list-resumes')) # Fallback to a general page
+    else: # GET request
+        # Pre-fill form with experience data and provide user profile for resume choices
+        form = ExperienceForm(instance=experience_instance, user=current_user_profile)
+        
+    context = {
+        'experience_form': form,
+        'experience': experience_instance
+    }
+    return render(request, 'resume/edit_experience.html', context)
 
 @login_required(login_url='login')
 def deleteExperience(request, pk):
-    experience = get_object_or_404(Experience, id=pk)
-    next_url = request.GET.get('next', 'edit-resume')
+    # Handles deletion of an experience.
+    current_user_profile = request.user.profile
+    # Ensure the user can only delete their own experiences
+    experience = get_object_or_404(Experience, id=pk, user=current_user_profile)
+    
+    # Determine redirect URL (e.g., back to the resume it was part of)
+    # This assumes 'next' is passed, or defaults to a generic resume edit page if not.
+    # You might want a more robust way to determine the redirect, e.g., based on experience.resumes.
+    primary_resume = experience.resumes.first()
+    default_redirect_url = reverse('list-resumes') # Default if no associated resume or next
+    if primary_resume:
+        default_redirect_url = reverse('edit-resume', kwargs={'pk': primary_resume.id})
+        
+    next_url = request.GET.get('next', default_redirect_url)
+
     if request.method == "POST":
         experience.delete()
         return redirect(next_url)
-    return render(request, 'delete_template.html', {'object': experience})
+        
+    return render(request, 'delete_template.html', {'object': experience, 'next_url': next_url})
 
 @login_required(login_url='login')
 def listExperiences(request, pk):
-    resume = get_object_or_404(Resume, id=pk)
-    user = resume.user
-    experiences = Experience.objects.filter(user=user).order_by('position')
-    experience_form = ExperienceForm()
+    # This view seems to list experiences FOR a specific resume and allows adding a new one to IT.
+    current_user_profile = request.user.profile
+    # Ensure the resume context belongs to the current user
+    resume_context = get_object_or_404(Resume, id=pk, user=current_user_profile)
+    
+    # Experiences listed are those owned by the user who owns the resume_context
+    # (which should be current_user_profile due to the check above)
+    # And further filtered to only those associated with this specific resume_context
+    experiences = resume_context.experiences.filter(user=current_user_profile).order_by('position')
+
     if request.method == "POST":
-        experience_form = ExperienceForm(request.POST)
+        # Form for adding a NEW experience directly to this resume_context
+        experience_form = ExperienceForm(request.POST, user=current_user_profile)
         if experience_form.is_valid():
             experience = experience_form.save(commit=False)
-            experience.user = request.user.profile
-            experience.save()
-            experience.resumes.add(resume)
-            return redirect('list-experiences', pk=pk)
-    return render(request, 'resume/list_experiences.html', {'experiences': experiences, 'experience_form': experience_form, 'resume_id': pk})
+            experience.user = current_user_profile # Assign ownership
+            experience.save() # Save to get ID
+            experience.resumes.add(resume_context) # Associate with this specific resume
+            # If 'resumes' was a field in this form, handle other selections too:
+            # selected_resume_objects = experience_form.cleaned_data.get('resumes', [])
+            # for res in selected_resume_objects:
+            #    experience.resumes.add(res) # Ensures all selected are added
 
-# Education views
+            return redirect('list-experiences', pk=pk) # Redirect back to this list
+    else: # GET request
+        experience_form = ExperienceForm(user=current_user_profile)
+        
+    context = {
+        'experiences': experiences,
+        'experience_form': experience_form,
+        'resume': resume_context, # Pass resume for context (e.g., displaying its title)
+        'resume_id': pk # For URLs or other logic in template
+    }
+    return render(request, 'resume/list_experiences.html', context)
+
+# === Education Views ===
+# Applying similar logic as Experience views
+
 @login_required(login_url='login')
 def addEducation(request, pk):
-    form = EducationForm()
+    # Adds a new education item, potentially associating it with one or more resumes.
+    # 'pk' is the ID of the primary resume this education is being added in context of.
+    current_user_profile = request.user.profile
+    resume_context = get_object_or_404(Resume, id=pk, user=current_user_profile)
+
     if request.method == "POST":
-        form = EducationForm(request.POST)
+        form = EducationForm(request.POST, user=current_user_profile)
         if form.is_valid():
             education = form.save(commit=False)
-            education.user = request.user.profile
+            education.user = current_user_profile
             education.save()
-            # Check if any resumes are selected
-            selected_resumes = request.POST.getlist('resumes')
-            if selected_resumes:
-                for resume_id in selected_resumes:
-                    selected_resume = get_object_or_404(Resume, id=resume_id)
-                    education.resumes.add(selected_resume)
-            else:
-                # If no resumes are selected, add to the current resume
-                education.resumes.add(resume)
 
-            return redirect('edit-resume', pk=resume.id)
-    return render(request, 'resume/education_form.html', {'education_form': form, 'resume': resume})
+            selected_resume_objects = form.cleaned_data.get('resumes', [])
+            if selected_resume_objects:
+                education.resumes.set(selected_resume_objects)
+            elif resume_context:
+                education.resumes.add(resume_context)
+            # Optional: education.resumes.add(resume_context) # To always add to current context
+
+            return redirect('edit-resume', pk=resume_context.id)
+    else: # GET request
+        form = EducationForm(user=current_user_profile)
+        
+    return render(request, 'resume/education_form.html', {'education_form': form, 'resume': resume_context})
 
 @login_required(login_url='login')
 def editEducation(request, pk):
-    education = get_object_or_404(Education, id=pk)
-    form = EducationForm(instance=education)
+    # Edits an existing education item. 'pk' is the ID of the Education object.
+    current_user_profile = request.user.profile
+    education_instance = get_object_or_404(Education, id=pk, user=current_user_profile)
+
     if request.method == "POST":
-        form = EducationForm(request.POST, instance=education)
+        form = EducationForm(request.POST, instance=education_instance, user=current_user_profile)
         if form.is_valid():
             form.save()
-            return redirect('edit-resume', pk=education.resume.id)
-    return render(request, 'resume/education_form.html', {'education_form': form, 'resume': education.resume})
+            next_url = request.GET.get('next') or request.POST.get('next')
+            if next_url: # TODO: Validate next_url
+                return redirect(next_url)
+            else:
+                primary_resume = education_instance.resumes.first()
+                if primary_resume:
+                    return redirect('edit-resume', pk=primary_resume.id)
+                return redirect(reverse('list-resumes'))
+    else: # GET request
+        form = EducationForm(instance=education_instance, user=current_user_profile)
+        
+    context = {
+        'education_form': form,
+        'education': education_instance
+    }
+    return render(request, 'resume/education_form.html', context)
 
 @login_required(login_url='login')
 def deleteEducation(request, pk):
-    education = get_object_or_404(Education, id=pk)
-    next_url = request.GET.get('next', 'edit-resume')
+    # Handles deletion of an education item.
+    current_user_profile = request.user.profile
+    education = get_object_or_404(Education, id=pk, user=current_user_profile)
+    
+    primary_resume = education.resumes.first()
+    default_redirect_url = reverse('list-resumes')
+    if primary_resume:
+        default_redirect_url = reverse('edit-resume', kwargs={'pk': primary_resume.id})
+    next_url = request.GET.get('next', default_redirect_url)
+
     if request.method == "POST":
         education.delete()
-        return redirect(next_url)    
-    return render(request, 'delete_template.html', {'object': education})
+        return redirect(next_url)
+        
+    return render(request, 'delete_template.html', {'object': education, 'next_url': next_url})
 
-# Skill views
+# === Skill Views ===
+# Assuming Skill model has 'user' (FK to Profile) and 'resumes' (M2M to Resume)
+# Assuming SkillForm is like ExperienceForm (takes 'user' kwarg, has 'resumes' field)
+
 @login_required(login_url='login')
 def addSkill(request, pk):
-    resume = get_object_or_404(Resume, id=pk)
-    form = SkillForm()
+    # Adds a new skill, potentially associating it with one or more resumes.
+    # 'pk' is the ID of the primary resume this skill is being added in context of.
+    current_user_profile = request.user.profile
+    resume_context = get_object_or_404(Resume, id=pk, user=current_user_profile)
+
     if request.method == "POST":
-        form = SkillForm(request.POST)
+        form = SkillForm(request.POST, user=current_user_profile) # Pass user for resume choices
         if form.is_valid():
             skill = form.save(commit=False)
-            skill.user = request.user.profile
-            skill.save()
-            # Check if any resumes are selected
-            selected_resumes = request.POST.getlist('resumes')
-            if selected_resumes:
-                for resume_id in selected_resumes:
-                    selected_resume = get_object_or_404(Resume, id=resume_id)
-                    skill.resumes.add(selected_resume)
-            else:
-                # If no resumes are selected, add to the current resume
-                skill.resumes.add(resume)
-            return redirect('edit-resume', pk=resume.id)
-    return render(request, 'resume/skill_form.html', {'skill_form': form, 'resume': resume})
+            skill.user = current_user_profile # Assign ownership
+            skill.save() # Save skill to get an ID
+
+            # Handle M2M 'resumes' association from form's cleaned_data
+            selected_resume_objects = form.cleaned_data.get('resumes', [])
+            if selected_resume_objects:
+                skill.resumes.set(selected_resume_objects)
+            elif resume_context: # If no resumes selected in form, associate with the context resume
+                skill.resumes.add(resume_context)
+            # Optional: skill.resumes.add(resume_context) # To always add to current context
+
+            return redirect('edit-resume', pk=resume_context.id)
+    else: # GET request
+        form = SkillForm(user=current_user_profile) # Pass user for resume choices
+        
+    return render(request, 'resume/skill_form.html', {'skill_form': form, 'resume': resume_context})
 
 @login_required(login_url='login')
 def editSkill(request, pk):
-    skill = get_object_or_404(Skill, id=pk)
-    form = SkillForm(instance=skill)
+    # Edits an existing skill. 'pk' is the ID of the Skill object.
+    current_user_profile = request.user.profile
+    skill_instance = get_object_or_404(Skill, id=pk, user=current_user_profile) # Secure fetch
+
     if request.method == "POST":
-        form = SkillForm(request.POST, instance=skill)
+        form = SkillForm(request.POST, instance=skill_instance, user=current_user_profile) # Pass instance and user
         if form.is_valid():
-            form.save()
-            return redirect('edit-resume', pk=skill.resume.id)
-    return render(request, 'resume/skill_form.html', {'skill_form': form, 'resume': skill.resume})
+            form.save() # ModelForm's save handles M2M
+            
+            next_url = request.GET.get('next') or request.POST.get('next')
+            if next_url: # TODO: Validate next_url
+                return redirect(next_url)
+            else:
+                primary_resume = skill_instance.resumes.first()
+                if primary_resume:
+                    return redirect('edit-resume', pk=primary_resume.id)
+                return redirect(reverse('list-resumes')) 
+    else: # GET request
+        form = SkillForm(instance=skill_instance, user=current_user_profile) # Pass instance and user
+        
+    context = {
+        'skill_form': form,
+        'skill': skill_instance
+    }
+    return render(request, 'resume/skill_form.html', context)
 
 @login_required(login_url='login')
 def deleteSkill(request, pk):
-    skill = get_object_or_404(Skill, id=pk)
-    next_url = request.GET.get('next', 'edit-resume')
+    # Handles deletion of a skill.
+    current_user_profile = request.user.profile
+    skill = get_object_or_404(Skill, id=pk, user=current_user_profile) # Secure fetch
+    
+    primary_resume = skill.resumes.first()
+    default_redirect_url = reverse('list-resumes')
+    if primary_resume:
+        default_redirect_url = reverse('edit-resume', kwargs={'pk': primary_resume.id})
+    next_url = request.GET.get('next', default_redirect_url)
+
     if request.method == "POST":
         skill.delete()
         return redirect(next_url)
-    return render(request, 'delete_template.html', {'object': skill})
+        
+    return render(request, 'delete_template.html', {'object': skill, 'next_url': next_url})
 
-# Project views
+# === Project Views ===
+# Assuming Project model has 'user' (FK to Profile) and 'resumes' (M2M to Resume)
+# Assuming ProjectForm is like ExperienceForm
+
 @login_required(login_url='login')
 def addProject(request, pk):
-    resume = get_object_or_404(Resume, id=pk)
-    form = ProjectForm()
+    # Adds a new project, potentially associating it with one or more resumes.
+    # 'pk' is the ID of the primary resume this project is being added in context of.
+    current_user_profile = request.user.profile
+    resume_context = get_object_or_404(Resume, id=pk, user=current_user_profile)
+
     if request.method == "POST":
-        form = ProjectForm(request.POST)
+        form = ProjectForm(request.POST, user=current_user_profile)
         if form.is_valid():
             project = form.save(commit=False)
-            project.user = request.user.profile
+            project.user = current_user_profile
             project.save()
-            # Check if any resumes are selected
-            selected_resumes = request.POST.getlist('resumes')
-            if selected_resumes:
-                for resume_id in selected_resumes:
-                    selected_resume = get_object_or_404(Resume, id=resume_id)
-                    project.resumes.add(selected_resume)
-            else:
-                # If no resumes are selected, add to the current resume
-                project.resumes.add(resume)
-            return redirect('edit-resume', pk=resume.id)
-    return render(request, 'resume/project_form.html', {'project_form': form, 'resume': resume})
+
+            selected_resume_objects = form.cleaned_data.get('resumes', [])
+            if selected_resume_objects:
+                project.resumes.set(selected_resume_objects)
+            elif resume_context:
+                project.resumes.add(resume_context)
+            # Optional: project.resumes.add(resume_context)
+
+            return redirect('edit-resume', pk=resume_context.id)
+    else: # GET request
+        form = ProjectForm(user=current_user_profile)
+        
+    return render(request, 'resume/project_form.html', {'project_form': form, 'resume': resume_context})
 
 @login_required(login_url='login')
 def editProject(request, pk):
-    project = get_object_or_404(Project, id=pk)
-    form = ProjectForm(instance=project)
+    # Edits an existing project. 'pk' is the ID of the Project object.
+    current_user_profile = request.user.profile
+    project_instance = get_object_or_404(Project, id=pk, user=current_user_profile)
+
     if request.method == "POST":
-        form = ProjectForm(request.POST, instance=project)
+        form = ProjectForm(request.POST, instance=project_instance, user=current_user_profile)
         if form.is_valid():
             form.save()
-            return redirect('edit-resume', pk=project.resume.id)
-    return render(request, 'resume/project_form.html', {'project_form': form, 'resume': project.resume})
+            next_url = request.GET.get('next') or request.POST.get('next')
+            if next_url: # TODO: Validate next_url
+                return redirect(next_url)
+            else:
+                primary_resume = project_instance.resumes.first()
+                if primary_resume:
+                    return redirect('edit-resume', pk=primary_resume.id)
+                return redirect(reverse('list-resumes'))
+    else: # GET request
+        form = ProjectForm(instance=project_instance, user=current_user_profile)
+        
+    context = {
+        'project_form': form,
+        'project': project_instance
+    }
+    return render(request, 'resume/project_form.html', context)
 
 @login_required(login_url='login')
 def deleteProject(request, pk):
-    project = get_object_or_404(Project, id=pk)
-    next_url = request.GET.get('next', 'edit-resume')
+    # Handles deletion of a project.
+    current_user_profile = request.user.profile
+    project = get_object_or_404(Project, id=pk, user=current_user_profile)
+    
+    primary_resume = project.resumes.first()
+    default_redirect_url = reverse('list-resumes')
+    if primary_resume:
+        default_redirect_url = reverse('edit-resume', kwargs={'pk': primary_resume.id})
+    next_url = request.GET.get('next', default_redirect_url)
+
     if request.method == "POST":
         project.delete()
         return redirect(next_url)
-    return render(request, 'delete_template.html', {'object': project})
+        
+    return render(request, 'delete_template.html', {'object': project, 'next_url': next_url})
 
-# Certification views
+# === Certification Views ===
+# Assuming Certification model has 'user' (FK to Profile) and 'resumes' (M2M to Resume)
+# Assuming CertificationForm is like ExperienceForm
+
 @login_required(login_url='login')
 def addCertification(request, pk):
-    resume = get_object_or_404(Resume, id=pk)
-    form = CertificationForm()
+    # Adds a new certification, potentially associating it with one or more resumes.
+    # 'pk' is the ID of the primary resume this certification is being added in context of.
+    current_user_profile = request.user.profile
+    resume_context = get_object_or_404(Resume, id=pk, user=current_user_profile)
+
     if request.method == "POST":
-        form = CertificationForm(request.POST)
+        form = CertificationForm(request.POST, user=current_user_profile)
         if form.is_valid():
             certification = form.save(commit=False)
-            certification.user = request.user.profile
+            certification.user = current_user_profile
             certification.save()
-            # Check if any resumes are selected
-            selected_resumes = request.POST.getlist('resumes')
-            if selected_resumes:
-                for resume_id in selected_resumes:
-                    selected_resume = get_object_or_404(Resume, id=resume_id)
-                    certification.resumes.add(selected_resume)
-            else:
-                # If no resumes are selected, add to the current resume
-                certification.resumes.add(resume)
-            return redirect('edit-resume', pk=resume.id)
-    return render(request, 'resume/certification_form.html', {'certification_form': form, 'resume': resume})
+
+            selected_resume_objects = form.cleaned_data.get('resumes', [])
+            if selected_resume_objects:
+                certification.resumes.set(selected_resume_objects)
+            elif resume_context:
+                certification.resumes.add(resume_context)
+            # Optional: certification.resumes.add(resume_context)
+
+            return redirect('edit-resume', pk=resume_context.id)
+    else: # GET request
+        form = CertificationForm(user=current_user_profile)
+        
+    return render(request, 'resume/certification_form.html', {'certification_form': form, 'resume': resume_context})
 
 @login_required(login_url='login')
 def editCertification(request, pk):
-    certification = get_object_or_404(Certification, id=pk)
-    form = CertificationForm(instance=certification)
+    # Edits an existing certification. 'pk' is the ID of the Certification object.
+    current_user_profile = request.user.profile
+    certification_instance = get_object_or_404(Certification, id=pk, user=current_user_profile)
+
     if request.method == "POST":
-        form = CertificationForm(request.POST, instance=certification)
+        form = CertificationForm(request.POST, instance=certification_instance, user=current_user_profile)
         if form.is_valid():
             form.save()
-            return redirect('edit-resume', pk=certification.resume.id)
-    return render(request, 'resume/certification_form.html', {'certification_form': form, 'resume': certification.resume})
+            next_url = request.GET.get('next') or request.POST.get('next')
+            if next_url: # TODO: Validate next_url
+                return redirect(next_url)
+            else:
+                primary_resume = certification_instance.resumes.first()
+                if primary_resume:
+                    return redirect('edit-resume', pk=primary_resume.id)
+                return redirect(reverse('list-resumes'))
+    else: # GET request
+        form = CertificationForm(instance=certification_instance, user=current_user_profile)
+        
+    context = {
+        'certification_form': form,
+        'certification': certification_instance
+    }
+    return render(request, 'resume/certification_form.html', context)
 
 @login_required(login_url='login')
 def deleteCertification(request, pk):
-    certification = get_object_or_404(Certification, id=pk)
-    next_url = request.GET.get('next', 'edit-resume')
+    # Handles deletion of a certification.
+    current_user_profile = request.user.profile
+    certification = get_object_or_404(Certification, id=pk, user=current_user_profile)
+    
+    primary_resume = certification.resumes.first()
+    default_redirect_url = reverse('list-resumes')
+    if primary_resume:
+        default_redirect_url = reverse('edit-resume', kwargs={'pk': primary_resume.id})
+    next_url = request.GET.get('next', default_redirect_url)
+
     if request.method == "POST":
         certification.delete()
         return redirect(next_url)
-    return render(request, 'delete_template.html', {'object': certification})
+        
+    return render(request, 'delete_template.html', {'object': certification, 'next_url': next_url})
 
-# Update order views
+# === Update Order Views ===
+# These views update item positions. They should also ensure users can only reorder their own items.
+# The current implementation Experience.objects.get(id=item['id']) is insecure.
+
 @csrf_protect
+@login_required(login_url='login') # Add login_required
 def update_experience_order(request):
+    # Updates the display order of experiences.
     if request.method == "POST":
-        data = json.loads(request.body)
-        for item in data['order']:
-            experience = Experience.objects.get(id=item['id'])
-            experience.position = item['position']
-            experience.save()
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
+        current_user_profile = request.user.profile # Get current user's profile
+        try:
+            data = json.loads(request.body)
+            for item_data in data['order']: # Renamed 'item' to 'item_data' to avoid conflict
+                # Securely fetch the experience, ensuring it belongs to the current user
+                experience = get_object_or_404(Experience, id=item_data['id'], user=current_user_profile)
+                experience.position = item_data['position']
+                experience.save()
+            return JsonResponse({'status': 'success'})
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+        except Exception as e: # Catch other potential errors
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405) # Method Not Allowed
 
 @csrf_protect
+@login_required(login_url='login')
 def update_education_order(request):
+    # Updates the display order of education items.
     if request.method == "POST":
-        data = json.loads(request.body)
-        for item in data['order']:
-            education = Education.objects.get(id=item['id'])
-            education.position = item['position']
-            education.save()
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
+        current_user_profile = request.user.profile
+        try:
+            data = json.loads(request.body)
+            for item_data in data['order']:
+                education = get_object_or_404(Education, id=item_data['id'], user=current_user_profile)
+                education.position = item_data['position']
+                education.save()
+            return JsonResponse({'status': 'success'})
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
 @csrf_protect
+@login_required(login_url='login')
 def update_skill_order(request):
+    # Updates the display order of skills.
     if request.method == "POST":
-        data = json.loads(request.body)
-        for item in data['order']:
-            skill = Skill.objects.get(id=item['id'])
-            skill.position = item['position']
-            skill.save()
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
+        current_user_profile = request.user.profile
+        try:
+            data = json.loads(request.body)
+            for item_data in data['order']:
+                skill = get_object_or_404(Skill, id=item_data['id'], user=current_user_profile)
+                skill.position = item_data['position']
+                skill.save()
+            return JsonResponse({'status': 'success'})
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
 @csrf_protect
+@login_required(login_url='login')
 def update_project_order(request):
+    # Updates the display order of projects.
     if request.method == "POST":
-        data = json.loads(request.body)
-        for item in data['order']:
-            project = Project.objects.get(id=item['id'])
-            project.position = item['position']
-            project.save()
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
+        current_user_profile = request.user.profile
+        try:
+            data = json.loads(request.body)
+            for item_data in data['order']:
+                project = get_object_or_404(Project, id=item_data['id'], user=current_user_profile)
+                project.position = item_data['position']
+                project.save()
+            return JsonResponse({'status': 'success'})
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
 @csrf_protect
+@login_required(login_url='login')
 def update_certification_order(request):
+    # Updates the display order of certifications.
     if request.method == "POST":
-        data = json.loads(request.body)
-        for item in data['order']:
-            certification = Certification.objects.get(id=item['id'])
-            certification.position = item['position']
-            certification.save()
-        return JsonResponse({'status': 'success'})
-    return JsonResponse({'status': 'error'}, status=400)
+        current_user_profile = request.user.profile
+        try:
+            data = json.loads(request.body)
+            for item_data in data['order']:
+                certification = get_object_or_404(Certification, id=item_data['id'], user=current_user_profile)
+                certification.position = item_data['position']
+                certification.save()
+            return JsonResponse({'status': 'success'})
+        except json.JSONDecodeError:
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
