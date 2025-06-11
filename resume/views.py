@@ -12,11 +12,11 @@ from .forms import (
 
 # === Resume Views ===
 @login_required(login_url='login')
-def listResumes(request):
+def resumeDashboard(request):
     # Fetches and displays resumes belonging to the currently logged-in user's profile.
     current_user_profile = request.user.profile
     resumes = Resume.objects.filter(user=current_user_profile)
-    return render(request, 'resume/list_resumes.html', {'resumes': resumes})
+    return render(request, 'resume/resume_dashboard.html', {'resumes': resumes})
 
 @login_required(login_url='login')
 def createResume(request):
@@ -90,7 +90,7 @@ def deleteResume(request, pk):
     resume = get_object_or_404(Resume, id=pk, user=current_user_profile)
     if request.method == "POST":
         resume.delete()
-        return redirect('list-resumes') # Redirect to the list of resumes
+        return redirect('resume-dashboard') # Redirect to the list of resumes
     return render(request, 'delete_template.html', {'object': resume})
 
 # === Experience Views ===
@@ -148,7 +148,7 @@ def editExperience(request, pk):
                 primary_resume = experience_instance.resumes.first()
                 if primary_resume:
                     return redirect('edit-resume', pk=primary_resume.id)
-                return redirect(reverse('list-resumes')) # Fallback to a general page
+                return redirect(reverse('resume-dashboard')) # Fallback to a general page
     else: # GET request
         # Pre-fill form with experience data and provide user profile for resume choices
         form = ExperienceForm(instance=experience_instance, user=current_user_profile)
@@ -170,7 +170,7 @@ def deleteExperience(request, pk):
     # This assumes 'next' is passed, or defaults to a generic resume edit page if not.
     # You might want a more robust way to determine the redirect, e.g., based on experience.resumes.
     primary_resume = experience.resumes.first()
-    default_redirect_url = reverse('list-resumes') # Default if no associated resume or next
+    default_redirect_url = reverse('resume-dashboard') # Default if no associated resume or next
     if primary_resume:
         default_redirect_url = reverse('edit-resume', kwargs={'pk': primary_resume.id})
         
@@ -266,7 +266,7 @@ def editEducation(request, pk):
                 primary_resume = education_instance.resumes.first()
                 if primary_resume:
                     return redirect('edit-resume', pk=primary_resume.id)
-                return redirect(reverse('list-resumes'))
+                return redirect(reverse('resume-dashboard'))
     else: # GET request
         form = EducationForm(instance=education_instance, user=current_user_profile)
         
@@ -283,7 +283,7 @@ def deleteEducation(request, pk):
     education = get_object_or_404(Education, id=pk, user=current_user_profile)
     
     primary_resume = education.resumes.first()
-    default_redirect_url = reverse('list-resumes')
+    default_redirect_url = reverse('resume-dashboard')
     if primary_resume:
         default_redirect_url = reverse('edit-resume', kwargs={'pk': primary_resume.id})
     next_url = request.GET.get('next', default_redirect_url)
@@ -344,7 +344,7 @@ def editSkill(request, pk):
                 primary_resume = skill_instance.resumes.first()
                 if primary_resume:
                     return redirect('edit-resume', pk=primary_resume.id)
-                return redirect(reverse('list-resumes')) 
+                return redirect(reverse('resume-dashboard')) 
     else: # GET request
         form = SkillForm(instance=skill_instance, user=current_user_profile) # Pass instance and user
         
@@ -361,7 +361,7 @@ def deleteSkill(request, pk):
     skill = get_object_or_404(Skill, id=pk, user=current_user_profile) # Secure fetch
     
     primary_resume = skill.resumes.first()
-    default_redirect_url = reverse('list-resumes')
+    default_redirect_url = reverse('resume-dashboard')
     if primary_resume:
         default_redirect_url = reverse('edit-resume', kwargs={'pk': primary_resume.id})
     next_url = request.GET.get('next', default_redirect_url)
@@ -420,7 +420,7 @@ def editProject(request, pk):
                 primary_resume = project_instance.resumes.first()
                 if primary_resume:
                     return redirect('edit-resume', pk=primary_resume.id)
-                return redirect(reverse('list-resumes'))
+                return redirect(reverse('resume-dashboard'))
     else: # GET request
         form = ProjectForm(instance=project_instance, user=current_user_profile)
         
@@ -437,7 +437,7 @@ def deleteProject(request, pk):
     project = get_object_or_404(Project, id=pk, user=current_user_profile)
     
     primary_resume = project.resumes.first()
-    default_redirect_url = reverse('list-resumes')
+    default_redirect_url = reverse('resume-dashboard')
     if primary_resume:
         default_redirect_url = reverse('edit-resume', kwargs={'pk': primary_resume.id})
     next_url = request.GET.get('next', default_redirect_url)
@@ -496,7 +496,7 @@ def editCertification(request, pk):
                 primary_resume = certification_instance.resumes.first()
                 if primary_resume:
                     return redirect('edit-resume', pk=primary_resume.id)
-                return redirect(reverse('list-resumes'))
+                return redirect(reverse('resume-dashboard'))
     else: # GET request
         form = CertificationForm(instance=certification_instance, user=current_user_profile)
         
@@ -513,7 +513,7 @@ def deleteCertification(request, pk):
     certification = get_object_or_404(Certification, id=pk, user=current_user_profile)
     
     primary_resume = certification.resumes.first()
-    default_redirect_url = reverse('list-resumes')
+    default_redirect_url = reverse('resume-dashboard')
     if primary_resume:
         default_redirect_url = reverse('edit-resume', kwargs={'pk': primary_resume.id})
     next_url = request.GET.get('next', default_redirect_url)

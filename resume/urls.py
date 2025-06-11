@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     # Resume URLs
-    path('list-resumes/', views.listResumes, name='list-resumes'),
+    path('dashboard/', views.resumeDashboard, name='resume-dashboard'),
     path('create-resume/', views.createResume, name='create-resume'),
     path('edit-resume/<int:pk>/', views.editResume, name='edit-resume'),
     path('delete-resume/<int:pk>/', views.deleteResume, name='delete-resume'),
