@@ -50,17 +50,14 @@
                         <p>Description: {{ experience.description }}</p>
                         <p>Currently Employed: {{ experience.is_current }}</p>
                     </div>
-                    <div class="col-span-2 my-auto mx-auto">
+                    <div class="col-span-2 my-auto mx-auto flex flex-col gap-2">
                         <button onclick="location.href='{% url 'delete-experience' experience.id %}?next={{ request.get_full_path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                             Delete
                         </button>
+                        <button onclick="location.href='{% url 'edit-experience' experience.id %}?next={{ request.get_full_path }}'" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2">
+                            Edit
+                        </button>
                     </div>
-                </div>
-
-                <div class="content text-center mt-4">
-                    <button onclick="location.href='{% url 'edit-experience' experience.id %}?next={{ request.get_full_path }}'" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                        Edit
-                    </button>
                 </div>
             </div>
             {% endfor %}
@@ -95,13 +92,24 @@
 
             {% for education in educations %}
             <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600">
-                <p>{{ education.institution_name }}</p>
-                <p>{{ education.degree }}</p>
-                <p>{{ education.field_of_study }}</p>
-                <p>{{ education.start_date }}</p>
-                <p>{{ education.end_date }}</p>
-                <p>{{ education.description }}</p>
-                <button onclick="location.href='{% url 'delete-education' education.id %}?next={{ request.get_full_path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                <div class="grid grid-cols-12 gap-2">
+                    <div class="col-span-10">
+                        <p>Degree: {{ education.degree }}</p>
+                        <p>Institution: {{ education.institution_name }}</p>
+                        <p>Field of Study: {{ education.field_of_study }}</p>
+                        <p>Start Date: {{ education.start_date }}</p>
+                        <p>End Date: {{ education.end_date }}</p>
+                        <p>Description: {{ education.description }}</p>
+                    </div>
+                    <div class="col-span-2 my-auto mx-auto flex flex-col gap-2">
+                        <button onclick="location.href='{% url 'delete-education' education.id %}?next={{ request.get_full_path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                            Delete
+                        </button>
+                        <button onclick="location.href='{% url 'edit-education' education.id %}?next={{ request.get_full_path }}'" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2">
+                            Edit
+                        </button>
+                    </div>
+                </div>
             </div>
             {% endfor %}
         </div>
@@ -129,9 +137,20 @@
 
             {% for skill in skills %}
             <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600">
-                <p>{{ skill.name }}</p>
-                <p>{{ skill.proficiency }}</p>
-                <button onclick="location.href='{% url 'delete-skill' skill.id %}?next={{ request.path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                <div class="grid grid-cols-12 gap-2">
+                    <div class="col-span-10">
+                        <p>{{ skill.name }}</p>
+                        <p>{{ skill.proficiency }}</p>
+                    </div>
+                    <div class="col-span-2 my-auto mx-auto flex flex-col gap-2">
+                        <button onclick="location.href='{% url 'delete-skill' skill.id %}?next={{ request.path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                            Delete
+                        </button>
+                        <button onclick="location.href='{% url 'edit-skill' skill.id %}?next={{ request.get_full_path }}'" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2">
+                            Edit
+                        </button>
+                    </div>
+                </div>
             </div>
             {% endfor %}
         </div>
@@ -159,10 +178,21 @@
 
             {% for project in projects %}
             <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600">
-                <p>{{ project.title }}</p>
-                <p>{{ project.description }}</p>
-                <p>{{ project.link }}</p>
-                <button onclick="location.href='{% url 'delete-project' project.id %}?next={{ request.path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                <div class="grid grid-cols-12 gap-2">
+                    <div class="col-span-10">
+                        <p>{{ project.title }}</p>
+                        <p>{{ project.description }}</p>
+                        <p>{{ project.link }}</p>
+                    </div>
+                    <div class="col-span-2 my-auto mx-auto flex flex-col gap-2">
+                        <button onclick="location.href='{% url 'delete-project' project.id %}?next={{ request.path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                            Delete
+                        </button>
+                        <button onclick="location.href='{% url 'edit-project' project.id %}?next={{ request.get_full_path }}'" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2">
+                            Edit
+                        </button>
+                    </div>
+                </div>
             </div>
             {% endfor %}
         </div>
@@ -190,13 +220,24 @@
 
             {% for certification in certifications %}
             <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600">
-                <p>{{ certification.name }}</p>
-                <p>{{ certification.issuer }}</p>
-                <p>{{ certification.issue_date }}</p>
-                <p>{{ certification.expiration_date }}</p>
-                <p>{{ certification.credential_id }}</p>
-                <p>{{ certification.credential_url }}</p>
-                <button onclick="location.href='{% url 'delete-certification' certification.id %}?next={{ request.path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Delete</button>
+                <div class="grid grid-cols-12 gap-2">
+                    <div class="col-span-10">
+                        <p>{{ certification.name }}</p>
+                        <p>{{ certification.issuer }}</p>
+                        <p>{{ certification.issue_date }}</p>
+                        <p>{{ certification.expiration_date }}</p>
+                        <p>{{ certification.credential_id }}</p>
+                        <p>{{ certification.credential_url }}</p>
+                    </div>
+                    <div class="col-span-2 my-auto mx-auto flex flex-col gap-2">
+                        <button onclick="location.href='{% url 'delete-certification' certification.id %}?next={{ request.path }}'" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                            Delete
+                        </button>
+                        <button onclick="location.href='{% url 'edit-certification' certification.id %}?next={{ request.get_full_path }}'" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2">
+                            Edit
+                        </button>
+                    </div>
+                </div>
             </div>
             {% endfor %}
         </div>

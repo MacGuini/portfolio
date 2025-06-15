@@ -144,8 +144,9 @@ def editExperience(request, pk):
             if next_url: # TODO: Validate next_url to prevent open redirect vulnerabilities
                 return redirect(next_url)
             else:
-                # Sensible default redirect if 'next' is not provided
+                # default redirect if 'next' is not provided
                 primary_resume = experience_instance.resumes.first()
+
                 if primary_resume:
                     return redirect('edit-resume', pk=primary_resume.id)
                 return redirect(reverse('resume-dashboard')) # Fallback to a general page
@@ -253,12 +254,15 @@ def addEducation(request, pk):
 def editEducation(request, pk):
     # Edits an existing education item. 'pk' is the ID of the Education object.
     current_user_profile = request.user.profile
+    # Ensure the education being edited belongs to the current user
     education_instance = get_object_or_404(Education, id=pk, user=current_user_profile)
 
     if request.method == "POST":
+        # Pass instance for editing and user profile for resume choices
         form = EducationForm(request.POST, instance=education_instance, user=current_user_profile)
+
         if form.is_valid():
-            form.save()
+            form.save() # ModelForm's save() handles M2M if 'resumes' field is part of the form
             next_url = request.GET.get('next') or request.POST.get('next')
             if next_url: # TODO: Validate next_url
                 return redirect(next_url)
@@ -274,7 +278,7 @@ def editEducation(request, pk):
         'education_form': form,
         'education': education_instance
     }
-    return render(request, 'resume/education_form.html', context)
+    return render(request, 'resume/edit_education.html', context)
 
 @login_required(login_url='login')
 def deleteEducation(request, pk):
@@ -352,7 +356,7 @@ def editSkill(request, pk):
         'skill_form': form,
         'skill': skill_instance
     }
-    return render(request, 'resume/skill_form.html', context)
+    return render(request, 'resume/edit_skill.html', context)
 
 @login_required(login_url='login')
 def deleteSkill(request, pk):
@@ -428,7 +432,7 @@ def editProject(request, pk):
         'project_form': form,
         'project': project_instance
     }
-    return render(request, 'resume/project_form.html', context)
+    return render(request, 'resume/edit_project.html', context)
 
 @login_required(login_url='login')
 def deleteProject(request, pk):
@@ -504,7 +508,7 @@ def editCertification(request, pk):
         'certification_form': form,
         'certification': certification_instance
     }
-    return render(request, 'resume/certification_form.html', context)
+    return render(request, 'resume/edit_certification.html', context)
 
 @login_required(login_url='login')
 def deleteCertification(request, pk):

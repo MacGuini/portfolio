@@ -100,7 +100,7 @@ class EducationForm(BaseForm):
     class Meta:
         model = Education
         fields = '__all__'
-        exclude = ['user']
+        exclude = ['user', 'position']
 
     # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
     resumes = forms.ModelMultipleChoiceField(
@@ -162,7 +162,7 @@ class SkillForm(BaseForm):
     class Meta:
         model = Skill
         fields = '__all__'
-        exclude = ['user']
+        exclude = ['user', 'position']
 
     # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
     resumes = forms.ModelMultipleChoiceField(
@@ -199,7 +199,7 @@ class ProjectForm(BaseForm):
     class Meta:
         model = Project
         fields = '__all__'
-        exclude = ['user']
+        exclude = ['user', 'position']
 
     # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
     resumes = forms.ModelMultipleChoiceField(
@@ -240,7 +240,7 @@ class CertificationForm(BaseForm):
     class Meta:
         model = Certification
         fields = '__all__'
-        exclude = ['user']
+        exclude = ['user', 'position']
 
     # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
     resumes = forms.ModelMultipleChoiceField(
