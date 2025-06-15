@@ -16,7 +16,23 @@ def resumeDashboard(request):
     # Fetches and displays resumes belonging to the currently logged-in user's profile.
     current_user_profile = request.user.profile
     resumes = Resume.objects.filter(user=current_user_profile)
-    return render(request, 'resume/resume_dashboard.html', {'resumes': resumes})
+    creatorProfile = request.user.profile
+    experiences = Experience.objects.filter(user=current_user_profile)
+    educations = Education.objects.filter(user=current_user_profile)
+    skills = Skill.objects.filter(user=current_user_profile)
+    projects = Project.objects.filter(user=current_user_profile)
+    certifications = Certification.objects.filter(user=current_user_profile)
+
+    context = {
+        'resumes': resumes,
+        'creatorProfile': creatorProfile,
+        'experiences': experiences,
+        'educations': educations,
+        'skills': skills,
+        'projects': projects,
+        'certifications': certifications
+    }
+    return render(request, 'resume/resume_dashboard.html', context)
 
 @login_required(login_url='login')
 def createResume(request):

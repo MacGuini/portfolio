@@ -21,7 +21,7 @@
     {% if posts %}
     
     {% for post in posts %}
-        <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600">
+        <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl">
             <div class="my-2 p-2">
                 <a class="text-blue-300" href="{% url "view-post" post.id %}">{{post.username}}</a>
             </div>

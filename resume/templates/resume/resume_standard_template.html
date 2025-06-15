@@ -1,0 +1,105 @@
+
+    <div class="container max-w-2xl mx-auto my-8 p-6 bg-gradient-to-b from-slate-800 to-slate-700 rounded-xl shadow-lg">
+        <div class="mb-4">
+            <h3 class="text-lg font-bold text-blue-500">Resume Information</h3>
+            <p class="mt-1 text-sm text-slate-300">Personal details, experience, education, skills, etc will be available to view.</p>
+        </div>
+        <div class="border-t border-blue-100 pt-4">
+            <dl class="divide-y divide-blue-100">
+                <div class="py-4 grid grid-cols-3 gap-4">
+                    <dt class="text-sm font-medium text-slate-200">Full name</dt>
+                    <!--
+                    Checking if creatorProfile exists and has fname, lname, and mname attributes
+                    -->
+                    <dd class="col-span-2 text-sm text-slate-300">
+                        {% if creatorProfile.fname and creatorProfile.lname %}
+                            {{ creatorProfile.fname }} 
+                                {% if creatorProfile.mname %}
+                                 {{ creatorProfile.mname }}
+                                {% endif %}
+                            {{ creatorProfile.lname }}
+                        {% else %}
+                            No first or last name provided
+                        {% endif %}</dd>
+                </div>
+                
+
+                    <div class="py-4 grid grid-cols-3 gap-4">
+                        <dt class="text-sm font-medium text-slate-200">Location:</dt>
+                        <dd class="col-span-2 text-sm text-slate-300">
+                            <!--Checking if creatorProfile has city or state added-->
+                            {% if creatorProfile.city and creatorProfile.state %}
+                                {{ creatorProfile.city }}, {{ creatorProfile.state }}
+                            {% elif creatorProfile.city and not creatorProfile.state %}
+                                {{ creatorProfile.city }}
+                            {% elif not creatorProfile.city and creatorProfile.state %}
+                                {{ creatorProfile.state }}
+                            {% endif %}
+                            <!-- If neither city nor state is specified, show "Not specified" -->   
+                            {% if not creatorProfile.city and not creatorProfile.state %}
+                                Not specified
+                            {% endif %}
+                        </dd>
+                    </div>
+
+                <div class="py-4 grid grid-cols-3 gap-4">
+                    <dt class="text-sm font-medium text-slate-200">Email address</dt>
+                    <dd class="col-span-2 text-sm text-slate-300">
+                        {% if creatorProfile.email %}
+                            {{ creatorProfile.email }}
+                        {% else %}
+                            No Email Address Provided
+                        {% endif %}
+                    </dd>
+                    {% if creatorProfile.home %}
+                        <dt class="text-sm font-medium text-slate-200">Home</dt>
+                        <dd class="col-span-2 text-sm text-slate-300">
+                            
+                            {{ creatorProfile.home }}
+        
+                        </dd>
+                    {% endif %}
+                </div>
+                <div class="py-4 grid grid-cols-3 gap-4">
+                    <dt class="text-sm font-medium text-slate-200">Salary expectation</dt>
+                    <dd class="col-span-2 text-sm text-slate-300">$120,000</dd>
+                </div>
+                <div class="py-4 grid grid-cols-3 gap-4">
+                    <dt class="text-sm font-medium text-slate-200">About</dt>
+                    <dd class="col-span-2 text-sm text-slate-300">
+                        Fugiat ipsum ipsum deserunt culpa aute sint do nostrud anim incididunt cillum culpa consequat. Excepteur qui ipsum aliquip consequat sint. Sit id mollit nulla mollit nostrud in ea officia proident. Irure nostrud pariatur mollit ad adipisicing reprehenderit deserunt qui eu.
+                    </dd>
+                </div>
+                <div class="py-4 grid grid-cols-3 gap-4">
+                    <dt class="text-sm font-medium text-slate-200">Attachments</dt>
+                    <dd class="col-span-2">
+                        <ul class="divide-y divide-blue-100 rounded-md border border-blue-200/20 bg-slate-700">
+                            <li class="flex items-center justify-between py-3 px-4">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M15.621 4.379a3 3 0 0 0-4.242 0l-7 7a3 3 0 0 0 4.241 4.243h.001l.497-.5a.75.75 0 0 1 1.064 1.057l-.498.501-.002.002a4.5 4.5 0 0 1-6.364-6.364l7-7a4.5 4.5 0 0 1 6.368 6.36l-3.455 3.553A2.625 2.625 0 1 1 9.52 9.52l3.45-3.451a.75.75 0 1 1 1.061 1.06l-3.45 3.451a1.125 1.125 0 0 0 1.587 1.595l3.454-3.553a3 3 0 0 0 0-4.242Z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="ml-3 font-medium text-slate-200">resume_back_end_developer.pdf</span>
+                                    <span class="ml-2 text-slate-400 text-xs">2.4mb</span>
+                                </div>
+                                <a href="#" class="font-medium text-blue-400 hover:text-blue-300">Download</a>
+                            </li>
+                            <li class="flex items-center justify-between py-3 px-4">
+                                <div class="flex items-center">
+                                    <svg class="w-5 h-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M15.621 4.379a3 3 0 0 0-4.242 0l-7 7a3 3 0 0 0 4.241 4.243h.001l.497-.5a.75.75 0 0 1 1.064 1.057l-.498.501-.002.002a4.5 4.5 0 0 1-6.364-6.364l7-7a4.5 4.5 0 0 1 6.368 6.36l-3.455 3.553A2.625 2.625 0 1 1 9.52 9.52l3.45-3.451a.75.75 0 1 1 1.061 1.06l-3.45 3.451a1.125 1.125 0 0 0 1.587 1.595l3.454-3.553a3 3 0 0 0 0-4.242Z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span class="ml-3 font-medium text-slate-200">coverletter_back_end_developer.pdf</span>
+                                    <span class="ml-2 text-slate-400 text-xs">4.5mb</span>
+                                </div>
+                                <a href="#" class="font-medium text-blue-400 hover:text-blue-300">Download</a>
+                            </li>
+                        </ul>
+                    </dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+
+
+

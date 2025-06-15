@@ -1,25 +1,125 @@
 {% extends 'main.html' %}
 
 {% block content %}
-    <div class="container text-center flex justify-around mx-auto md:px-16">
+ 
+
+<div class="py-24 sm:py-32">
+  <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
+    <h2 class="text-base/7 font-semibold text-indigo-400">Digital Resume</h2>
+    <p class="mt-2 max-w-lg text-4xl font-semibold tracking-tight text-pretty text-white sm:text-5xl">{{creatorProfile.fname }} {% if creatorProfile.mname %}{{ creatorProfile.mname }} {% endif %}{{ creatorProfile.lname  }}</p>
+    <div class="mt-10 grid grid-cols-1 gap-4 sm:mt-16 lg:grid-cols-12 lg:grid-rows-2">
+      <!-- This section displays the creator's profile information -->
+      <div class="flex p-px lg:col-span-3">   
+        <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
+          <div class="p-10">
+            <h3 class="text-sm/4 font-semibold text-gray-400">Contact</h3>
+            <dl class="divide-y divide-blue-100">
+
+                    <div class="py-4 grid grid-cols-3 gap-4">
+                        <dt class="text-sm font-medium text-slate-200">Location:</dt>
+                        <dd class="col-span-2 text-sm text-slate-300">
+                            <!--Checking if creatorProfile has city or state added-->
+                            {% if creatorProfile.city and creatorProfile.state %}
+                                {{ creatorProfile.city }}, {{ creatorProfile.state }}
+                            {% elif creatorProfile.city and not creatorProfile.state %}
+                                {{ creatorProfile.city }}
+                            {% elif not creatorProfile.city and creatorProfile.state %}
+                                {{ creatorProfile.state }}
+                            {% endif %}
+                            <!-- If neither city nor state is specified, show "Not specified" -->   
+                            {% if not creatorProfile.city and not creatorProfile.state %}
+                                Not specified
+                            {% endif %}
+                        </dd>
+                    </div>
+
+                <div class="py-4 grid grid-cols-3 gap-4">
+                    <dt class="text-sm font-medium text-slate-200">Email address</dt>
+                    <dd class="col-span-2 text-sm text-slate-300">
+                        {% if creatorProfile.email %}
+                            {{ creatorProfile.email }}
+                        {% else %}
+                            No Email Address Provided
+                        {% endif %}
+                    </dd>
+                </div>
+                {% if creatorProfile.home %}
+                    <div class="py-4 grid grid-cols-3 gap-4">
+                        <dt class="text-sm font-medium text-slate-200">Home Phone</dt>
+                        <dd class="col-span-2 text-sm text-slate-300">
+                            
+                                {{ creatorProfile.home }}
+                            
+                        </dd>
+                    </div>
+                {% endif %}
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="flex p-px lg:col-span-9">
+        <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
+          <div class="p-10">
+            <h3 class="text-sm/4 font-semibold text-gray-400">Experiences</h3>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="flex p-px lg:col-span-6">
+        <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
+          
+          <div class="p-10">
+            <h3 class="text-sm/4 font-semibold text-gray-400">Education</h3>
+           
+          </div>
+
+        </div>
+      </div>
+            <div class="flex p-px lg:col-span-6">
+        <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
+          <div class="p-10">
+            <h3 class="text-sm/4 font-semibold text-gray-400">Skills</h3>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+   <div class="container text-center flex justify-around mx-auto md:px-16">
         
-        <div>
-            <br>
-            <h1 class="text-2xl font-bold text-blue-500">Resumes</h1>
-            <br>
+
             <a class="md:inline-block md:align-middle p-3 mx-auto rounded bg-green-800 text-slate-200 hover:bg-green-500 hover:text-slate-800" href="{% url 'create-resume' %}">Create New Resume</a>
         </div>
     </div>
 
-    <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl border-t-4 border-s-8 border-rounded-xl border-cyan-600">
-        <ul>
-            {% for resume in resumes %}
-                <li class="my-2 p-2">
-                    <a class="text-blue-300" href="{% url "edit-resume" resume.id %}">{{ resume.title }}</a>
-                    <a class="md:inline-block md:align-middle p-2 mx-2 rounded bg-blue-800 text-slate-200 hover:bg-blue-500 hover:text-slate-800" href="{% url 'edit-resume' resume.id %}">Edit</a>
-                    <a class="md:inline-block md:align-middle p-2 mx-2 rounded bg-red-800 text-slate-200 hover:bg-red-500 hover:text-slate-800" href="{% url 'delete-resume' resume.id %}">Delete</a>
-                </li>
-            {% endfor %}
-        </ul>
+    <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl">
+        <h2 class="text-xl font-semibold text-blue-500">Your Resumes</h2>
+        <hr class="my-2 border-blue-100">
+        {% if resumes|length == 0 %}
+            <p class="text-slate-300">You have no resumes yet. Create one to get started!</p>
+        {% else %}
+            <ul>
+                {% for resume in resumes %}
+                    <li class="my-2 p-2">
+                        <a class="text-blue-300" href="{% url "edit-resume" resume.id %}">{{ resume.title }}</a>
+                        <a class="md:inline-block md:align-middle p-2 mx-2 rounded bg-blue-800 text-slate-200 hover:bg-blue-500 hover:text-slate-800" href="{% url 'edit-resume' resume.id %}">Edit</a>
+                        <a class="md:inline-block md:align-middle p-2 mx-2 rounded bg-red-800 text-slate-200 hover:bg-red-500 hover:text-slate-800" href="{% url 'delete-resume' resume.id %}">Delete</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
     </div>
+
+    
+
+{% comment %} {% include "resume/resume_standard_template.html" %} {% endcomment %}
+
+
 {% endblock %}
