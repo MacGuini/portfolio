@@ -50,7 +50,19 @@ class Profile(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 	id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
 
+	def format_phone(self, phone):
+		if phone and len(phone) == 10:
+			return f"({phone[:3]}) {phone[3:6]}-{phone[6:]}"
+		return phone
 
+	def formatted_home_phone(self):
+		return self.format_phone(self.home)
+	
+	def formatted_mobile_phone(self):
+		return self.format_phone(self.mobile)
+	
+	def formatted_work_phone(self):
+		return self.format_phone(self.work)
 
 	def __str__(self):
 		return f'{self.fname} {self.lname} - {self.username}'
