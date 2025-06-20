@@ -12,6 +12,7 @@ There may be a conditional statement to make this more versatile. Another option
 
 -Sorting by dragging for resume objects is no longer working
 
+-When editing a resume object, the calendar doesn't appear when clicking dates.
 
 SOLVED ISSUES===================================================================
 
