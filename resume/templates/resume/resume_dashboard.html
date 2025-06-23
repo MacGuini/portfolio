@@ -1,5 +1,5 @@
 {% extends 'main.html' %}
-
+{% load static %}
 {% block content %}
  
 
@@ -94,6 +94,16 @@
               {% empty %}
                 <p class="text-slate-300">No experiences added yet.</p>
               {% endfor %}
+              <div class="mx-auto mb-4">
+                <div class="text-center">
+                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl">
+                        +
+                    </button>
+                    <div class="content text-blue-400" style="display:none;">
+                        {% include "resume/add_experience.html" %}
+                    </div>
+                </div>
+              </div>
           </div>
         </div>
       </div>
@@ -112,6 +122,18 @@
               {% empty %}
                 <p class="text-slate-300">No education details added yet.</p> 
               {% endfor %}
+              
+              <div class="mx-auto mb-4">
+                <div class="text-center">
+                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl">
+                        +
+                    </button>
+                    <div class="content text-blue-400" style="display:none;">
+                        {% include "resume/add_education.html" %}
+                    </div>
+                </div>
+              </div>
+
           </div>
 
         </div>
@@ -121,18 +143,29 @@
         <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
           <div class="p-10">
             <h3 class="text-sm/4 font-semibold text-gray-400">Skills</h3>
-            <ul class="list-disc pl-5 mt-2 text-slate-300">
+            <dl class="list-disc pl-5 mt-2 text-slate-300">
               {% for skill in skills %}
-                <li class="text-sm">{{ skill.name }}</li>
+                <dt class="text-sm">{{ skill.name }}</dt>
+                {% if skill.proficiency %}
+                  <dd class="text-sm text-slate-200">{{ skill.proficiency }}</dd>
+                {% endif %}
+                
               {% empty %}
-                <li class="text-sm">No skills added yet.</li>
+                <dt class="text-sm">No skills added yet.</dt>
               {% endfor %}
-            </ul>
-            <!--Add new skill-->
-            <div class="mt-4">
-              <a class="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500" href="{% url 'add-skill' %}">Add New Skill</a>
-            
-          </div>
+            </dl>
+              
+              <div class="mx-auto mb-4">
+                <div class="text-center">
+                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl">
+                        +
+                    </button>
+                    <div class="content text-blue-400" style="display:none;">
+                        {% include "resume/add_skill.html" %}
+                    </div>
+                </div>
+            </div>
+
         </div>
       </div>
     </div>
@@ -147,7 +180,7 @@
         
 
             <a class="md:inline-block md:align-middle p-3 mx-auto rounded bg-green-800 text-slate-200 hover:bg-green-500 hover:text-slate-800" href="{% url 'create-resume' %}">Create New Resume</a>
-        </div>
+
     </div>
 
     <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl">
@@ -171,7 +204,6 @@
 
     
 
-{% comment %} {% include "resume/resume_standard_template.html" %} {% endcomment %}
-
+{% include "resume/collapse_script.html" %}
 
 {% endblock %}

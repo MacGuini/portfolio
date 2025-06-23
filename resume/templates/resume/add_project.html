@@ -4,7 +4,7 @@
     <span class="px-4 text-blue-500 font-medium text-lg">Add Project</span>
     <hr class="flex-grow border-t border-blue-100">
 </div>
-<form method="POST" class="mx-auto flex flex-col items-center" id="add-project-form" action="{% url 'add-project' resume.id %}">
+<form method="POST" class="mx-auto flex flex-col items-center" id="add-project-form" action="{% url 'add-project' %}">
     {% csrf_token %}
     <div class="w-full max-w-md">
         {{ project_form.as_p }}

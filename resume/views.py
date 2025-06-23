@@ -23,6 +23,13 @@ def resumeDashboard(request):
     projects = Project.objects.filter(user=current_user_profile)
     certifications = Certification.objects.filter(user=current_user_profile)
 
+    experience_form    = ExperienceForm(user=current_user_profile)
+    education_form     = EducationForm(user=current_user_profile)
+    skill_form         = SkillForm(user=current_user_profile)
+    project_form       = ProjectForm(user=current_user_profile)
+    certification_form = CertificationForm(user=current_user_profile)
+
+
     context = {
         'resumes': resumes,
         'creatorProfile': creatorProfile,
@@ -30,7 +37,12 @@ def resumeDashboard(request):
         'educations': educations,
         'skills': skills,
         'projects': projects,
-        'certifications': certifications
+        'certifications': certifications,
+        'experience_form': experience_form,
+        'education_form': education_form,
+        'skill_form': skill_form,
+        'project_form': project_form,
+        'certification_form': certification_form
     }
     return render(request, 'resume/resume_dashboard.html', context)
 
@@ -110,8 +122,32 @@ def deleteResume(request, pk):
     return render(request, 'delete_template.html', {'object': resume})
 
 # === Experience Views ===
+
+# addExperience is a more general view that allows adding experiences without being tied to a specific resume.
 @login_required(login_url='login')
-def addExperience(request, pk):
+def addExperience(request):
+    # Adds a new experience, not tied to a specific resume.
+    current_user_profile = request.user.profile
+
+    if request.method == "POST":
+        form = ExperienceForm(request.POST, user=current_user_profile)
+        if form.is_valid():
+            experience = form.save(commit=False)
+            experience.user = current_user_profile # Assign ownership
+            experience.save()
+            # Handle M2M 'resumes' association from form's cleaned_data
+            selected_resume_objects = form.cleaned_data.get('resumes', [])
+            if selected_resume_objects:
+                experience.resumes.set(selected_resume_objects)
+            # If no resumes selected in form, it won't be associated with any resumes
+            return redirect('resume-dashboard') # Redirect to resume dashboard or another page
+    else: # GET request
+        form = ExperienceForm(user=current_user_profile) # Pass user for resume choices
+    return render(request, 'resume/add_experience.html', {'experience_form': form})
+
+# addExperience is a more general view that allows adding experiences without being tied to a specific resume.
+@login_required(login_url='login')
+def addExperienceFromResume(request, pk):
     # Adds a new experience, potentially associating it with one or more resumes.
     # 'pk' is the ID of the primary resume this experience is being added in context of.
     current_user_profile = request.user.profile
@@ -141,7 +177,7 @@ def addExperience(request, pk):
         # Initialize the form, passing user profile to populate resume choices
         form = ExperienceForm(user=current_user_profile)
         
-    return render(request, 'resume/add_experience.html', {'experience_form': form, 'resume': resume_context})
+    return render(request, 'resume/add_experience_from_resume.html', {'experience_form': form, 'resume': resume_context})
 
 @login_required(login_url='login')
 def editExperience(request, pk):
@@ -239,8 +275,31 @@ def listExperiences(request, pk):
 # === Education Views ===
 # Applying similar logic as Experience views
 
+# addEducation is a more general view that allows adding education without being tied to a specific resume.
 @login_required(login_url='login')
-def addEducation(request, pk):
+def addEducation(request):
+    # Adds a new education, not tied to a specific resume.
+    current_user_profile = request.user.profile
+
+    if request.method == "POST":
+        form = EducationForm(request.POST, user=current_user_profile)
+        if form.is_valid():
+            education = form.save(commit=False)
+            education.user = current_user_profile
+            education.save()
+            # Handle M2M 'resumes' association from form's cleaned_data
+            selected_resume_objects = form.cleaned_data.get('resumes', [])
+            if selected_resume_objects:
+                education.resumes.set(selected_resume_objects)
+            # If no resumes selected in form, it won't be associated with any resumes
+            return redirect('resume-dashboard') # Redirect to resume dashboard or another page
+    else: # GET request
+        form = EducationForm(user=current_user_profile) # Pass user for resume choices
+    return render(request, 'resume/add_education.html', {'education_form': form})
+
+# addEducationFromResume is exclusive to the 'edit-resume' functionality, allowing users to add education while editing a specific resume.# This view must pass a 'pk' to link it to the resume the user is currently editing
+@login_required(login_url='login')
+def addEducationFromResume(request, pk):
     # Adds a new education item, potentially associating it with one or more resumes.
     # 'pk' is the ID of the primary resume this education is being added in context of.
     current_user_profile = request.user.profile
@@ -256,7 +315,7 @@ def addEducation(request, pk):
             selected_resume_objects = form.cleaned_data.get('resumes', [])
             if selected_resume_objects:
                 education.resumes.set(selected_resume_objects)
-            elif resume_context:
+            elif resume_context: # If no resumes selected in form, associate with the context resume
                 education.resumes.add(resume_context)
             # Optional: education.resumes.add(resume_context) # To always add to current context
 
@@ -264,7 +323,7 @@ def addEducation(request, pk):
     else: # GET request
         form = EducationForm(user=current_user_profile)
         
-    return render(request, 'resume/education_form.html', {'education_form': form, 'resume': resume_context})
+    return render(request, 'resume/add_education_from_resume.html', {'education_form': form, 'resume': resume_context})
 
 @login_required(login_url='login')
 def editEducation(request, pk):
@@ -315,11 +374,34 @@ def deleteEducation(request, pk):
     return render(request, 'delete_template.html', {'object': education, 'next_url': next_url})
 
 # === Skill Views ===
-# Assuming Skill model has 'user' (FK to Profile) and 'resumes' (M2M to Resume)
-# Assuming SkillForm is like ExperienceForm (takes 'user' kwarg, has 'resumes' field)
 
+# addSkill is a more general view that allows adding skills without being tied to a specific resume.
 @login_required(login_url='login')
-def addSkill(request, pk):
+def addSkill(request):
+    # Adds a new skill, not tied to a specific resume.
+    current_user_profile = request.user.profile
+
+    if request.method == "POST":
+        form = SkillForm(request.POST, user=current_user_profile)
+        if form.is_valid():
+            skill = form.save(commit=False)
+            skill.user = current_user_profile
+            skill.save() # Save skill to get an ID
+            # Handle M2M 'resumes' association from form's cleaned_data
+            selected_resume_objects = form.cleaned_data.get('resumes', [])
+            if selected_resume_objects:
+                skill.resumes.set(selected_resume_objects)
+            # If no resumes selected in form, it won't be associated with any resumes
+            return redirect('resume-dashboard') # Redirect to resume dashboard or another page
+    else: # GET request
+        form = SkillForm(user=current_user_profile) # Pass user for resume choices
+    return render(request, 'resume/add_skill.html', {'skill_form': form})
+
+
+# addSkillFromResume is exclusive to the 'edit-resume' functionality, allowing users to add skills while editing a specific resume.
+# This view must pass a 'pk' to link it to the resume the user is currently editing.
+@login_required(login_url='login')
+def addSkillFromResume(request, pk):
     # Adds a new skill, potentially associating it with one or more resumes.
     # 'pk' is the ID of the primary resume this skill is being added in context of.
     current_user_profile = request.user.profile
@@ -344,7 +426,7 @@ def addSkill(request, pk):
     else: # GET request
         form = SkillForm(user=current_user_profile) # Pass user for resume choices
         
-    return render(request, 'resume/skill_form.html', {'skill_form': form, 'resume': resume_context})
+    return render(request, 'resume/add_skill_from_resume.html', {'skill_form': form, 'resume': resume_context})
 
 @login_required(login_url='login')
 def editSkill(request, pk):

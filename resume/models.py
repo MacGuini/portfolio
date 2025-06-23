@@ -65,7 +65,7 @@ class Skill(models.Model):
         ordering = ['position']
 
     def __str__(self):
-        return self.name
+        return self.name or "Unnamed Skill"
 
 
 class Project(models.Model):

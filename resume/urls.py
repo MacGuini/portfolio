@@ -10,19 +10,22 @@ urlpatterns = [
 
     # Experience URLs
     path('list-experiences/<int:pk>/', views.listExperiences, name='list-experiences'),
-    path('add-experience/<int:pk>/', views.addExperience, name='add-experience'),
+    path('add-experience/', views.addExperience, name='add-experience'),
+    path('add-experience-from-resume/<int:pk>/', views.addExperienceFromResume, name='add-experience-from-resume'),
     path('edit-experience/<int:pk>/', views.editExperience, name='edit-experience'),
     path('delete-experience/<int:pk>/', views.deleteExperience, name='delete-experience'),
     path('update-experience-position/', views.update_experience_order, name='update-experience-position'),
 
     # Education URLs
-    path('add-education/<int:pk>/', views.addEducation, name='add-education'),
+    path('add-education/', views.addEducation, name='add-education'),
+    path('add-education-from-resume/<int:pk>/', views.addEducationFromResume, name='add-education-from-resume'),
     path('edit-education/<int:pk>/', views.editEducation, name='edit-education'),
     path('delete-education/<int:pk>/', views.deleteEducation, name='delete-education'),
     path('update-education-position/', views.update_education_order, name='update-education-position'),
 
     # Skill URLs
-    path('add-skill/<int:pk>/', views.addSkill, name='add-skill'),
+    path('add-skill/', views.addSkill, name='add-skill'),
+    path('add-skill/<int:pk>/', views.addSkillFromResume, name='add-skill-from-resume'),
     path('edit-skill/<int:pk>/', views.editSkill, name='edit-skill'),
     path('delete-skill/<int:pk>/', views.deleteSkill, name='delete-skill'),
     path('update-skill-position/', views.update_skill_order, name='update-skill-position'),
