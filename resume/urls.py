@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import section_form
 
 urlpatterns = [
     # Resume URLs
@@ -41,4 +42,10 @@ urlpatterns = [
     path('edit-certification/<int:pk>/', views.editCertification, name='edit-certification'),
     path('delete-certification/<int:pk>/', views.deleteCertification, name='delete-certification'),
     path('update-certification-position/', views.update_certification_order, name='update-certification-position'),
+
+    # Generic add/edit/delete URLs:
+    path('add/<str:section>/', section_form, {'action':'add'},    name='add-section'),
+    path('<int:resume_pk>/add/<str:section>/', section_form, {'action':'add'},    name='add-section-resume'),
+    path('edit/<str:section>/<int:pk>/', section_form, {'action':'edit'},   name='edit-section'),
+    path('delete/<str:section>/<int:pk>/', section_form, {'action':'delete'}, name='delete-section'),
 ]

@@ -1,16 +1,91 @@
 import json
+from django.apps import apps
+from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect # Keep for your AJAX views
-from django.http import JsonResponse
 from django.urls import reverse # For safer redirects
 
+from .utils import save_section
 from .models import Resume, Experience, Education, Skill, Project, Certification
 from .forms import (
     ResumeForm, EducationForm, ExperienceForm, SkillForm, ProjectForm, CertificationForm
 )
 
-# === Resume Views ===
+
+# map the URL-friendly name to model, form & template
+SECTION_MAP = {
+    'experience': {
+        'model':  'resume.Experience',
+        'form':    ExperienceForm,
+        'template':'resume/section_form.html',
+    },
+    'education': {
+        'model':   'resume.Education',
+        'form':     EducationForm,
+        'template': 'resume/section_form.html',
+    },
+    'skill': {
+        'model':   'resume.Skill',
+        'form':     SkillForm,
+        'template': 'resume/section_form.html',
+    },
+    'project': {
+        'model':   'resume.Project',
+        'form':     ProjectForm,
+        'template': 'resume/section_form.html',
+    },
+    'certification': {
+        'model':   'resume.Certification',
+        'form':     CertificationForm,
+        'template': 'resume/section_form.html',
+    },
+}
+
+@login_required(login_url='login')
+def section_form(request, section, resume_pk=None, pk=None, action='add'):
+    """
+    action: 'add', 'edit' or 'delete'
+    section: one of the keys in SECTION_MAP
+    resume_pk: for context when adding
+    pk: the item‐id when editing/deleting
+    """
+    cfg = SECTION_MAP.get(section)
+    if not cfg:
+        raise Http404("Unknown section")
+
+    Model    = apps.get_model(cfg['model'])
+    FormClass= cfg['form']
+    tpl      = cfg['template']
+    user_prof= request.user.profile
+
+    # fetch instance for edit/delete
+    instance = None
+    if action in ('edit','delete'):
+        instance = get_object_or_404(Model, id=pk, user=user_prof)
+
+    if request.method == 'POST':
+        form = FormClass(request.POST, instance=instance, user=user_prof)
+        if form.is_valid():
+            if action == 'delete':
+                instance.delete()
+            else:
+                save_section(form, user_prof, resume_pk)
+                target = (reverse('edit-resume', args=[resume_pk])
+                          if resume_pk else reverse('resume-dashboard'))
+                return redirect(target)
+    else:
+        form = FormClass(instance=instance, user=user_prof)
+
+    return render(request, 'resume/section_form.html', {
+        'form':        form,
+        'button_icon': {'add':'+','edit':'✎','delete':'🗑'}[action],
+        'button_label': {'add':'Add','edit':'Save','delete':'Delete'}[action] + ' ' + section.title(),
+        'action_url':  (reverse(f"{'add' if action=='add' else action}-section",
+                          args=[resume_pk, section]) if resume_pk else
+                        reverse(f"{action}-section", args=[section, pk])),
+    })
+
 @login_required(login_url='login')
 def resumeDashboard(request):
     # Fetches and displays resumes belonging to the currently logged-in user's profile.
@@ -23,12 +98,36 @@ def resumeDashboard(request):
     projects = Project.objects.filter(user=current_user_profile)
     certifications = Certification.objects.filter(user=current_user_profile)
 
-    experience_form    = ExperienceForm(user=current_user_profile)
-    education_form     = EducationForm(user=current_user_profile)
-    skill_form         = SkillForm(user=current_user_profile)
-    project_form       = ProjectForm(user=current_user_profile)
-    certification_form = CertificationForm(user=current_user_profile)
 
+    experience_add_form = ExperienceForm(user=current_user_profile)
+    education_add_form = EducationForm(user=current_user_profile)
+    skill_add_form = SkillForm(user=current_user_profile)
+    project_add_form = ProjectForm(user=current_user_profile)
+    certification_add_form = CertificationForm(user=current_user_profile)
+
+    # Prepare an "edit" form for each instance
+    experience_edit_forms = {
+        exp.id: ExperienceForm(instance=exp, user=current_user_profile)
+        for exp in experiences
+    }
+    education_edit_forms = {
+        edu.id: EducationForm(instance=edu, user=current_user_profile)
+        for edu in educations
+    }
+    skill_edit_forms = {
+        skill.id: SkillForm(instance=skill, user=current_user_profile)
+        for skill in skills
+    }
+    project_edit_forms = {
+        proj.id: ProjectForm(instance=proj, user=current_user_profile)
+        for proj in projects
+    }
+    certification_edit_forms = {
+        cert.id: CertificationForm(instance=cert, user=current_user_profile)
+        for cert in certifications
+    }
+
+     # Add these forms to the context
 
     context = {
         'resumes': resumes,
@@ -38,11 +137,17 @@ def resumeDashboard(request):
         'skills': skills,
         'projects': projects,
         'certifications': certifications,
-        'experience_form': experience_form,
-        'education_form': education_form,
-        'skill_form': skill_form,
-        'project_form': project_form,
-        'certification_form': certification_form
+        'experience_add_form': experience_add_form,
+        'education_add_form': education_add_form,
+        'skill_add_form': skill_add_form,
+        'project_add_form': project_add_form,
+        'certification_add_form': certification_add_form,
+        'experience_edit_forms': experience_edit_forms,
+        'education_edit_forms': education_edit_forms,
+        'skill_edit_forms': skill_edit_forms,
+        'project_edit_forms': project_edit_forms,
+        'certification_edit_forms': certification_edit_forms,
+
     }
     return render(request, 'resume/resume_dashboard.html', context)
 
@@ -64,7 +169,9 @@ def createResume(request):
 
 @login_required(login_url='login')
 def editResume(request, pk):
-    # Handles editing of an existing resume and serves as a dashboard for its sections.
+    # Handles editing of an existing resume
+    # Similar to resumeDashboard, but scoped to one Resume.
+    # 'pk' is the ID of the Resume being edited.
     current_user_profile = request.user.profile
     # Ensure the resume belongs to the current user
     resume = get_object_or_404(Resume, id=pk, user=current_user_profile)

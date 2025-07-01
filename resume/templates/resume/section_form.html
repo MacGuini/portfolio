@@ -1,0 +1,31 @@
+{# resume/templates/resume/section_form.html #}
+{% extends "main.html" %}
+
+{% block content %}
+  {# 
+     A full-page form when you go to /edit/experience/42/ 
+     or /add/experience/ on its own, outside the dashboard. 
+  #}
+  <div class="max-w-2xl mx-auto py-12 px-6">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">
+      {{ button_label }} {{ section|capfirst }}
+    </h2>
+
+    <form method="post" action="{{ action_url }}" class="space-y-4">
+      {% csrf_token %}
+      {# Render all fields just like your regular forms #}
+      {{ form.as_p }}
+
+      <button type="submit"
+              class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        {{ button_label }}
+      </button>
+
+      {# If you're doing a delete, you might want a “Cancel” link back: #}
+      {% if button_label == "Delete " + section|capfirst %}
+        <a href="{% url 'resume-dashboard' %}"
+           class="ml-4 text-blue-500 hover:underline">Cancel</a>
+      {% endif %}
+    </form>
+  </div>
+{% endblock %}

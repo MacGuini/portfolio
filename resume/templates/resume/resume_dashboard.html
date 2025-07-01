@@ -1,5 +1,6 @@
 {% extends 'main.html' %}
 {% load static %}
+{% load resume_tags %}
 {% block content %}
  
 
@@ -83,27 +84,29 @@
       <!--Experiences-->
       <div class="flex p-px lg:col-span-8">
         <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
-          <div class="p-10">
+          <div id="experiences-list" class="p-10">
             <h3 class="text-sm/4 font-semibold text-gray-400">Experiences</h3>
+
               {% for experience in experiences %}
+
                 <div class="py-4">
                   <h4 class="text-sm font-semibold text-slate-300">{{ experience.job_title }}</h4>
                   <p class="text-sm text-slate-200">{{ experience.company_name }} - {{ experience.start_date }} to {{ experience.end_date }}</p>
                   <p class="mt-2 text-sm text-slate-300">{{ experience.description }}</p>
+
                 </div>
+
               {% empty %}
                 <p class="text-slate-300">No experiences added yet.</p>
               {% endfor %}
+
               <div class="mx-auto mb-4">
                 <div class="text-center">
-                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl">
-                        +
-                    </button>
-                    <div class="content text-blue-400" style="display:none;">
-                        {% include "resume/add_experience.html" %}
-                    </div>
+                    {% include "resume/partials/section_dropdown.html" with form=experience_add_form button_icon="+" action_url="experience"|get_add_url button_label="Add Experience" %}
+
                 </div>
               </div>
+
           </div>
         </div>
       </div>
@@ -125,12 +128,7 @@
               
               <div class="mx-auto mb-4">
                 <div class="text-center">
-                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl">
-                        +
-                    </button>
-                    <div class="content text-blue-400" style="display:none;">
-                        {% include "resume/add_education.html" %}
-                    </div>
+                  {% include "resume/partials/section_dropdown.html" with form=education_add_form button_icon="+" action_url="education"|get_add_url button_label="Add Education" %}
                 </div>
               </div>
 
@@ -157,12 +155,7 @@
               
               <div class="mx-auto mb-4">
                 <div class="text-center">
-                    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-24 py-3 rounded text-2xl">
-                        +
-                    </button>
-                    <div class="content text-blue-400" style="display:none;">
-                        {% include "resume/add_skill.html" %}
-                    </div>
+                  {% include "resume/partials/section_dropdown.html" with form=skill_add_form button_icon="+" action_url="skill"|get_add_url button_label="Add Skill" %}
                 </div>
             </div>
 
@@ -170,9 +163,58 @@
       </div>
     </div>
     
+    <!--Projects-->
+    <div class="flex p-px lg:col-span-7">
+      <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
+        <div class="p-10">
+          <h3 class="text-sm/4 font-semibold text-gray-400">Projects</h3>
+          {% for project in projects %}
+            <div class="py-4">
+              <h4 class="text-sm font-semibold text-slate-300">{{ project.title }}</h4>
+              <p class="text-sm text-slate-200">{{ project.description }}</p>
+              {% if project.link %}
+                <a href="{{ project.link }}" class="text-blue-400 underline text-sm" target="_blank">View Project</a>
+              {% endif %}
+            </div>
+          {% empty %}
+            <p class="text-slate-300">No projects added yet.</p>
+          {% endfor %}
+          <div class="mx-auto mb-4">
+            <div class="text-center">
+              {% include "resume/partials/section_dropdown.html" with form=project_add_form button_icon="+" action_url="project"|get_add_url button_label="Add Project" %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Certifications-->
+    <div class="flex p-px lg:col-span-5">
+      <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
+        <div class="p-10">
+          <h3 class="text-sm/4 font-semibold text-gray-400">Certifications</h3>
+          {% for cert in certifications %}
+            <div class="py-4">
+              <h4 class="text-sm font-semibold text-slate-300">{{ cert.name }}</h4>
+              <p class="text-sm text-slate-200">{{ cert.issuer }}{% if cert.issue_date %} - {{ cert.issue_date }}{% endif %}</p>
+              {% if cert.description %}
+                <p class="mt-2 text-sm text-slate-300">{{ cert.description }}</p>
+              {% endif %}
+            </div>
+          {% empty %}
+            <p class="text-slate-300">No certifications added yet.</p>
+          {% endfor %}
+          <div class="mx-auto mb-4">
+            <div class="text-center">
+              {% include "resume/partials/section_dropdown.html" with form=certification_add_form button_icon="+" action_url="certification"|get_add_url button_label="Add Certification" %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
   </div>
 </div>
-
 
 
 
