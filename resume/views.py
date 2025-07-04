@@ -187,11 +187,11 @@ def editResume(request, pk):
 
     # Initialize forms for related sections, passing the user profile for context
     # This allows these forms to correctly list the user's other resumes if they have such a field.
-    experience_form = ExperienceForm(user=current_user_profile)
-    education_form = EducationForm(user=current_user_profile)
-    skill_form = SkillForm(user=current_user_profile)
-    project_form = ProjectForm(user=current_user_profile)
-    certification_form = CertificationForm(user=current_user_profile)
+    experience_add_form = ExperienceForm(user=current_user_profile)
+    education_add_form = EducationForm(user=current_user_profile)
+    skill_add_form = SkillForm(user=current_user_profile)
+    project_add_form = ProjectForm(user=current_user_profile)
+    certification_add_form = CertificationForm(user=current_user_profile)
     
     # Fetch related items for display
     experiences = resume.experiences.all()
@@ -204,11 +204,11 @@ def editResume(request, pk):
         'form': form, # Form for editing the Resume model
         'resume': resume,
         'resume_id': pk, # Same as resume.id, for convenience in template
-        'experience_form': experience_form,
-        'education_form': education_form,
-        'skill_form': skill_form,
-        'project_form': project_form,
-        'certification_form': certification_form,
+        'experience_add_form': experience_add_form,
+        'education_add_form': education_add_form,
+        'skill_add_form': skill_add_form,
+        'project_add_form': project_add_form,
+        'certification_add_form': certification_add_form,
         'experiences': experiences,
         'educations': educations,
         'skills': skills,

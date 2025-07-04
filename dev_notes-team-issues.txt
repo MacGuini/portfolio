@@ -7,16 +7,14 @@ All other known and solved issues should be listed here
 
 KNOWN ISSUES====================================================================
 
-- DRY There is a lot of repetitive logic in this project.
-
--Need to switch to the from resume logic for certifications and projects.
+- Edit function needs to be added to dashboard. Also see if you can work in a JS script to prefill in edit forms.
 
 -Need better dashboard styling. 
     - When you open up the collapsible add script, the other elements change in size and make it look weird.
 
 -Sorting by dragging for resume objects is no longer working
 
--When editing a resume object, the calendar doesn't appear when clicking dates.
+
 
 SOLVED ISSUES===================================================================
 
@@ -33,3 +31,9 @@ SOLVED ISSUES===================================================================
 -The add functions for the resume builder are situational specific. It only works if being added from a resume instance. Rather than in general. If you place an "Add" button such as "Add Skill" the same way, the function breaks. 
 There may be a conditional statement to make this more versatile. Another option would be to create two different views for adding objects. One for adding directly to a resume and another to add from the dashboard.
 (Solution. Changed the views that added from the resume to say from resume in naming.)
+
+-When editing a resume object, the calendar doesn't appear when clicking dates.
+(Solution: No idea how I fixed it but it works now)
+
+- DRY There is a lot of repetitive logic in this project.
+(Created a single form for all of the objects to use)
