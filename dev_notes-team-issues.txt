@@ -14,7 +14,7 @@ KNOWN ISSUES====================================================================
 
 -Sorting by dragging for resume objects is no longer working
 
-
+-Redirect from edit-resume not working after adding object
 
 SOLVED ISSUES===================================================================
 
