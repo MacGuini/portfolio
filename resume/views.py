@@ -70,6 +70,7 @@ def section_form(request, section, resume_pk=None, pk=None, action='add'):
             if action == 'delete':
                 instance.delete()
             else:
+                print("*********\nInside section_form() form.is_valid() block\nForm Data:", form.cleaned_data, "Form Errors:", form.errors, "Instance:", instance)
                 save_section(form, user_prof, resume_pk)
                 target = (reverse('edit-resume', args=[resume_pk])
                           if resume_pk else reverse('resume-dashboard'))
@@ -161,7 +162,7 @@ def createResume(request):
             resume = form.save(commit=False)
             resume.user = current_user_profile # Assign ownership to the current user's profile
             resume.save() # Save the resume instance to get an ID
-            # If ResumeForm had ManyToMany fields, you would call form.save_m2m() here
+
             return redirect('edit-resume', pk=resume.id)
     else:
         form = ResumeForm()
@@ -177,9 +178,12 @@ def editResume(request, pk):
     resume = get_object_or_404(Resume, id=pk, user=current_user_profile)
 
     if request.method == "POST":
+        # Debugging variables
+        print("********\nInside editResume() if request.method == 'POST' block\nResume ID:", resume.id, "User Profile ID:", current_user_profile.id, "Request Data:", request.POST, "Request Method:", request.method, "User Profile:", current_user_profile, "pk:", pk)
         # This POST request is for updating the main Resume object itself
         form = ResumeForm(request.POST, instance=resume)
         if form.is_valid():
+            print("*********\nInside form.is_valid() block\nForm Data:", form.cleaned_data, "Form Errors:", form.errors, "Instance:", resume)
             form.save()
             return redirect('edit-resume', pk=resume.id) # Redirect back to the same edit page
     else:

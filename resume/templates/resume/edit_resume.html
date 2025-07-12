@@ -117,7 +117,7 @@
         <div class="container mx-auto" id="skills-list">
             <div class="mx-auto mb-4">
                 <div class="text-center">
-                    {% include "resume/partials/section_dropdown.html" with form=skill_add_form button_icon="+" action_url="skill"|get_add_url button_label="Add Skill" %}
+                    {% include "resume/partials/section_dropdown.html" with form=skill_add_form button_icon="+" action_url="skill"|get_add_url:resume.id button_label="Add Skill" %}
                 </div>
             </div>
 
