@@ -7,14 +7,11 @@ All other known and solved issues should be listed here
 
 KNOWN ISSUES====================================================================
 
-- Edit function needs to be added to dashboard. Also see if you can work in a JS script to prefill in edit forms.
-
 -Need better dashboard styling. 
     - When you open up the collapsible add script, the other elements change in size and make it look weird.
 
 -Sorting by dragging for resume objects is no longer working
 
--Redirect from edit-resume not working after adding object
 
 SOLVED ISSUES===================================================================
 
@@ -37,3 +34,9 @@ There may be a conditional statement to make this more versatile. Another option
 
 - DRY There is a lot of repetitive logic in this project.
 (Created a single form for all of the objects to use)
+
+- Edit function needs to be added to dashboard. Also see if you can work in a JS script to prefill in edit forms.
+(Solved: Added more logic to determine what is being editted or added. Dropdown and prefill works now.)
+
+-Redirect from edit-resume not working after adding object
+(Solved: No idea how but it's working. So don't touch it.)

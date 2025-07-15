@@ -1,2 +1,7 @@
 Create a txt fille called "dev_notes-local.txt" for any personal notes you wish to write that won't be pushed to the dev branch. This name is listed in .gitignore
 This file will be used for ideas and notes for future development.
+
+
+IDEAS=======================================================================================
+
+When adding a resume object to either the resume dashboard or edit resume page, it reloads the page as expected. Try and figure out a way to redirect the view to the section you were just in. So if you add to the skills. Have it scroll down to skills after it reloads the page. There was a lesson about this on w3schools.com regarding HTML links that move the viewing screen to a designated section of the page.

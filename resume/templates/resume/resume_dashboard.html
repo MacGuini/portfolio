@@ -2,250 +2,275 @@
 {% load static %}
 {% load resume_tags %}
 {% block content %}
- 
-
 <div class="py-24 sm:py-32">
   <div class="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
     <h2 class="text-base/7 font-semibold text-indigo-400">Digital Resume</h2>
-    <p class="mt-2 max-w-lg text-4xl font-semibold tracking-tight text-pretty text-white sm:text-5xl">{{creatorProfile.fname }} {% if creatorProfile.mname %}{{ creatorProfile.mname }} {% endif %}{{ creatorProfile.lname  }}</p>
-    
+    <p class="mt-2 max-w-lg text-4xl font-semibold tracking-tight text-pretty text-white sm:text-5xl">
+      {{creatorProfile.fname }}{% if creatorProfile.mname %} {{ creatorProfile.mname }}{% endif %} {{creatorProfile.lname}}
+    </p>
     <div class="mt-10 grid grid-cols-1 gap-4 sm:mt-16 lg:grid-cols-12 lg:grid-rows-2">
-      <!-- This section displays the creator's profile information -->
-      <div class="flex p-px lg:col-span-4">   
+      <!-- Contact Info -->
+      <div class="flex p-px lg:col-span-4">
         <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
           <div class="p-10">
             <h3 class="text-sm/4 font-semibold text-gray-400">Contact</h3>
             <dl class="divide-y divide-blue-100">
-
-                    <div class="py-4 grid grid-cols-3 gap-4">
-                        <dt class="text-sm font-medium text-slate-200">Location:</dt>
-                        <dd class="col-span-2 text-sm text-slate-300">
-                            <!--Checking if creatorProfile has city or state added-->
-                            {% if creatorProfile.city and creatorProfile.state %}
-                                {{ creatorProfile.city }}, {{ creatorProfile.state }}
-                            {% elif creatorProfile.city and not creatorProfile.state %}
-                                {{ creatorProfile.city }}
-                            {% elif not creatorProfile.city and creatorProfile.state %}
-                                {{ creatorProfile.state }}
-                            {% endif %}
-                            <!-- If neither city nor state is specified, show "Not specified" -->   
-                            {% if not creatorProfile.city and not creatorProfile.state %}
-                                Not specified
-                            {% endif %}
-                        </dd>
-                    </div>
-
+              <div class="py-4 grid grid-cols-3 gap-4">
+                <dt class="text-sm font-medium text-slate-200">Location:</dt>
+                <dd class="col-span-2 text-sm text-slate-300">
+                  {% if creatorProfile.city and creatorProfile.state %}
+                    {{ creatorProfile.city }}, {{ creatorProfile.state }}
+                  {% elif creatorProfile.city and not creatorProfile.state %}
+                    {{ creatorProfile.city }}
+                  {% elif not creatorProfile.city and creatorProfile.state %}
+                    {{ creatorProfile.state }}
+                  {% else %}
+                    Not specified
+                  {% endif %}
+                </dd>
+              </div>
+              <div class="py-4 grid grid-cols-3 gap-4">
+                <dt class="text-sm font-medium text-slate-200">Email address</dt>
+                <dd class="col-span-2 text-sm text-slate-300">
+                  {% if creatorProfile.email %}
+                    {{ creatorProfile.email }}
+                  {% else %}
+                    No Email Address Provided
+                  {% endif %}
+                </dd>
+              </div>
+              {% if creatorProfile.home %}
                 <div class="py-4 grid grid-cols-3 gap-4">
-                    <dt class="text-sm font-medium text-slate-200">Email address</dt>
-                    <dd class="col-span-2 text-sm text-slate-300">
-                        {% if creatorProfile.email %}
-                            {{ creatorProfile.email }}
-                        {% else %}
-                            No Email Address Provided
-                        {% endif %}
-                    </dd>
+                  <dt class="text-sm font-medium text-slate-200">Home Phone</dt>
+                  <dd class="col-span-2 text-sm text-slate-300">{{ creatorProfile.formatted_home_phone }}</dd>
                 </div>
-                {% if creatorProfile.home %}
-                    <div class="py-4 grid grid-cols-3 gap-4">
-                        <dt class="text-sm font-medium text-slate-200">Home Phone</dt>
-                        <dd class="col-span-2 text-sm text-slate-300">
-                            
-                                {{ creatorProfile.formatted_home_phone }}
-                            
-                        </dd>
-                    </div>
-                {% endif %}
-                {% if creatorProfile.mobile %}
-                    <div class="py-4 grid grid-cols-3 gap-4">
-                        <dt class="text-sm font-medium text-slate-200">Mobile Phone</dt>
-                        <dd class="col-span-2 text-sm text-slate-300">
-                            
-                                {{ creatorProfile.formatted_mobile_phone }}
-                            
-                        </dd>
-                    </div>
-                {% endif %}
-
-                  {% if creatorProfile.work %}
-                    <div class="py-4 grid grid-cols-3 gap-4">
-                        <dt class="text-sm font-medium text-slate-200">Work Phone</dt>
-                        <dd class="col-span-2 text-sm text-slate-300">
-                            
-                                {{ creatorProfile.formatted_work_phone }}
-                            
-                        </dd>
-                    </div>
-                {% endif %}
-              
+              {% endif %}
+              {% if creatorProfile.mobile %}
+                <div class="py-4 grid grid-cols-3 gap-4">
+                  <dt class="text-sm font-medium text-slate-200">Mobile Phone</dt>
+                  <dd class="col-span-2 text-sm text-slate-300">{{ creatorProfile.formatted_mobile_phone }}</dd>
+                </div>
+              {% endif %}
+              {% if creatorProfile.work %}
+                <div class="py-4 grid grid-cols-3 gap-4">
+                  <dt class="text-sm font-medium text-slate-200">Work Phone</dt>
+                  <dd class="col-span-2 text-sm text-slate-300">{{ creatorProfile.formatted_work_phone }}</dd>
+                </div>
+              {% endif %}
             </dl>
           </div>
         </div>
       </div>
-      <!--Experiences-->
+
+      <!-- EXPERIENCES -->
       <div class="flex p-px lg:col-span-8">
         <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
           <div id="experiences-list" class="p-10">
             <h3 class="text-sm/4 font-semibold text-gray-400">Experiences</h3>
-
-              {% for experience in experiences %}
-
-                <div class="py-4">
-                  <h4 class="text-sm font-semibold text-slate-300">{{ experience.job_title }}</h4>
-                  <p class="text-sm text-slate-200">{{ experience.company_name }} - {{ experience.start_date }} to {{ experience.end_date }}</p>
-                  <p class="mt-2 text-sm text-slate-300">{{ experience.description }}</p>
-
+            {% for experience in experiences %}
+              <div class="py-4 border-b border-slate-600 last:border-b-0">
+                <div class="flex flex-row justify-between items-center">
+                  <div>
+                    <h4 class="text-sm font-semibold text-slate-300">{{ experience.job_title }}</h4>
+                    <p class="text-sm text-slate-200">{{ experience.company_name }} - {{ experience.start_date }} to {{ experience.end_date }}</p>
+                    <p class="mt-2 text-sm text-slate-300">{{ experience.description }}</p>
+                  </div>
+                  <div class="flex flex-col items-end ml-4">
+                    <button type="button" class="edit-collapsible bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs mb-1" data-target="#edit-experience-{{ experience.id }}">Edit Inline</button>
+                  </div>
                 </div>
-
-              {% empty %}
-                <p class="text-slate-300">No experiences added yet.</p>
-              {% endfor %}
-
-              <div class="mx-auto mb-4">
-                <div class="text-center">
-                    {% include "resume/partials/section_dropdown.html" with form=experience_add_form button_icon="+" action_url="experience"|get_add_url button_label="Add Experience" %}
-
+                <div id="edit-experience-{{ experience.id }}" class="edit-content mt-4 mb-2" style="display: none;">
+                  {% include "resume/partials/section_dropdown.html" with form=experience_edit_forms|dict_get:experience.id button_icon="✎" action_url=experience.id|get_edit_url:"experience" button_label="Save Experience" %}
+                  <div class="text-right mt-2">
+                    <a href="javascript:void(0)" class="close-edit inline-block text-blue-300 hover:text-blue-500 underline text-xs" data-target="#edit-experience-{{ experience.id }}">Cancel</a>
+                  </div>
                 </div>
               </div>
-
+            {% empty %}
+              <p class="text-slate-300">No experiences added yet.</p>
+            {% endfor %}
+            <div class="mx-auto mb-4">
+              <div class="text-center">
+                {% include "resume/partials/section_dropdown.html" with form=experience_add_form button_icon="+" action_url="experience"|get_add_url button_label="Add Experience" %}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <!--Education-->
+
+      <!-- EDUCATION -->
       <div class="flex p-px lg:col-span-6">
         <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
-          
           <div class="p-10">
             <h3 class="text-sm/4 font-semibold text-gray-400">Education</h3>
-              {% for education in educations %}
-                <div class="py-4">
-                  <h4 class="text-sm font-semibold text-slate-300">{{ education.degree }}</h4>
-                  <p class="text-sm text-slate-200">{{ education.institution }} - {{ education.start_date }} to {{ education.end_date }}</p>
-                  <p class="mt-2 text-sm text-slate-300">{{ education.description }}</p>
+            {% for education in educations %}
+              <div class="py-4 border-b border-slate-600 last:border-b-0">
+                <div class="flex flex-row justify-between items-center">
+                  <div>
+                    <h4 class="text-sm font-semibold text-slate-300">{{ education.degree }}</h4>
+                    <p class="text-sm text-slate-200">{{ education.institution_name }} - {{ education.start_date }} to {{ education.end_date }}</p>
+                    <p class="mt-2 text-sm text-slate-300">{{ education.description }}</p>
+                  </div>
+                  <div class="flex flex-col items-end ml-4">
+                    <button type="button" class="edit-collapsible bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs mb-1" data-target="#edit-education-{{ education.id }}">Edit Inline</button>
+                  </div>
                 </div>
-              {% empty %}
-                <p class="text-slate-300">No education details added yet.</p> 
-              {% endfor %}
-              
-              <div class="mx-auto mb-4">
-                <div class="text-center">
-                  {% include "resume/partials/section_dropdown.html" with form=education_add_form button_icon="+" action_url="education"|get_add_url button_label="Add Education" %}
+                <div id="edit-education-{{ education.id }}" class="edit-content mt-4 mb-2" style="display: none;">
+                  {% include "resume/partials/section_dropdown.html" with form=education_edit_forms|dict_get:education.id button_icon="✎" action_url=education.id|get_edit_url:"education" button_label="Save Education" %}
+                  <div class="text-right mt-2">
+                    <a href="javascript:void(0)" class="close-edit inline-block text-blue-300 hover:text-blue-500 underline text-xs" data-target="#edit-education-{{ education.id }}">Cancel</a>
+                  </div>
                 </div>
               </div>
-
+            {% empty %}
+              <p class="text-slate-300">No education details added yet.</p>
+            {% endfor %}
+            <div class="mx-auto mb-4">
+              <div class="text-center">
+                {% include "resume/partials/section_dropdown.html" with form=education_add_form button_icon="+" action_url="education"|get_add_url button_label="Add Education" %}
+              </div>
+            </div>
           </div>
-
         </div>
       </div>
-      <!--Skills-->
+
+      <!-- SKILLS -->
       <div class="flex p-px lg:col-span-6">
         <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
           <div class="p-10">
             <h3 class="text-sm/4 font-semibold text-gray-400">Skills</h3>
-            <dl class="list-disc pl-5 mt-2 text-slate-300">
-              {% for skill in skills %}
-                <dt class="text-sm">{{ skill.name }}</dt>
-                {% if skill.proficiency %}
-                  <dd class="text-sm text-slate-200">{{ skill.proficiency }}</dd>
-                {% endif %}
-                
-              {% empty %}
-                <dt class="text-sm">No skills added yet.</dt>
-              {% endfor %}
-            </dl>
-              
-              <div class="mx-auto mb-4">
-                <div class="text-center">
-                  {% include "resume/partials/section_dropdown.html" with form=skill_add_form button_icon="+" action_url="skill"|get_add_url button_label="Add Skill" %}
+            {% for skill in skills %}
+              <div class="py-4 border-b border-slate-600 last:border-b-0">
+                <div class="flex flex-row justify-between items-center">
+                  <div>
+                    <dt class="text-sm">{{ skill.name }}</dt>
+                    {% if skill.proficiency %}
+                      <dd class="text-sm text-slate-200">{{ skill.proficiency }}</dd>
+                    {% endif %}
+                  </div>
+                  <div class="flex flex-col items-end ml-4">
+                    <button type="button" class="edit-collapsible bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs mb-1" data-target="#edit-skill-{{ skill.id }}">Edit Inline</button>
+                  </div>
                 </div>
+                <div id="edit-skill-{{ skill.id }}" class="edit-content mt-4 mb-2" style="display: none;">
+                  {% include "resume/partials/section_dropdown.html" with form=skill_edit_forms|dict_get:skill.id button_icon="✎" action_url=skill.id|get_edit_url:"skill" button_label="Save Skill" %}
+                  <div class="text-right mt-2">
+                    <a href="javascript:void(0)" class="close-edit inline-block text-blue-300 hover:text-blue-500 underline text-xs" data-target="#edit-skill-{{ skill.id }}">Cancel</a>
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <dt class="text-sm">No skills added yet.</dt>
+            {% endfor %}
+            <div class="mx-auto mb-4">
+              <div class="text-center">
+                {% include "resume/partials/section_dropdown.html" with form=skill_add_form button_icon="+" action_url="skill"|get_add_url button_label="Add Skill" %}
+              </div>
             </div>
-
+          </div>
         </div>
       </div>
-    </div>
-    
-    <!--Projects-->
-    <div class="flex p-px lg:col-span-7">
-      <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
-        <div class="p-10">
-          <h3 class="text-sm/4 font-semibold text-gray-400">Projects</h3>
-          {% for project in projects %}
-            <div class="py-4">
-              <h4 class="text-sm font-semibold text-slate-300">{{ project.title }}</h4>
-              <p class="text-sm text-slate-200">{{ project.description }}</p>
-              {% if project.link %}
-                <a href="{{ project.link }}" class="text-blue-400 underline text-sm" target="_blank">View Project</a>
-              {% endif %}
+
+      <!-- PROJECTS -->
+      <div class="flex p-px lg:col-span-7">
+        <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
+          <div class="p-10">
+            <h3 class="text-sm/4 font-semibold text-gray-400">Projects</h3>
+            {% for project in projects %}
+              <div class="py-4 border-b border-slate-600 last:border-b-0">
+                <div class="flex flex-row justify-between items-center">
+                  <div>
+                    <h4 class="text-sm font-semibold text-slate-300">{{ project.title }}</h4>
+                    <p class="text-sm text-slate-200">{{ project.description }}</p>
+                    {% if project.link %}
+                      <a href="{{ project.link }}" class="text-blue-400 underline text-sm" target="_blank">View Project</a>
+                    {% endif %}
+                  </div>
+                  <div class="flex flex-col items-end ml-4">
+                    <button type="button" class="edit-collapsible bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs mb-1" data-target="#edit-project-{{ project.id }}">Edit Inline</button>
+                  </div>
+                </div>
+                <div id="edit-project-{{ project.id }}" class="edit-content mt-4 mb-2" style="display: none;">
+                  {% include "resume/partials/section_dropdown.html" with form=project_edit_forms|dict_get:project.id button_icon="✎" action_url=project.id|get_edit_url:"project" button_label="Save Project" %}
+                  <div class="text-right mt-2">
+                    <a href="javascript:void(0)" class="close-edit inline-block text-blue-300 hover:text-blue-500 underline text-xs" data-target="#edit-project-{{ project.id }}">Cancel</a>
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <p class="text-slate-300">No projects added yet.</p>
+            {% endfor %}
+            <div class="mx-auto mb-4">
+              <div class="text-center">
+                {% include "resume/partials/section_dropdown.html" with form=project_add_form button_icon="+" action_url="project"|get_add_url button_label="Add Project" %}
+              </div>
             </div>
-          {% empty %}
-            <p class="text-slate-300">No projects added yet.</p>
-          {% endfor %}
-          <div class="mx-auto mb-4">
-            <div class="text-center">
-              {% include "resume/partials/section_dropdown.html" with form=project_add_form button_icon="+" action_url="project"|get_add_url button_label="Add Project" %}
+          </div>
+        </div>
+      </div>
+
+      <!-- CERTIFICATIONS -->
+      <div class="flex p-px lg:col-span-5">
+        <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
+          <div class="p-10">
+            <h3 class="text-sm/4 font-semibold text-gray-400">Certifications</h3>
+            {% for cert in certifications %}
+              <div class="py-4 border-b border-slate-600 last:border-b-0">
+                <div class="flex flex-row justify-between items-center">
+                  <div>
+                    <h4 class="text-sm font-semibold text-slate-300">{{ cert.name }}</h4>
+                    <p class="text-sm text-slate-200">{{ cert.issuer }}{% if cert.issue_date %} - {{ cert.issue_date }}{% endif %}</p>
+                    {% if cert.description %}
+                      <p class="mt-2 text-sm text-slate-300">{{ cert.description }}</p>
+                    {% endif %}
+                  </div>
+                  <div class="flex flex-col items-end ml-4">
+                    <button type="button" class="edit-collapsible bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-xs mb-1" data-target="#edit-certification-{{ cert.id }}">Edit Inline</button>
+                  </div>
+                </div>
+                <div id="edit-certification-{{ cert.id }}" class="edit-content mt-4 mb-2" style="display: none;">
+                  {% include "resume/partials/section_dropdown.html" with form=certification_edit_forms|dict_get:cert.id button_icon="✎" action_url=cert.id|get_edit_url:"certification" button_label="Save Certification" %}
+                  <div class="text-right mt-2">
+                    <a href="javascript:void(0)" class="close-edit inline-block text-blue-300 hover:text-blue-500 underline text-xs" data-target="#edit-certification-{{ cert.id }}">Cancel</a>
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <p class="text-slate-300">No certifications added yet.</p>
+            {% endfor %}
+            <div class="mx-auto mb-4">
+              <div class="text-center">
+                {% include "resume/partials/section_dropdown.html" with form=certification_add_form button_icon="+" action_url="certification"|get_add_url button_label="Add Certification" %}
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <!--Certifications-->
-    <div class="flex p-px lg:col-span-5">
-      <div class="overflow-hidden rounded-lg w-full max-w-full bg-gradient-to-br from-slate-700 to-transparent">
-        <div class="p-10">
-          <h3 class="text-sm/4 font-semibold text-gray-400">Certifications</h3>
-          {% for cert in certifications %}
-            <div class="py-4">
-              <h4 class="text-sm font-semibold text-slate-300">{{ cert.name }}</h4>
-              <p class="text-sm text-slate-200">{{ cert.issuer }}{% if cert.issue_date %} - {{ cert.issue_date }}{% endif %}</p>
-              {% if cert.description %}
-                <p class="mt-2 text-sm text-slate-300">{{ cert.description }}</p>
-              {% endif %}
-            </div>
-          {% empty %}
-            <p class="text-slate-300">No certifications added yet.</p>
-          {% endfor %}
-          <div class="mx-auto mb-4">
-            <div class="text-center">
-              {% include "resume/partials/section_dropdown.html" with form=certification_add_form button_icon="+" action_url="certification"|get_add_url button_label="Add Certification" %}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
   </div>
+
+  <div class="container text-center flex justify-around mx-auto md:px-16">
+    <a class="md:inline-block md:align-middle p-3 mx-auto rounded bg-green-800 text-slate-200 hover:bg-green-500 hover:text-slate-800" href="{% url 'create-resume' %}">Create New Resume</a>
+  </div>
+
+  <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl">
+    <h2 class="text-xl font-semibold text-blue-500">Your Resumes</h2>
+    <hr class="my-2 border-blue-100">
+    {% if resumes|length == 0 %}
+      <p class="text-slate-300">You have no resumes yet. Create one to get started!</p>
+    {% else %}
+      <ul>
+        {% for resume in resumes %}
+          <li class="my-2 p-2">
+            <a class="text-blue-300" href="{% url "edit-resume" resume.id %}">{{ resume.title }}</a>
+            <a class="md:inline-block md:align-middle p-2 mx-2 rounded bg-blue-800 text-slate-200 hover:bg-blue-500 hover:text-slate-800" href="{% url 'edit-resume' resume.id %}">Edit</a>
+            <a class="md:inline-block md:align-middle p-2 mx-2 rounded bg-red-800 text-slate-200 hover:bg-red-500 hover:text-slate-800" href="{% url 'delete-resume' resume.id %}">Delete</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+
+  {% include "resume/collapse_script.html" %}
 </div>
-
-
-
-   <div class="container text-center flex justify-around mx-auto md:px-16">
-        
-
-            <a class="md:inline-block md:align-middle p-3 mx-auto rounded bg-green-800 text-slate-200 hover:bg-green-500 hover:text-slate-800" href="{% url 'create-resume' %}">Create New Resume</a>
-
-    </div>
-
-    <div class="container max-w-2xl mx-auto my-4 p-2 bg-gradient-to-b from-slate-700 to-transparent rounded-xl">
-        <h2 class="text-xl font-semibold text-blue-500">Your Resumes</h2>
-        <hr class="my-2 border-blue-100">
-        {% if resumes|length == 0 %}
-            <p class="text-slate-300">You have no resumes yet. Create one to get started!</p>
-        {% else %}
-            <ul>
-                {% for resume in resumes %}
-                    <li class="my-2 p-2">
-                        <a class="text-blue-300" href="{% url "edit-resume" resume.id %}">{{ resume.title }}</a>
-                        <a class="md:inline-block md:align-middle p-2 mx-2 rounded bg-blue-800 text-slate-200 hover:bg-blue-500 hover:text-slate-800" href="{% url 'edit-resume' resume.id %}">Edit</a>
-                        <a class="md:inline-block md:align-middle p-2 mx-2 rounded bg-red-800 text-slate-200 hover:bg-red-500 hover:text-slate-800" href="{% url 'delete-resume' resume.id %}">Delete</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-
-    </div>
-
-    
-
-{% include "resume/collapse_script.html" %}
-
 {% endblock %}

@@ -1,5 +1,6 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Collapsible section for Add buttons
         var coll = document.getElementsByClassName("collapsible");
         for (var i = 0; i < coll.length; i++) {
             coll[i].addEventListener("click", function() {
@@ -45,6 +46,27 @@
             {id: 'projects-list', url: '{% url "update-project-position" %}'},
             {id: 'certifications-list', url: '{% url "update-certification-position" %}'}
         ];
+
+        // --- Inline Edit Functionality (new code below) ---
+
+        // Handle Edit Inline buttons (for all sections)
+        document.querySelectorAll('.edit-collapsible').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                // Optionally close all other open edit forms
+                document.querySelectorAll('.edit-content').forEach(function(box) { box.style.display = "none"; });
+                // Open the correct edit form for this button
+                var target = document.querySelector(btn.getAttribute('data-target'));
+                if (target) target.style.display = "block";
+            });
+        });
+
+        // Handle Cancel buttons inside Edit forms
+        document.querySelectorAll('.close-edit').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var target = document.querySelector(btn.getAttribute('data-target'));
+                if (target) target.style.display = "none";
+            });
+        });
 
     });
 </script>
