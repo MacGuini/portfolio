@@ -71,9 +71,16 @@ def section_form(request, section, resume_pk=None, pk=None, action='add'):
                 instance.delete()
             else:
                 print("*********\nInside section_form() form.is_valid() block\nForm Data:", form.cleaned_data, "Form Errors:", form.errors, "Instance:", instance)
-                save_section(form, user_prof, resume_pk)
-                target = (reverse('edit-resume', args=[resume_pk])
-                          if resume_pk else reverse('resume-dashboard'))
+
+                # Save the section, passing the resume_pk if provided
+                # This allows the form to handle both adding to a specific resume or the dashboard
+                # If resume_pk is None, it will save to the dashboard context.
+                # If resume_pk is provided, it will save to that specific resume.
+                # The save_section utility function handles the logic of saving the section.
+                checked_pk = request.POST.get("resume_pk") or resume_pk
+                save_section(form, user_prof, checked_pk)
+                target = (reverse('edit-resume', args=[checked_pk])
+                          if checked_pk else reverse('resume-dashboard'))
                 return redirect(target)
     else:
         form = FormClass(instance=instance, user=user_prof)
@@ -203,6 +210,28 @@ def editResume(request, pk):
     skills = resume.skills.all()
     projects = resume.projects.all()
     certifications = resume.certifications.all()
+
+    # Prepare an "edit" form for each instance
+    experience_edit_forms = {
+        exp.id: ExperienceForm(instance=exp, user=current_user_profile)
+        for exp in experiences
+    }
+    education_edit_forms = {
+        edu.id: EducationForm(instance=edu, user=current_user_profile)
+        for edu in educations
+    }
+    skill_edit_forms = {
+        skill.id: SkillForm(instance=skill, user=current_user_profile)
+        for skill in skills
+    }
+    project_edit_forms = {
+        proj.id: ProjectForm(instance=proj, user=current_user_profile)
+        for proj in projects
+    }
+    certification_edit_forms = {
+        cert.id: CertificationForm(instance=cert, user=current_user_profile)
+        for cert in certifications
+    }
     
     context = {
         'form': form, # Form for editing the Resume model
@@ -213,6 +242,11 @@ def editResume(request, pk):
         'skill_add_form': skill_add_form,
         'project_add_form': project_add_form,
         'certification_add_form': certification_add_form,
+        'experience_edit_forms': experience_edit_forms,
+        'education_edit_forms': education_edit_forms,
+        'skill_edit_forms': skill_edit_forms,
+        'project_edit_forms': project_edit_forms,
+        'certification_edit_forms': certification_edit_forms,
         'experiences': experiences,
         'educations': educations,
         'skills': skills,
@@ -233,95 +267,6 @@ def deleteResume(request, pk):
     return render(request, 'delete_template.html', {'object': resume})
 
 # === Experience Views ===
-
-# addExperience is a more general view that allows adding experiences without being tied to a specific resume.
-@login_required(login_url='login')
-def addExperience(request):
-    # Adds a new experience, not tied to a specific resume.
-    current_user_profile = request.user.profile
-
-    if request.method == "POST":
-        form = ExperienceForm(request.POST, user=current_user_profile)
-        if form.is_valid():
-            experience = form.save(commit=False)
-            experience.user = current_user_profile # Assign ownership
-            experience.save()
-            # Handle M2M 'resumes' association from form's cleaned_data
-            selected_resume_objects = form.cleaned_data.get('resumes', [])
-            if selected_resume_objects:
-                experience.resumes.set(selected_resume_objects)
-            # If no resumes selected in form, it won't be associated with any resumes
-            return redirect('resume-dashboard') # Redirect to resume dashboard or another page
-    else: # GET request
-        form = ExperienceForm(user=current_user_profile) # Pass user for resume choices
-    return render(request, 'resume/add_experience.html', {'experience_form': form})
-
-# addExperience is a more general view that allows adding experiences without being tied to a specific resume.
-@login_required(login_url='login')
-def addExperienceFromResume(request, pk):
-    # Adds a new experience, potentially associating it with one or more resumes.
-    # 'pk' is the ID of the primary resume this experience is being added in context of.
-    current_user_profile = request.user.profile
-    # Ensure the context resume belongs to the current user
-    resume_context = get_object_or_404(Resume, id=pk, user=current_user_profile)
-
-    if request.method == "POST":
-        form = ExperienceForm(request.POST, user=current_user_profile)
-        if form.is_valid():
-            experience = form.save(commit=False)
-            experience.user = current_user_profile # Assign ownership
-            experience.save() # Save the experience object to get an ID
-
-            # Handle association with selected resumes
-            # form.cleaned_data['resumes'] should contain valid Resume instances if form is ModelForm
-            # and resumes field is set up correctly and validated.
-            selected_resume_objects = form.cleaned_data.get('resumes', [])
-            if selected_resume_objects:
-                experience.resumes.set(selected_resume_objects) # Use set() for M2M assignment
-            elif resume_context: # If no resumes selected in form, associate with the context resume
-                experience.resumes.add(resume_context)
-            # If you want to ensure it's always added to resume_context regardless of selection:
-            # experience.resumes.add(resume_context) # Add this line after .set() or .add() if needed
-
-            return redirect('edit-resume', pk=resume_context.id)
-    else: # GET request
-        # Initialize the form, passing user profile to populate resume choices
-        form = ExperienceForm(user=current_user_profile)
-        
-    return render(request, 'resume/add_experience_from_resume.html', {'experience_form': form, 'resume': resume_context})
-
-@login_required(login_url='login')
-def editExperience(request, pk):
-    # Edits an existing experience. 'pk' is the ID of the Experience object.
-    current_user_profile = request.user.profile
-    # Ensure the experience being edited belongs to the current user
-    experience_instance = get_object_or_404(Experience, id=pk, user=current_user_profile)
-
-    if request.method == "POST":
-        # Pass instance for editing and user profile for resume choices
-        form = ExperienceForm(request.POST, instance=experience_instance, user=current_user_profile)
-        if form.is_valid():
-            form.save() # ModelForm's save() handles M2M if 'resumes' field is part of the form
-            
-            next_url = request.GET.get('next') or request.POST.get('next')
-            if next_url: # TODO: Validate next_url to prevent open redirect vulnerabilities
-                return redirect(next_url)
-            else:
-                # default redirect if 'next' is not provided
-                primary_resume = experience_instance.resumes.first()
-
-                if primary_resume:
-                    return redirect('edit-resume', pk=primary_resume.id)
-                return redirect(reverse('resume-dashboard')) # Fallback to a general page
-    else: # GET request
-        # Pre-fill form with experience data and provide user profile for resume choices
-        form = ExperienceForm(instance=experience_instance, user=current_user_profile)
-        
-    context = {
-        'experience_form': form,
-        'experience': experience_instance
-    }
-    return render(request, 'resume/edit_experience.html', context)
 
 @login_required(login_url='login')
 def deleteExperience(request, pk):
@@ -384,87 +329,6 @@ def listExperiences(request, pk):
     return render(request, 'resume/list_experiences.html', context)
 
 # === Education Views ===
-# Applying similar logic as Experience views
-
-# addEducation is a more general view that allows adding education without being tied to a specific resume.
-@login_required(login_url='login')
-def addEducation(request):
-    # Adds a new education, not tied to a specific resume.
-    current_user_profile = request.user.profile
-
-    if request.method == "POST":
-        form = EducationForm(request.POST, user=current_user_profile)
-        if form.is_valid():
-            education = form.save(commit=False)
-            education.user = current_user_profile
-            education.save()
-            # Handle M2M 'resumes' association from form's cleaned_data
-            selected_resume_objects = form.cleaned_data.get('resumes', [])
-            if selected_resume_objects:
-                education.resumes.set(selected_resume_objects)
-            # If no resumes selected in form, it won't be associated with any resumes
-            return redirect('resume-dashboard') # Redirect to resume dashboard or another page
-    else: # GET request
-        form = EducationForm(user=current_user_profile) # Pass user for resume choices
-    return render(request, 'resume/add_education.html', {'education_form': form})
-
-# addEducationFromResume is exclusive to the 'edit-resume' functionality, allowing users to add education while editing a specific resume.# This view must pass a 'pk' to link it to the resume the user is currently editing
-@login_required(login_url='login')
-def addEducationFromResume(request, pk):
-    # Adds a new education item, potentially associating it with one or more resumes.
-    # 'pk' is the ID of the primary resume this education is being added in context of.
-    current_user_profile = request.user.profile
-    resume_context = get_object_or_404(Resume, id=pk, user=current_user_profile)
-
-    if request.method == "POST":
-        form = EducationForm(request.POST, user=current_user_profile)
-        if form.is_valid():
-            education = form.save(commit=False)
-            education.user = current_user_profile
-            education.save()
-
-            selected_resume_objects = form.cleaned_data.get('resumes', [])
-            if selected_resume_objects:
-                education.resumes.set(selected_resume_objects)
-            elif resume_context: # If no resumes selected in form, associate with the context resume
-                education.resumes.add(resume_context)
-            # Optional: education.resumes.add(resume_context) # To always add to current context
-
-            return redirect('edit-resume', pk=resume_context.id)
-    else: # GET request
-        form = EducationForm(user=current_user_profile)
-        
-    return render(request, 'resume/add_education_from_resume.html', {'education_form': form, 'resume': resume_context})
-
-@login_required(login_url='login')
-def editEducation(request, pk):
-    # Edits an existing education item. 'pk' is the ID of the Education object.
-    current_user_profile = request.user.profile
-    # Ensure the education being edited belongs to the current user
-    education_instance = get_object_or_404(Education, id=pk, user=current_user_profile)
-
-    if request.method == "POST":
-        # Pass instance for editing and user profile for resume choices
-        form = EducationForm(request.POST, instance=education_instance, user=current_user_profile)
-
-        if form.is_valid():
-            form.save() # ModelForm's save() handles M2M if 'resumes' field is part of the form
-            next_url = request.GET.get('next') or request.POST.get('next')
-            if next_url: # TODO: Validate next_url
-                return redirect(next_url)
-            else:
-                primary_resume = education_instance.resumes.first()
-                if primary_resume:
-                    return redirect('edit-resume', pk=primary_resume.id)
-                return redirect(reverse('resume-dashboard'))
-    else: # GET request
-        form = EducationForm(instance=education_instance, user=current_user_profile)
-        
-    context = {
-        'education_form': form,
-        'education': education_instance
-    }
-    return render(request, 'resume/edit_education.html', context)
 
 @login_required(login_url='login')
 def deleteEducation(request, pk):
@@ -486,87 +350,6 @@ def deleteEducation(request, pk):
 
 # === Skill Views ===
 
-# addSkill is a more general view that allows adding skills without being tied to a specific resume.
-@login_required(login_url='login')
-def addSkill(request):
-    # Adds a new skill, not tied to a specific resume.
-    current_user_profile = request.user.profile
-
-    if request.method == "POST":
-        form = SkillForm(request.POST, user=current_user_profile)
-        if form.is_valid():
-            skill = form.save(commit=False)
-            skill.user = current_user_profile
-            skill.save() # Save skill to get an ID
-            # Handle M2M 'resumes' association from form's cleaned_data
-            selected_resume_objects = form.cleaned_data.get('resumes', [])
-            if selected_resume_objects:
-                skill.resumes.set(selected_resume_objects)
-            # If no resumes selected in form, it won't be associated with any resumes
-            return redirect('resume-dashboard') # Redirect to resume dashboard or another page
-    else: # GET request
-        form = SkillForm(user=current_user_profile) # Pass user for resume choices
-    return render(request, 'resume/add_skill.html', {'skill_form': form})
-
-
-# addSkillFromResume is exclusive to the 'edit-resume' functionality, allowing users to add skills while editing a specific resume.
-# This view must pass a 'pk' to link it to the resume the user is currently editing.
-@login_required(login_url='login')
-def addSkillFromResume(request, pk):
-    # Adds a new skill, potentially associating it with one or more resumes.
-    # 'pk' is the ID of the primary resume this skill is being added in context of.
-    current_user_profile = request.user.profile
-    resume_context = get_object_or_404(Resume, id=pk, user=current_user_profile)
-
-    if request.method == "POST":
-        form = SkillForm(request.POST, user=current_user_profile) # Pass user for resume choices
-        if form.is_valid():
-            skill = form.save(commit=False)
-            skill.user = current_user_profile # Assign ownership
-            skill.save() # Save skill to get an ID
-
-            # Handle M2M 'resumes' association from form's cleaned_data
-            selected_resume_objects = form.cleaned_data.get('resumes', [])
-            if selected_resume_objects:
-                skill.resumes.set(selected_resume_objects)
-            elif resume_context: # If no resumes selected in form, associate with the context resume
-                skill.resumes.add(resume_context)
-            # Optional: skill.resumes.add(resume_context) # To always add to current context
-
-            return redirect('edit-resume', pk=resume_context.id)
-    else: # GET request
-        form = SkillForm(user=current_user_profile) # Pass user for resume choices
-        
-    return render(request, 'resume/add_skill_from_resume.html', {'skill_form': form, 'resume': resume_context})
-
-@login_required(login_url='login')
-def editSkill(request, pk):
-    # Edits an existing skill. 'pk' is the ID of the Skill object.
-    current_user_profile = request.user.profile
-    skill_instance = get_object_or_404(Skill, id=pk, user=current_user_profile) # Secure fetch
-
-    if request.method == "POST":
-        form = SkillForm(request.POST, instance=skill_instance, user=current_user_profile) # Pass instance and user
-        if form.is_valid():
-            form.save() # ModelForm's save handles M2M
-            
-            next_url = request.GET.get('next') or request.POST.get('next')
-            if next_url: # TODO: Validate next_url
-                return redirect(next_url)
-            else:
-                primary_resume = skill_instance.resumes.first()
-                if primary_resume:
-                    return redirect('edit-resume', pk=primary_resume.id)
-                return redirect(reverse('resume-dashboard')) 
-    else: # GET request
-        form = SkillForm(instance=skill_instance, user=current_user_profile) # Pass instance and user
-        
-    context = {
-        'skill_form': form,
-        'skill': skill_instance
-    }
-    return render(request, 'resume/edit_skill.html', context)
-
 @login_required(login_url='login')
 def deleteSkill(request, pk):
     # Handles deletion of a skill.
@@ -586,62 +369,6 @@ def deleteSkill(request, pk):
     return render(request, 'delete_template.html', {'object': skill, 'next_url': next_url})
 
 # === Project Views ===
-# Assuming Project model has 'user' (FK to Profile) and 'resumes' (M2M to Resume)
-# Assuming ProjectForm is like ExperienceForm
-
-@login_required(login_url='login')
-def addProject(request, pk):
-    # Adds a new project, potentially associating it with one or more resumes.
-    # 'pk' is the ID of the primary resume this project is being added in context of.
-    current_user_profile = request.user.profile
-    resume_context = get_object_or_404(Resume, id=pk, user=current_user_profile)
-
-    if request.method == "POST":
-        form = ProjectForm(request.POST, user=current_user_profile)
-        if form.is_valid():
-            project = form.save(commit=False)
-            project.user = current_user_profile
-            project.save()
-
-            selected_resume_objects = form.cleaned_data.get('resumes', [])
-            if selected_resume_objects:
-                project.resumes.set(selected_resume_objects)
-            elif resume_context:
-                project.resumes.add(resume_context)
-            # Optional: project.resumes.add(resume_context)
-
-            return redirect('edit-resume', pk=resume_context.id)
-    else: # GET request
-        form = ProjectForm(user=current_user_profile)
-        
-    return render(request, 'resume/project_form.html', {'project_form': form, 'resume': resume_context})
-
-@login_required(login_url='login')
-def editProject(request, pk):
-    # Edits an existing project. 'pk' is the ID of the Project object.
-    current_user_profile = request.user.profile
-    project_instance = get_object_or_404(Project, id=pk, user=current_user_profile)
-
-    if request.method == "POST":
-        form = ProjectForm(request.POST, instance=project_instance, user=current_user_profile)
-        if form.is_valid():
-            form.save()
-            next_url = request.GET.get('next') or request.POST.get('next')
-            if next_url: # TODO: Validate next_url
-                return redirect(next_url)
-            else:
-                primary_resume = project_instance.resumes.first()
-                if primary_resume:
-                    return redirect('edit-resume', pk=primary_resume.id)
-                return redirect(reverse('resume-dashboard'))
-    else: # GET request
-        form = ProjectForm(instance=project_instance, user=current_user_profile)
-        
-    context = {
-        'project_form': form,
-        'project': project_instance
-    }
-    return render(request, 'resume/edit_project.html', context)
 
 @login_required(login_url='login')
 def deleteProject(request, pk):
@@ -662,62 +389,6 @@ def deleteProject(request, pk):
     return render(request, 'delete_template.html', {'object': project, 'next_url': next_url})
 
 # === Certification Views ===
-# Assuming Certification model has 'user' (FK to Profile) and 'resumes' (M2M to Resume)
-# Assuming CertificationForm is like ExperienceForm
-
-@login_required(login_url='login')
-def addCertification(request, pk):
-    # Adds a new certification, potentially associating it with one or more resumes.
-    # 'pk' is the ID of the primary resume this certification is being added in context of.
-    current_user_profile = request.user.profile
-    resume_context = get_object_or_404(Resume, id=pk, user=current_user_profile)
-
-    if request.method == "POST":
-        form = CertificationForm(request.POST, user=current_user_profile)
-        if form.is_valid():
-            certification = form.save(commit=False)
-            certification.user = current_user_profile
-            certification.save()
-
-            selected_resume_objects = form.cleaned_data.get('resumes', [])
-            if selected_resume_objects:
-                certification.resumes.set(selected_resume_objects)
-            elif resume_context:
-                certification.resumes.add(resume_context)
-            # Optional: certification.resumes.add(resume_context)
-
-            return redirect('edit-resume', pk=resume_context.id)
-    else: # GET request
-        form = CertificationForm(user=current_user_profile)
-        
-    return render(request, 'resume/certification_form.html', {'certification_form': form, 'resume': resume_context})
-
-@login_required(login_url='login')
-def editCertification(request, pk):
-    # Edits an existing certification. 'pk' is the ID of the Certification object.
-    current_user_profile = request.user.profile
-    certification_instance = get_object_or_404(Certification, id=pk, user=current_user_profile)
-
-    if request.method == "POST":
-        form = CertificationForm(request.POST, instance=certification_instance, user=current_user_profile)
-        if form.is_valid():
-            form.save()
-            next_url = request.GET.get('next') or request.POST.get('next')
-            if next_url: # TODO: Validate next_url
-                return redirect(next_url)
-            else:
-                primary_resume = certification_instance.resumes.first()
-                if primary_resume:
-                    return redirect('edit-resume', pk=primary_resume.id)
-                return redirect(reverse('resume-dashboard'))
-    else: # GET request
-        form = CertificationForm(instance=certification_instance, user=current_user_profile)
-        
-    context = {
-        'certification_form': form,
-        'certification': certification_instance
-    }
-    return render(request, 'resume/edit_certification.html', context)
 
 @login_required(login_url='login')
 def deleteCertification(request, pk):
