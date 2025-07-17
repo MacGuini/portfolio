@@ -35,4 +35,7 @@ urlpatterns = [
     path('<int:resume_pk>/add/<str:section>/', section_form, {'action':'add'},    name='add-section-resume'),
     path('edit/<str:section>/<int:pk>/', section_form, {'action':'edit'},   name='edit-section'),
     path('delete/<str:section>/<int:pk>/', section_form, {'action':'delete'}, name='delete-section'),
+
+    # Print URLs
+    path('print/<int:pk>/<str:username>', views.printResume, name='print-resume'),
 ]

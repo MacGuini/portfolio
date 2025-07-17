@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect # Keep for your AJAX views
 from django.urls import reverse # For safer redirects
-
+from accounts.models import Profile
 from .utils import save_section
 from .models import Resume, Experience, Education, Skill, Project, Certification
 from .forms import (
@@ -507,3 +507,34 @@ def update_certification_order(request):
         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+
+# === Print Functions ===
+
+# Public view to print a resume as long as the link is valid to allow sharing with potential employers.
+# No login is required to view the print version. Future security measures will be added later on to ensure that only those with the link can view it such as a token or password.
+def printResume(request, pk, username):
+    # Handles printing of a resume.
+    profile = get_object_or_404(Profile, username=username)
+    resume = get_object_or_404(Resume, id=pk, user=profile)
+    if not resume:
+        raise Http404("Resume not found")
+    else:
+
+        # Fetch related items for display
+        experiences = resume.experiences.all()
+        educations = resume.educations.all()
+        skills = resume.skills.all()
+        projects = resume.projects.all()
+        certifications = resume.certifications.all()
+   
+        context = {
+            'resume': resume,
+            'experiences': experiences,
+            'educations': educations,
+            'skills': skills,
+            'projects': projects,
+            'certifications': certifications,
+            'creatorProfile': profile,  # Pass the profile for context
+        }
+    return render(request, 'resume/print_resume.html', context)
+# This view renders a printable version of the resume, including all related sections.

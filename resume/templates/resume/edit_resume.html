@@ -3,6 +3,9 @@
 
 {% block content %}
 
+<!-- Printable View -->
+<a href="{% url 'print-resume' pk=resume.id username=resume.user.username %}">PRINT</a>
+
 <form class="pt-8 lg:px-32 mx-auto px-4 md:px-16 xl:px-64" method="POST">
     {% csrf_token %}
     <div class="text-center my-8">
