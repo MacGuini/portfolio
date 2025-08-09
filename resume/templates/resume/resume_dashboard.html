@@ -2,6 +2,10 @@
 {% load static %}
 {% load resume_tags %}
 {% block content %}
+
+<div class="px-4"> <!-- Main content starts here -->
+
+
 <div class="max-w-4xl">
   <h2 class="text-base/7 font-semibold text-indigo-400">Digital Resume</h2>
   <p class="mt-2 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
@@ -25,10 +29,39 @@
   </dl>
 </div>
 
+
+<div class="mt-20 rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black p-px shadow-lg">
+  <div class="rounded-lg p-8 sm:p-10">
+      <div class="flex flex-col items-start gap-y-4 sm:flex-row sm:items-center sm:justify-between">
+          <h2 class="text-xl font-semibold leading-7 text-white">Manage Resumes</h2>
+          <a href="{% url 'create-resume' %}" class="order-first sm:order-last rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Create New Resume</a>
+      </div>
+      <div class="mt-8 flow-root">
+          {% if resumes %}
+          <div class="-my-6 divide-y divide-slate-700">
+              {% for resume in resumes %}
+              <div class="py-6 flex flex-col gap-y-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p class="text-sm font-medium leading-6 text-slate-200"><a href="{% url 'edit-resume' resume.id %}" class="hover:text-indigo-400">{{ resume.title }}</a></p>
+                  <div class="flex items-center gap-x-4">
+                      <a href="{% url 'view-resume' creatorProfile.username resume.id %}" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">View/Share</a>
+                      <a href="{% url 'edit-resume' resume.id %}" class="rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-white/20">Edit</a>
+                      <a href="{% url 'delete-resume' resume.id %}" class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500">Delete</a>
+                  </div>
+              </div>
+              {% endfor %}
+          </div>
+          {% else %}
+          <p class="text-sm text-slate-400">You have no resumes yet. Create one to get started!</p>
+          {% endif %}
+      </div>
+  </div>
+</div>
+
+
 <div class="mt-20 grid grid-cols-1 gap-8 lg:grid-cols-12">
 
   <div class="lg:col-span-12 rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black p-px shadow-lg">
-    <div class="rounded-lg bg-slate-900 p-8 sm:p-10">
+    <div class="rounded-lg p-8 sm:p-10">
       <h3 class="text-base font-semibold leading-7 text-indigo-400">Experiences</h3>
       <div class="mt-6 flow-root">
         <div class="-my-6 divide-y divide-slate-700">
@@ -57,7 +90,7 @@
   </div>
   
   <div class="lg:col-span-6 rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black p-px shadow-lg">
-    <div class="rounded-lg bg-slate-900 p-8 sm:p-10">
+    <div class="rounded-lg p-8 sm:p-10">
         <h3 class="text-base font-semibold leading-7 text-indigo-400">Education</h3>
         <div class="mt-6 flow-root"><div class="-my-6 divide-y divide-slate-700">
           {% for education in educations %}
@@ -84,7 +117,7 @@
   </div>
 
   <div class="lg:col-span-6 rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black p-px shadow-lg">
-    <div class="rounded-lg bg-slate-900 p-8 sm:p-10">
+    <div class="rounded-lg p-8 sm:p-10">
         <h3 class="text-base font-semibold leading-7 text-indigo-400">Skills</h3>
         <div class="mt-6 flow-root"><div class="-my-6 divide-y divide-slate-700">
           {% for skill in skills %}
@@ -110,7 +143,7 @@
   </div>
 
   <div class="lg:col-span-7 rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black p-px shadow-lg">
-    <div class="rounded-lg bg-slate-900 p-8 sm:p-10">
+    <div class="rounded-lg p-8 sm:p-10">
         <h3 class="text-base font-semibold leading-7 text-indigo-400">Projects</h3>
         <div class="mt-6 flow-root"><div class="-my-6 divide-y divide-slate-700">
           {% for project in projects %}
@@ -137,7 +170,7 @@
   </div>
 
   <div class="lg:col-span-5 rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black p-px shadow-lg">
-    <div class="rounded-lg bg-slate-900 p-8 sm:p-10">
+    <div class="rounded-lg p-8 sm:p-10">
         <h3 class="text-base font-semibold leading-7 text-indigo-400">Certifications</h3>
         <div class="mt-6 flow-root"><div class="-my-6 divide-y divide-slate-700">
           {% for cert in certifications %}
@@ -165,32 +198,7 @@
 
 </div>
 
-<div class="mt-20 rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black p-px shadow-lg">
-  <div class="rounded-lg bg-slate-900 p-8 sm:p-10">
-      <div class="flex flex-col items-start gap-y-4 sm:flex-row sm:items-center sm:justify-between">
-          <h2 class="text-xl font-semibold leading-7 text-white">Manage Resumes</h2>
-          <a href="{% url 'create-resume' %}" class="order-first sm:order-last rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Create New Resume</a>
-      </div>
-      <div class="mt-8 flow-root">
-          {% if resumes %}
-          <div class="-my-6 divide-y divide-slate-700">
-              {% for resume in resumes %}
-              <div class="py-6 flex flex-col gap-y-3 sm:flex-row sm:items-center sm:justify-between">
-                  <p class="text-sm font-medium leading-6 text-slate-200"><a href="{% url 'edit-resume' resume.id %}" class="hover:text-indigo-400">{{ resume.title }}</a></p>
-                  <div class="flex items-center gap-x-4">
-                      <a href="{% url 'edit-resume' resume.id %}" class="rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-white/20">Edit</a>
-                      <a href="{% url 'delete-resume' resume.id %}" class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500">Delete</a>
-                  </div>
-              </div>
-              {% endfor %}
-          </div>
-          {% else %}
-          <p class="text-sm text-slate-400">You have no resumes yet. Create one to get started!</p>
-          {% endif %}
-      </div>
-  </div>
-</div>
 
+</div> <!-- End of main content -->
   {% include "resume/collapse_script.html" %}
-</div>
 {% endblock %}

@@ -1,7 +1,7 @@
 {# resume/partials/section_dropdown.html #}
 {% if button_icon == "+" %}
   <!-- ADD MODE: Collapsible, plus button -->
-  <div class="text-center mb-4">
+  <div class="text-center mb-4 text-slate-300">
     <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded">{{ button_icon }}</button>
     <div class="content mt-2" style="display: none;">
       <form method="post" action="{{ action_url }}" class="mx-auto max-w-md flex flex-col items-center">
@@ -13,7 +13,7 @@
   </div>
 {% else %}
   <!-- EDIT INLINE MODE: Open form, no pencil button -->
-  <div class="text-center mb-4">
+  <div class="text-center mb-4 text-slate-300">
     <div class="content mt-2" style="display: block;">
       <form method="post" action="{{ action_url }}" class="mx-auto max-w-md flex flex-col items-center">
         {% csrf_token %}

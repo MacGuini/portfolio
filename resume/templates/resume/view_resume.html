@@ -1,0 +1,165 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load resume_tags %}
+{% block content %}
+
+<div class="px-4"> <!-- Beginning of container -->
+
+
+<div class="flex flex-col items-center justify-center">
+  <div class="w-full flex justify-end mb-4">
+    <a href="{% url 'print-resume' username resume.id %}" class="inline-flex items-center px-4 py-2 mt-4 bg-indigo-600 text-white text-sm font-semibold rounded hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+      Print Resume
+    </a>
+  </div>
+  <div class="max-w-4xl text-center">
+    <h2 class="text-base/7 font-semibold text-indigo-400">Digital Resume</h2>
+    <p class="mt-2 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+      {{ creatorProfile.fname }}{% if creatorProfile.mname %} {{ creatorProfile.mname }}{% endif %} {{ creatorProfile.lname }}
+    </p>
+    <dl class="mt-6 flex flex-col gap-y-4 text-sm text-slate-300 sm:flex-row sm:flex-wrap sm:gap-x-8 justify-center">
+      {% if creatorProfile.city or creatorProfile.state %}
+      <div class="flex items-center gap-x-2 justify-center">
+        <dt class="sr-only">Location</dt>
+        <svg class="h-5 w-5 flex-none text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.1.4-.223.654-.369.625-.36.942-.562 1.27-.781.996-.664 1.93-1.52 2.6-2.506C15.864 13.992 16 13.24 16 12.5A6 6 0 004 12.5c0 .74.136 1.492.427 2.242.67 1.012 1.604 1.868 2.6 2.506.328.22.645.422 1.27.782.253.145.467.268.653.368.07.037.14.07.21.104.023.012.044.023.066.034l.003.002zM10 11a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" clip-rule="evenodd" /></svg>
+        <dd>{% if creatorProfile.city and creatorProfile.state %}{{ creatorProfile.city }}, {{ creatorProfile.state }}{% elif creatorProfile.city %}{{ creatorProfile.city }}{% else %}{{ creatorProfile.state }}{% endif %}</dd>
+      </div>
+      {% endif %}
+      {% if creatorProfile.email %}
+      <div class="flex items-center gap-x-2 justify-center">
+        <dt class="sr-only">Email</dt>
+        <svg class="h-5 w-5 flex-none text-slate-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z" /><path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" /></svg>
+        <dd><a class="hover:text-white" href="mailto:{{ creatorProfile.email }}">{{ creatorProfile.email }}</a></dd>
+      </div>
+      {% endif %}
+    </dl>
+  </div>
+</div>
+
+<div class="mt-20 grid grid-cols-1 gap-8 lg:grid-cols-12">
+
+  <div class="lg:col-span-12 rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black p-px shadow-lg">
+    <div class="rounded-lg p-8 sm:p-10">
+      <h3 class="text-base font-semibold leading-7 text-indigo-400">Experiences</h3>
+      <div class="mt-6 flow-root">
+        <div class="-my-6 divide-y divide-slate-700">
+          {% for experience in experiences %}
+          <div class="py-6">
+            <div class="flex items-start gap-x-4">
+              <div class="flex-auto">
+                <h4 class="font-semibold text-slate-200">{{ experience.job_title }}</h4>
+                <p class="text-sm text-slate-400">{{ experience.company_name }} &middot; {{ experience.start_date }} to {{ experience.end_date }}</p>
+                <p class="mt-2 text-sm leading-6 text-slate-300">{{ experience.description }}</p>
+              </div>
+
+            </div>
+
+          </div>
+          {% empty %}
+          <p class="py-6 text-sm text-slate-400">No experiences added yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+  
+  <div class="lg:col-span-6 rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black p-px shadow-lg">
+    <div class="rounded-lg p-8 sm:p-10">
+        <h3 class="text-base font-semibold leading-7 text-indigo-400">Education</h3>
+        <div class="mt-6 flow-root"><div class="-my-6 divide-y divide-slate-700">
+          {% for education in educations %}
+          <div class="py-6">
+            <div class="flex items-start gap-x-4">
+              <div class="flex-auto">
+                <h4 class="font-semibold text-slate-200">{{ education.degree }}</h4>
+                <p class="text-sm text-slate-400">{{ education.institution_name }} &middot; {{ education.start_date }} to {{ education.end_date }}</p>
+                <p class="mt-2 text-sm leading-6 text-slate-300">{{ education.description }}</p>
+              </div>
+
+            </div>
+
+          </div>
+          {% empty %}
+          <p class="py-6 text-sm text-slate-400">No education details added yet.</p>
+          {% endfor %}
+        </div></div>
+
+    </div>
+  </div>
+
+  <div class="lg:col-span-6 rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black p-px shadow-lg">
+    <div class="rounded-lg p-8 sm:p-10">
+        <h3 class="text-base font-semibold leading-7 text-indigo-400">Skills</h3>
+        <div class="mt-6 flow-root"><div class="-my-6 divide-y divide-slate-700">
+          {% for skill in skills %}
+          <div class="py-6">
+            <div class="flex items-start gap-x-4">
+              <div class="flex-auto">
+                <h4 class="font-semibold text-slate-200">{{ skill.name }}</h4>
+                {% if skill.proficiency %}<p class="text-sm text-slate-400">{{ skill.proficiency }}</p>{% endif %}
+              </div>
+
+            </div>
+
+          </div>
+          {% empty %}
+          <p class="py-6 text-sm text-slate-400">No skills added yet.</p>
+          {% endfor %}
+        </div></div>
+
+    </div>
+  </div>
+
+  <div class="lg:col-span-7 rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black p-px shadow-lg">
+    <div class="rounded-lg p-8 sm:p-10">
+        <h3 class="text-base font-semibold leading-7 text-indigo-400">Projects</h3>
+        <div class="mt-6 flow-root"><div class="-my-6 divide-y divide-slate-700">
+          {% for project in projects %}
+          <div class="py-6">
+            <div class="flex items-start gap-x-4">
+              <div class="flex-auto">
+                <h4 class="font-semibold text-slate-200">{{ project.title }}</h4>
+                <p class="mt-1 text-sm leading-6 text-slate-300">{{ project.description }}</p>
+                {% if project.link %}<a href="{{ project.link }}" class="text-sm font-semibold text-indigo-400 hover:text-indigo-300" target="_blank" rel="noopener noreferrer">View Project &rarr;</a>{% endif %}
+              </div>
+
+            </div>
+
+          </div>
+          {% empty %}
+          <p class="py-6 text-sm text-slate-400">No projects added yet.</p>
+          {% endfor %}
+        </div></div>
+
+    </div>
+  </div>
+
+  <div class="lg:col-span-5 rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black p-px shadow-lg">
+    <div class="rounded-lg p-8 sm:p-10">
+        <h3 class="text-base font-semibold leading-7 text-indigo-400">Certifications</h3>
+        <div class="mt-6 flow-root"><div class="-my-6 divide-y divide-slate-700">
+          {% for cert in certifications %}
+          <div class="py-6">
+            <div class="flex items-start gap-x-4">
+              <div class="flex-auto">
+                <h4 class="font-semibold text-slate-200">{{ cert.name }}</h4>
+                <p class="text-sm text-slate-400">{{ cert.issuer }}{% if cert.issue_date %} &middot; {{ cert.issue_date }}{% endif %}</p>
+                {% if cert.description %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ cert.description }}</p>{% endif %}
+              </div>
+
+            </div>
+
+          </div>
+          {% empty %}
+          <p class="py-6 text-sm text-slate-400">No certifications added yet.</p>
+          {% endfor %}
+        </div></div>
+
+    </div>
+  </div>
+
+</div>
+
+</div> <!-- End of container -->
+{% endblock %}

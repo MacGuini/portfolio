@@ -8,6 +8,8 @@ urlpatterns = [
     path('create-resume/', views.createResume, name='create-resume'),
     path('edit-resume/<int:pk>/', views.editResume, name='edit-resume'),
     path('delete-resume/<int:pk>/', views.deleteResume, name='delete-resume'),
+    path('view-resume/<str:username>/<int:pk>/', views.viewResume, name='view-resume'),
+    path('view-profile-resume/<str:username>/', views.viewProfileResume, name='view-profile-resume'),
 
     # Experience URLs
     path('list-experiences/<int:pk>/', views.listExperiences, name='list-experiences'),
@@ -37,5 +39,5 @@ urlpatterns = [
     path('delete/<str:section>/<int:pk>/', section_form, {'action':'delete'}, name='delete-section'),
 
     # Print URLs
-    path('print/<int:pk>/<str:username>', views.printResume, name='print-resume'),
+    path('print/<str:username>/<int:pk>/', views.printResume, name='print-resume'),
 ]

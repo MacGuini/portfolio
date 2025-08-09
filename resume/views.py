@@ -94,6 +94,50 @@ def section_form(request, section, resume_pk=None, pk=None, action='add'):
                         reverse(f"{action}-section", args=[section, pk])),
     })
 
+def viewResume(request, pk, username):
+    # This view is for viewing a specific resume by its ID and the username of the profile that owns it.
+   
+    profile = get_object_or_404(Profile, username=username)
+    resume = get_object_or_404(Resume, id=pk, user=profile)
+    experiences = resume.experiences.all()
+    educations = resume.educations.all()
+    skills = resume.skills.all()
+    projects = resume.projects.all()
+    certifications = resume.certifications.all()
+    context = {
+        'resume': resume,
+        'username': username,
+        'creatorProfile': profile,
+        'experiences': experiences,
+        'educations': educations,
+        'skills': skills,
+        'projects': projects,
+        'certifications': certifications,
+    }
+    return render(request, 'resume/view_resume.html', context)
+
+def viewProfileResume(request, username):
+    # This view is for viewing a resume by the username of the profile that owns it.
+    # All of this profile's resume data will be displayed. Not just one specific resume.
+    # This is meant as a digital resume for potential employers. There will be no CRUD functionality here.
+    profile = get_object_or_404(Profile, username=username)
+    experiences = Experience.objects.filter(user=profile)
+    educations = Education.objects.filter(user=profile)
+    skills = Skill.objects.filter(user=profile)
+    projects = Project.objects.filter(user=profile)
+    certifications = Certification.objects.filter(user=profile)
+    context = {
+        'creatorProfile': profile,
+        'experiences': experiences,
+        'educations': educations,
+        'skills': skills,
+        'projects': projects,
+        'certifications': certifications,
+    }
+    return render(request, 'resume/view_profile_resume.html', context)
+    
+
+
 @login_required(login_url='login')
 def resumeDashboard(request):
     # Fetches and displays resumes belonging to the currently logged-in user's profile.

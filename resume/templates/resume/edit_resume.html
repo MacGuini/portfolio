@@ -3,144 +3,121 @@
 
 {% block content %}
 
-<!-- Printable View -->
-<a href="{% url 'print-resume' pk=resume.id username=resume.user.username %}">PRINT</a>
-
-<form class="pt-8 lg:px-32 mx-auto px-4 md:px-16 xl:px-64" method="POST">
-    {% csrf_token %}
-    <div class="text-center my-8">
-        <span class="px-4 text-blue-700 font-medium text-2xl">Edit Resume</span>
-    </div>
-    {{ form.as_p }}
-    <div class="flex justify-center my-4">
-        <button type="submit" class="bg-blue-600 hover:bg-blue-800 transition text-white font-bold py-2 px-6 rounded-xl shadow">Update</button>
-    </div>
-</form>
-
-<div class="pt-8 lg:px-32 xl:px-64 mx-auto px-2 md:px-6 text-blue-300 space-y-16">
-
-    <!-- Experiences -->
-    <section id="experience-section">
-        <div class="flex items-center mb-4">
-            <hr class="flex-grow border-t border-blue-200">
-            <span class="px-4 text-blue-600 font-semibold text-xl md:text-2xl tracking-tight">Experiences</span>
-            <hr class="flex-grow border-t border-blue-200">
-        </div>
-        <div class="max-w-2xl mx-auto">
-            <div class="mb-4">
-                <div class="rounded-xl bg-blue-950/70 shadow p-4 mb-2">
-                    {% include "resume/partials/section_dropdown.html" with form=experience_add_form button_icon="+" action_url="experience"|get_add_url:resume.id button_label="Add Experience" %}
-                </div>
-            </div>
-            {% for experience in experiences %}
-            <div id="edit-experience-{{ experience.id }}" class="bg-slate-800/80 rounded-2xl shadow-xl my-6 p-6 md:p-8 relative">
-                {% include "resume/partials/section_dropdown.html" with form=experience_edit_forms|dict_get:experience.id button_icon="✎" action_url=experience.id|get_edit_url:"experience" button_label="Save Experience" %}
-                <div class="flex justify-end mt-4">
-                    <a href="{% url 'delete-experience' experience.id %}?next={{ request.get_full_path }}#edit-experience-{{ experience.id }}" class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-xl shadow-sm transition">Delete</a>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-
-    <!-- Education -->
-    <section id="education-section">
-        <div class="flex items-center mb-4">
-            <hr class="flex-grow border-t border-blue-200">
-            <span class="px-4 text-blue-600 font-semibold text-xl md:text-2xl tracking-tight">Education</span>
-            <hr class="flex-grow border-t border-blue-200">
-        </div>
-        <div class="max-w-2xl mx-auto">
-            <div class="mb-4">
-                <div class="rounded-xl bg-blue-950/70 shadow p-4 mb-2">
-                    {% include "resume/partials/section_dropdown.html" with form=education_add_form button_icon="+" action_url="education"|get_add_url:resume.id button_label="Add Education" %}
-                </div>
-            </div>
-            {% for education in educations %}
-            <div id="edit-education-{{ education.id }}" class="bg-slate-800/80 rounded-2xl shadow-xl my-6 p-6 md:p-8 relative">
-                {% include "resume/partials/section_dropdown.html" with form=education_edit_forms|dict_get:education.id button_icon="✎" action_url=education.id|get_edit_url:"education" button_label="Save Education" %}
-                <div class="flex justify-end mt-4">
-                    <a href="{% url 'delete-education' education.id %}?next={{ request.get_full_path }}#edit-education-{{ education.id }}" class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-xl shadow-sm transition">Delete</a>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-
-    <!-- Skills -->
-    <section id="skill-section">
-        <div class="flex items-center mb-4">
-            <hr class="flex-grow border-t border-blue-200">
-            <span class="px-4 text-blue-600 font-semibold text-xl md:text-2xl tracking-tight">Skills</span>
-            <hr class="flex-grow border-t border-blue-200">
-        </div>
-        <div class="max-w-2xl mx-auto">
-            <div class="mb-4">
-                <div class="rounded-xl bg-blue-950/70 shadow p-4 mb-2">
-                    {% include "resume/partials/section_dropdown.html" with form=skill_add_form button_icon="+" action_url="skill"|get_add_url:resume.id button_label="Add Skill" %}
-                </div>
-            </div>
-            {% for skill in skills %}
-            <div id="edit-skill-{{ skill.id }}" class="bg-slate-800/80 rounded-2xl shadow-xl my-6 p-6 md:p-8 relative">
-                {% include "resume/partials/section_dropdown.html" with form=skill_edit_forms|dict_get:skill.id button_icon="✎" action_url=skill.id|get_edit_url:"skill" button_label="Save Skill" %}
-                <div class="flex justify-end mt-4">
-                    <a href="{% url 'delete-skill' skill.id %}?next={{ request.get_full_path }}#edit-skill-{{ skill.id }}" class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-xl shadow-sm transition">Delete</a>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-
-    <!-- Projects -->
-    <section id="project-section">
-        <div class="flex items-center mb-4">
-            <hr class="flex-grow border-t border-blue-200">
-            <span class="px-4 text-blue-600 font-semibold text-xl md:text-2xl tracking-tight">Projects</span>
-            <hr class="flex-grow border-t border-blue-200">
-        </div>
-        <div class="max-w-2xl mx-auto">
-            <div class="mb-4">
-                <div class="rounded-xl bg-blue-950/70 shadow p-4 mb-2">
-                    {% include "resume/partials/section_dropdown.html" with form=project_add_form button_icon="+" action_url="project"|get_add_url:resume.id button_label="Add Project" %}
-                </div>
-            </div>
-            {% for project in projects %}
-            <div id="edit-project-{{ project.id }}" class="bg-slate-800/80 rounded-2xl shadow-xl my-6 p-6 md:p-8 relative">
-                {% include "resume/partials/section_dropdown.html" with form=project_edit_forms|dict_get:project.id button_icon="✎" action_url=project.id|get_edit_url:"project" button_label="Save Project" %}
-                <div class="flex justify-end mt-4">
-                    <a href="{% url 'delete-project' project.id %}?next={{ request.get_full_path }}#edit-project-{{ project.id }}" class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-xl shadow-sm transition">Delete</a>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
-
-    <!-- Certifications -->
-    <section id="certification-section">
-        <div class="flex items-center mb-4">
-            <hr class="flex-grow border-t border-blue-200">
-            <span class="px-4 text-blue-600 font-semibold text-xl md:text-2xl tracking-tight">Certifications</span>
-            <hr class="flex-grow border-t border-blue-200">
-        </div>
-        <div class="max-w-2xl mx-auto">
-            <div class="mb-4">
-                <div class="rounded-xl bg-blue-950/70 shadow p-4 mb-2">
-                    {% include "resume/partials/section_dropdown.html" with form=certification_add_form button_icon="+" action_url="certification"|get_add_url:resume.id button_label="Add Certification" %}
-                </div>
-            </div>
-            {% for certification in certifications %}
-            <div id="edit-certification-{{ certification.id }}" class="bg-slate-800/80 rounded-2xl shadow-xl my-6 p-6 md:p-8 relative">
-                {% include "resume/partials/section_dropdown.html" with form=certification_edit_forms|dict_get:certification.id button_icon="✎" action_url=certification.id|get_edit_url:"certification" button_label="Save Certification" %}
-                <div class="flex justify-end mt-4">
-                    <a href="{% url 'delete-certification' certification.id %}?next={{ request.get_full_path }}#edit-certification-{{ certification.id }}" class="bg-red-600 hover:bg-red-800 text-white font-semibold py-2 px-4 rounded-xl shadow-sm transition">Delete</a>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </section>
+<!-- Header -->
+<div class="max-w-4xl px-6 mx-auto mt-12">
+  <h2 class="text-base font-semibold text-indigo-400">Edit Resume</h2>
+  <p class="mt-1 text-4xl font-semibold tracking-tight text-white sm:text-5xl">{{ resume.title }}</p>
 </div>
 
-{% include "resume/sortable_script.html" %}
-{% include "resume/collapse_script.html" %}
+<!-- Resume Form -->
+<div class="max-w-4xl px-6 mx-auto mt-10">
+  <form method="POST" class="bg-slate-900 rounded-lg shadow-lg">
+    <div class="p-8 sm:p-10">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="mt-6 text-center">
+        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-6 rounded shadow">
+          Update Resume
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
 
+<!-- SECTION BLOCKS -->
+<div class="max-w-4xl px-6 mx-auto mt-20 space-y-8">
+
+  <!-- Experiences -->
+  <section>
+    <div class="bg-slate-900 rounded-lg shadow-lg p-8 sm:p-10">
+      <h3 class="text-base font-semibold text-indigo-400">Experiences</h3>
+      <div class=" ">
+        {% include "resume/partials/section_dropdown.html" with form=experience_add_form button_icon="+" action_url="experience"|get_add_url:resume.id button_label="Add Experience" %}
+        {% for experience in experiences %}
+        <div id="edit-experience-{{ experience.id }}" class="bg-slate-800 rounded-lg p-6 shadow">
+          {% include "resume/partials/section_dropdown.html" with form=experience_edit_forms|dict_get:experience.id button_icon="✎" action_url=experience.id|get_edit_url:"experience" button_label="Save Experience" %}
+          <div class="text-right mt-4">
+            <a href="{% url 'delete-experience' experience.id %}?next={{ request.get_full_path }}#edit-experience-{{ experience.id }}" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-sm">Delete</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Education -->
+  <section>
+    <div class="bg-slate-900 rounded-lg shadow-lg p-8 sm:p-10">
+      <h3 class="text-base font-semibold text-indigo-400">Education</h3>
+      <div class=" ">
+        {% include "resume/partials/section_dropdown.html" with form=education_add_form button_icon="+" action_url="education"|get_add_url:resume.id button_label="Add Education" %}
+        {% for education in educations %}
+        <div id="edit-education-{{ education.id }}" class="bg-slate-800 rounded-lg p-6 shadow gap-y-4">
+          {% include "resume/partials/section_dropdown.html" with form=education_edit_forms|dict_get:education.id button_icon="✎" action_url=education.id|get_edit_url:"education" button_label="Save Education" %}
+          <div class="text-right mt-4">
+            <a href="{% url 'delete-education' education.id %}?next={{ request.get_full_path }}#edit-education-{{ education.id }}" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-sm">Delete</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section>
+    <div class="bg-slate-900 rounded-lg shadow-lg p-8 sm:p-10">
+      <h3 class="text-base font-semibold text-indigo-400">Skills</h3>
+      <div class=" ">
+        {% include "resume/partials/section_dropdown.html" with form=skill_add_form button_icon="+" action_url="skill"|get_add_url:resume.id button_label="Add Skill" %}
+        {% for skill in skills %}
+        <div id="edit-skill-{{ skill.id }}" class="bg-slate-800 rounded-lg p-6 shadow">
+          {% include "resume/partials/section_dropdown.html" with form=skill_edit_forms|dict_get:skill.id button_icon="✎" action_url=skill.id|get_edit_url:"skill" button_label="Save Skill" %}
+          <div class="text-right mt-4">
+            <a href="{% url 'delete-skill' skill.id %}?next={{ request.get_full_path }}#edit-skill-{{ skill.id }}" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-sm">Delete</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section>
+    <div class="bg-slate-900 rounded-lg shadow-lg p-8 sm:p-10">
+      <h3 class="text-base font-semibold text-indigo-400">Projects</h3>
+      <div class=" ">
+        {% include "resume/partials/section_dropdown.html" with form=project_add_form button_icon="+" action_url="project"|get_add_url:resume.id button_label="Add Project" %}
+        {% for project in projects %}
+        <div id="edit-project-{{ project.id }}" class="bg-slate-800 rounded-lg p-6 shadow">
+          {% include "resume/partials/section_dropdown.html" with form=project_edit_forms|dict_get:project.id button_icon="✎" action_url=project.id|get_edit_url:"project" button_label="Save Project" %}
+          <div class="text-right mt-4">
+            <a href="{% url 'delete-project' project.id %}?next={{ request.get_full_path }}#edit-project-{{ project.id }}" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-sm">Delete</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Certifications -->
+  <section>
+    <div class="bg-slate-900 rounded-lg shadow-lg p-8 sm:p-10">
+      <h3 class="text-base font-semibold text-indigo-400">Certifications</h3>
+      <div class=" ">
+        {% include "resume/partials/section_dropdown.html" with form=certification_add_form button_icon="+" action_url="certification"|get_add_url:resume.id button_label="Add Certification" %}
+        {% for cert in certifications %}
+        <div id="edit-certification-{{ cert.id }}" class="bg-slate-800 rounded-lg p-6 shadow">
+          {% include "resume/partials/section_dropdown.html" with form=certification_edit_forms|dict_get:cert.id button_icon="✎" action_url=cert.id|get_edit_url:"certification" button_label="Save Certification" %}
+          <div class="text-right mt-4">
+            <a href="{% url 'delete-certification' cert.id %}?next={{ request.get_full_path }}#edit-certification-{{ cert.id }}" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-sm">Delete</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+</div>
+
+{% include "resume/collapse_script.html" %}
 {% endblock %}
