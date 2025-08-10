@@ -1,6 +1,12 @@
 {% load static %}
 {% include "head.html" %}
 
+<div class="flex justify-center mt-4 mb-2 no-print">
+  <button onclick="window.print()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none">
+    Print Resume
+  </button>
+</div>
+
 <div class="max-w-3xl mx-auto px-6 py-10 text-gray-900 bg-white">
   <!-- Name + Contact -->
   <div class="text-center border-b pb-4 mb-6">
@@ -27,7 +33,7 @@
 
   <!-- Experiences -->
   {% if experiences %}
-  <div class="mb-8">
+  <div class="mb-8 print-keep-together">
     <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Experience</h2>
     {% for exp in experiences %}
       <div class="mb-4">
@@ -46,7 +52,7 @@
 
   <!-- Education -->
   {% if educations %}
-  <div class="mb-8">
+  <div class="mb-8 print-keep-together">
     <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Education</h2>
     {% for edu in educations %}
       <div class="mb-4">
@@ -63,21 +69,11 @@
   </div>
   {% endif %}
 
-  <!-- Skills -->
-  {% if skills %}
-  <div class="mb-8">
-    <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Skills</h2>
-    <div class="flex flex-wrap gap-2 text-sm text-gray-800">
-      {% for skill in skills %}
-        <span class="px-2 py-1 bg-gray-100 rounded">{{ skill.name }}</span>
-      {% endfor %}
-    </div>
-  </div>
-  {% endif %}
+
 
   <!-- Projects -->
   {% if projects %}
-  <div class="mb-8">
+  <div class="mb-8 print-keep-together">
     <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Projects</h2>
     {% for proj in projects %}
       <div class="mb-4">
@@ -93,19 +89,91 @@
   </div>
   {% endif %}
 
-  <!-- Certifications -->
-  {% if certifications %}
-  <div class="mb-8">
-    <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Certifications</h2>
-    {% for cert in certifications %}
-      <div class="mb-4">
-        <p class="text-sm font-semibold text-gray-800">{{ cert.name }}</p>
-        <p class="text-sm text-gray-700">{{ cert.issuer }}{% if cert.issue_date %} — {{ cert.issue_date }}{% endif %}</p>
-        {% if cert.credential_url %}
-          <a href="{{ cert.credential_url }}" class="text-sm text-blue-500 hover:underline" target="_blank">{{ cert.credential_url }}</a>
-        {% endif %}
+  <!-- Certifications and Skills -->
+  <div class="flex flex-col md:flex-row gap-8 print-two-col">
+    <!-- Certifications Column -->
+    <div class="md:w-1/2 print-col">
+      {% if certifications %}
+      <div class="mb-8">
+        <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Certifications</h2>
+        {% for cert in certifications %}
+          <div class="mb-4">
+            <p class="text-sm font-semibold text-gray-800">{{ cert.name }}</p>
+            {% if cert.issuer %}
+              <p class="text-sm text-gray-700">
+                {{ cert.issuer }}{% if cert.issue_date %}: {{ cert.issue_date }}{% endif %}{% if cert.expiration_date %} - {{ cert.expiration_date }}{% endif %}
+              </p>
+            {% endif %}
+            {% if cert.credential_id %}
+              <p class="text-sm text-gray-600">Credential ID: {{ cert.credential_id }}</p>
+            {% endif %}
+            {% if cert.credential_url %}
+              <a href="{{ cert.credential_url }}" class="text-sm text-blue-500 hover:underline" target="_blank">{{ cert.credential_url }}</a>
+            {% endif %}
+          </div>
+        {% endfor %}
       </div>
-    {% endfor %}
+      {% endif %}
+    </div>
+    <!-- Skills Column -->
+    <div class="md:w-1/2 print-col">
+      {% if skills %}
+      <div class="mb-8">
+        <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Skills</h2>
+        <div class="flex flex-wrap gap-2 text-sm text-gray-800">
+          {% for skill in skills %}
+            <span class="text-sm text-grey-600">{{ skill.name }}</span>
+            {% if skill.proficiency %}
+              <span class="text-sm text-gray-500">Profifiency: {{ skill.proficiency }}</span>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
   </div>
-  {% endif %}
-</div>
+
+<style>
+@media print {
+  /* Hide UI chrome */
+  .no-print,
+  nav,
+  .navbar,
+  .site-header,
+  .site-footer { display: none !important; }
+
+  /* Make items stick together on one page when possible */
+  .print-keep-together {
+    break-inside: avoid;
+    page-break-inside: avoid; /* older engines */
+  }
+
+    /* force two columns on print */
+  .print-two-col {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px !important;
+    align-items: start;
+  }
+
+  /* keep each column from breaking awkwardly */
+  .print-col {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Keep headings with the first item under them */
+  h2, h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Tidy up print */
+  body { background: #fff !important; color: #000 !important; }
+  * { box-shadow: none !important; }
+  
+  /* Optional: set page size & margins */
+  @page { size: letter; margin: 12mm; }
+}
+
+</style>

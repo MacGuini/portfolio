@@ -145,7 +145,21 @@
               <div class="flex-auto">
                 <h4 class="font-semibold text-slate-200">{{ cert.name }}</h4>
                 <p class="text-sm text-slate-400">{{ cert.issuer }}{% if cert.issue_date %} &middot; {{ cert.issue_date }}{% endif %}</p>
-                {% if cert.description %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ cert.description }}</p>{% endif %}
+                {% if cert.issuer %}
+                <p class="mt-2 text-sm leading-6 text-slate-300">{{ cert.issuer }}</p>
+                {% endif %}
+                {% if cert.issue_date %}
+                <p class="mt-1 text-sm leading-6 text-slate-300">{{ cert.issue_date }}</p>
+                {% endif %}
+                {% if cert.expiration_date %}
+                <p class="mt-1 text-sm leading-6 text-slate-300">Expires: {{ cert.expiration_date }}</p>
+                {% endif %}
+                {% if cert.credential_id %}
+                <p class="mt-1 text-sm leading-6 text-slate-300">Credential ID: {{ cert.credential_id }}</p>
+                {% endif %}
+                {% if cert.credential_url %}
+                <a href="{{ cert.credential_url }}" class="text-sm font-semibold text-indigo-400 hover:text-indigo-300" target="_blank">View Credential &rarr;</a>
+                {% endif %}
               </div>
 
             </div>

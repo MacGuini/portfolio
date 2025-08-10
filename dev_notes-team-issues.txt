@@ -7,12 +7,16 @@ All other known and solved issues should be listed here
 
 KNOWN ISSUES====================================================================
 
+-Skills details aren't rendering. Check other objects to make sure they are rendering properly.
+
+
 -Need better dashboard styling. 
     - When you open up the collapsible add script, the other elements change in size and make it look weird.
     - (Sort of solved) With help from AI, I was able to make the screen a lot less jumpy. It still looks a little weird but not as bad. Some conditionals involved in the coloring might help.
 
 -Sorting by dragging for resume objects is no longer working
     - Possible solution is to just get rid of the feature all together and have a dropdown system that updated the rest of the objects into an order that makes sense. Also, default should be to sort dated stuff by date.
+    - (Solved) Just took it out. Left the script incase I figure out something to do with it later on.
 
 
 SOLVED ISSUES===================================================================

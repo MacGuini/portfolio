@@ -126,6 +126,8 @@ def viewProfileResume(request, username):
     skills = Skill.objects.filter(user=profile)
     projects = Project.objects.filter(user=profile)
     certifications = Certification.objects.filter(user=profile)
+
+    resumes = Resume.objects.filter(user=profile)
     context = {
         'creatorProfile': profile,
         'experiences': experiences,
@@ -133,9 +135,9 @@ def viewProfileResume(request, username):
         'skills': skills,
         'projects': projects,
         'certifications': certifications,
+        'resumes':resumes,
     }
     return render(request, 'resume/view_profile_resume.html', context)
-    
 
 
 @login_required(login_url='login')
