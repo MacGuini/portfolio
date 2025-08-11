@@ -47,8 +47,6 @@ class CustomUserCreationForm(UserCreationForm): # Inherets all aspects of the im
 
 class ProfileForm(forms.ModelForm):
 	
-
-
 	class Meta:
 		model = Profile
 		fields = '__all__'
