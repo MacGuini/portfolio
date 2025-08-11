@@ -7,9 +7,9 @@ from django.views.decorators.csrf import csrf_protect # Keep for your AJAX views
 from django.urls import reverse # For safer redirects
 from accounts.models import Profile
 from .utils import save_section
-from .models import Resume, Experience, Education, Skill, Project, Certification
+from .models import Resume, Experience, Education, Skill, Project, Certification, Award, Language, Interest, AdditionalInfo
 from .forms import (
-    ResumeForm, EducationForm, ExperienceForm, SkillForm, ProjectForm, CertificationForm
+    ResumeForm, EducationForm, ExperienceForm, SkillForm, ProjectForm, CertificationForm, AwardForm, LanguageForm, InterestForm, AdditionalInfoForm
 )
 
 
@@ -38,6 +38,26 @@ SECTION_MAP = {
     'certification': {
         'model':   'resume.Certification',
         'form':     CertificationForm,
+        'template': 'resume/section_form.html',
+    },
+    'award': {
+        'model':   'resume.Award',
+        'form':     AwardForm,
+        'template': 'resume/section_form.html',
+    },
+    'language': {
+        'model':   'resume.Language',
+        'form':     LanguageForm,
+        'template': 'resume/section_form.html',
+    },
+    'interest': {
+        'model':   'resume.Interest',
+        'form':     InterestForm,
+        'template': 'resume/section_form.html',
+    },
+    'additionalinfo': {
+        'model':   'resume.AdditionalInfo',
+        'form':     AdditionalInfoForm,
         'template': 'resume/section_form.html',
     },
 }
@@ -104,6 +124,9 @@ def viewResume(request, pk, username):
     skills = resume.skills.all()
     projects = resume.projects.all()
     certifications = resume.certifications.all()
+    awards = resume.awards.all()
+    languages = resume.languages.all()
+    additional_infos = resume.additionalinfo_set.all()
     context = {
         'resume': resume,
         'username': username,
@@ -113,6 +136,9 @@ def viewResume(request, pk, username):
         'skills': skills,
         'projects': projects,
         'certifications': certifications,
+        'awards': awards,
+        'languages': languages,
+        'additional_infos': additional_infos,
     }
     return render(request, 'resume/view_resume.html', context)
 
@@ -126,6 +152,9 @@ def viewProfileResume(request, username):
     skills = Skill.objects.filter(user=profile)
     projects = Project.objects.filter(user=profile)
     certifications = Certification.objects.filter(user=profile)
+    awards = Award.objects.filter(user=profile)
+    languages = Language.objects.filter(user=profile)
+    additional_infos = AdditionalInfo.objects.filter(user=profile)
 
     resumes = Resume.objects.filter(user=profile)
     context = {
@@ -135,6 +164,9 @@ def viewProfileResume(request, username):
         'skills': skills,
         'projects': projects,
         'certifications': certifications,
+        'awards': awards,
+        'languages': languages,
+        'additional_infos': additional_infos,
         'resumes':resumes,
     }
     return render(request, 'resume/view_profile_resume.html', context)
@@ -151,6 +183,9 @@ def resumeDashboard(request):
     skills = Skill.objects.filter(user=current_user_profile)
     projects = Project.objects.filter(user=current_user_profile)
     certifications = Certification.objects.filter(user=current_user_profile)
+    awards = Award.objects.filter(user=current_user_profile)
+    languages = Language.objects.filter(user=current_user_profile)
+    additional_infos = AdditionalInfo.objects.filter(user=current_user_profile)
 
 
     experience_add_form = ExperienceForm(user=current_user_profile)
@@ -158,6 +193,10 @@ def resumeDashboard(request):
     skill_add_form = SkillForm(user=current_user_profile)
     project_add_form = ProjectForm(user=current_user_profile)
     certification_add_form = CertificationForm(user=current_user_profile)
+    award_add_form = AwardForm(user=current_user_profile)
+    language_add_form = LanguageForm(user=current_user_profile)
+    additional_info_add_form = AdditionalInfoForm(user=current_user_profile)
+
 
     # Prepare an "edit" form for each instance
     experience_edit_forms = {
@@ -180,6 +219,18 @@ def resumeDashboard(request):
         cert.id: CertificationForm(instance=cert, user=current_user_profile)
         for cert in certifications
     }
+    award_edit_forms = {
+        award.id: AwardForm(instance=award, user=current_user_profile)
+        for award in awards
+    }
+    language_edit_forms = {
+        lang.id: LanguageForm(instance=lang, user=current_user_profile)
+        for lang in languages
+    }
+    additional_info_edit_forms = {
+        info.id: AdditionalInfoForm(instance=info, user=current_user_profile)
+        for info in additional_infos
+    }
 
      # Add these forms to the context
 
@@ -191,17 +242,25 @@ def resumeDashboard(request):
         'skills': skills,
         'projects': projects,
         'certifications': certifications,
+        'awards': awards,
+        'languages': languages,
+        'additional_infos': additional_infos,
         'experience_add_form': experience_add_form,
         'education_add_form': education_add_form,
         'skill_add_form': skill_add_form,
         'project_add_form': project_add_form,
         'certification_add_form': certification_add_form,
+        'award_add_form': award_add_form,
+        'language_add_form': language_add_form,
+        'additional_info_add_form': additional_info_add_form,
         'experience_edit_forms': experience_edit_forms,
         'education_edit_forms': education_edit_forms,
         'skill_edit_forms': skill_edit_forms,
         'project_edit_forms': project_edit_forms,
         'certification_edit_forms': certification_edit_forms,
-
+        'award_edit_forms': award_edit_forms,
+        'language_edit_forms': language_edit_forms,
+        'additional_info_edit_forms': additional_info_edit_forms,
     }
     return render(request, 'resume/resume_dashboard.html', context)
 
@@ -249,6 +308,9 @@ def editResume(request, pk):
     skill_add_form = SkillForm(user=current_user_profile)
     project_add_form = ProjectForm(user=current_user_profile)
     certification_add_form = CertificationForm(user=current_user_profile)
+    award_add_form = AwardForm(user=current_user_profile)
+    language_add_form = LanguageForm(user=current_user_profile)
+    additional_info_add_form = AdditionalInfoForm(user=current_user_profile)
     
     # Fetch related items for display
     experiences = resume.experiences.all()
@@ -256,6 +318,9 @@ def editResume(request, pk):
     skills = resume.skills.all()
     projects = resume.projects.all()
     certifications = resume.certifications.all()
+    awards = resume.awards.all()
+    languages = resume.languages.all()
+    additional_infos = resume.additionalinfo_set.all()
 
     # Prepare an "edit" form for each instance
     experience_edit_forms = {
@@ -278,6 +343,18 @@ def editResume(request, pk):
         cert.id: CertificationForm(instance=cert, user=current_user_profile)
         for cert in certifications
     }
+    award_edit_forms = {
+        award.id: AwardForm(instance=award, user=current_user_profile)
+        for award in awards
+    }
+    language_edit_forms = {
+        lang.id: LanguageForm(instance=lang, user=current_user_profile)
+        for lang in languages
+    }
+    additional_info_edit_forms = {
+        info.id: AdditionalInfoForm(instance=info, user=current_user_profile)
+        for info in additional_infos
+    }
     
     context = {
         'form': form, # Form for editing the Resume model
@@ -288,16 +365,25 @@ def editResume(request, pk):
         'skill_add_form': skill_add_form,
         'project_add_form': project_add_form,
         'certification_add_form': certification_add_form,
+        'award_add_form': award_add_form,
+        'language_add_form': language_add_form,
+        'additional_info_add_form': additional_info_add_form,
         'experience_edit_forms': experience_edit_forms,
         'education_edit_forms': education_edit_forms,
         'skill_edit_forms': skill_edit_forms,
         'project_edit_forms': project_edit_forms,
         'certification_edit_forms': certification_edit_forms,
+        'award_edit_forms': award_edit_forms,
+        'language_edit_forms': language_edit_forms,
+        'additional_info_edit_forms': additional_info_edit_forms,
         'experiences': experiences,
         'educations': educations,
         'skills': skills,
         'projects': projects,
-        'certifications': certifications
+        'certifications': certifications,
+        'awards': awards,
+        'languages': languages,
+        'additional_infos': additional_infos,
     }
     return render(request, 'resume/edit_resume.html', context)
 
@@ -336,43 +422,6 @@ def deleteExperience(request, pk):
         return redirect(next_url)
         
     return render(request, 'delete_template.html', {'object': experience, 'next_url': next_url})
-
-@login_required(login_url='login')
-def listExperiences(request, pk):
-    # This view seems to list experiences FOR a specific resume and allows adding a new one to IT.
-    current_user_profile = request.user.profile
-    # Ensure the resume context belongs to the current user
-    resume_context = get_object_or_404(Resume, id=pk, user=current_user_profile)
-    
-    # Experiences listed are those owned by the user who owns the resume_context
-    # (which should be current_user_profile due to the check above)
-    # And further filtered to only those associated with this specific resume_context
-    experiences = resume_context.experiences.filter(user=current_user_profile).order_by('position')
-
-    if request.method == "POST":
-        # Form for adding a NEW experience directly to this resume_context
-        experience_form = ExperienceForm(request.POST, user=current_user_profile)
-        if experience_form.is_valid():
-            experience = experience_form.save(commit=False)
-            experience.user = current_user_profile # Assign ownership
-            experience.save() # Save to get ID
-            experience.resumes.add(resume_context) # Associate with this specific resume
-            # If 'resumes' was a field in this form, handle other selections too:
-            # selected_resume_objects = experience_form.cleaned_data.get('resumes', [])
-            # for res in selected_resume_objects:
-            #    experience.resumes.add(res) # Ensures all selected are added
-
-            return redirect('list-experiences', pk=pk) # Redirect back to this list
-    else: # GET request
-        experience_form = ExperienceForm(user=current_user_profile)
-        
-    context = {
-        'experiences': experiences,
-        'experience_form': experience_form,
-        'resume': resume_context, # Pass resume for context (e.g., displaying its title)
-        'resume_id': pk # For URLs or other logic in template
-    }
-    return render(request, 'resume/list_experiences.html', context)
 
 # === Education Views ===
 

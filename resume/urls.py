@@ -12,7 +12,6 @@ urlpatterns = [
     path('view-profile-resume/<str:username>/', views.viewProfileResume, name='view-profile-resume'),
 
     # Experience URLs
-    path('list-experiences/<int:pk>/', views.listExperiences, name='list-experiences'),
     path('delete-experience/<int:pk>/', views.deleteExperience, name='delete-experience'),
     path('update-experience-position/', views.update_experience_order, name='update-experience-position'),
 

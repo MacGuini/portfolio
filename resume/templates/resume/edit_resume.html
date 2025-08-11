@@ -117,6 +117,72 @@
     </div>
   </section>
 
+  <!-- Awards -->
+  <section>
+    <div class="bg-slate-900 rounded-lg shadow-lg p-8 sm:p-10">
+      <h3 class="text-base font-semibold text-indigo-400">Awards</h3>
+      <div class=" ">
+        {% include "resume/partials/section_dropdown.html" with form=award_add_form button_icon="+" action_url="award"|get_add_url:resume.id button_label="Add Award" %}
+        {% for award in awards %}
+        <div id="edit-award-{{ award.id }}" class="bg-slate-800 rounded-lg p-6 shadow">
+          {% include "resume/partials/section_dropdown.html" with form=award_edit_forms|dict_get:award.id button_icon="✎" action_url=award.id|get_edit_url:"award" button_label="Save Award" %}
+          <div class="text-right mt-4">
+            <a href="{% url 'delete-award' award.id %}?next={{ request.get_full_path }}#edit-award-{{ award.id }}" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-sm">Delete</a>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Languages -->
+  <section>
+    <div class="bg-slate-900 rounded-lg shadow-lg p-8 sm:p-10">
+      <h3 class="text-base font-semibold text-indigo-400">Languages</h3>
+      <div class=" ">
+        {% include "resume/partials/section_dropdown.html" with form=language_add_form button_icon="+" action_url="language"|get_add_url:resume.id button_label="Add Language" %}
+        {% for language in languages %}
+        <div id="edit-language-{{ language.id }}" class="bg-slate-800 rounded-lg p-6 shadow">
+          {% include "resume/partials/section_dropdown.html" with form=language_edit_forms|dict_get:language.id button_icon="✎" action_url=language.id|get_edit_url:"language" button_label="Save Language" %}
+          <div class="text-right mt-4">
+            <a href="{% url 'delete-language' language.id %}?next={{ request.get_full_path }}#edit-language-{{ language.id }}" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-sm">Delete</a>
+          </div>
+        </div>
+        {% endfor %}
+    </section>
+
+  <!-- Interests -->
+  <section>
+    <div class="bg-slate-900 rounded-lg shadow-lg p-8 sm:p-10">
+      <h3 class="text-base font-semibold text-indigo-400">Interests</h3>
+      <div class=" ">
+        {% include "resume/partials/section_dropdown.html" with form=interest_add_form button_icon="+" action_url="interest"|get_add_url:resume.id button_label="Add Interest" %}
+        {% for interest in interests %}
+        <div id="edit-interest-{{ interest.id }}" class="bg-slate-800 rounded-lg p-6 shadow">
+          {% include "resume/partials/section_dropdown.html" with form=interest_edit_forms|dict_get:interest.id button_icon="✎" action_url=interest.id|get_edit_url:"interest" button_label="Save Interest" %}
+          <div class="text-right mt-4">
+            <a href="{% url 'delete-interest' interest.id %}?next={{ request.get_full_path }}#edit-interest-{{ interest.id }}" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-sm">Delete</a>
+          </div>
+        </div>
+        {% endfor %}
+    </section>
+  
+  <!-- Additional Info -->
+  <section>
+    <div class="bg-slate-900 rounded-lg shadow-lg p-8 sm:p-10">
+      <h3 class="text-base font-semibold text-indigo-400">Additional Info</h3>
+      <div class=" ">
+        {% include "resume/partials/section_dropdown.html" with form=additionalinfo_add_form button_icon="+" action_url="additionalinfo"|get_add_url:resume.id button_label="Add Additional Info" %}
+        {% for info in additionalinfos %}
+        <div id="edit-additionalinfo-{{ info.id }}" class="bg-slate-800 rounded-lg p-6 shadow">
+          {% include "resume/partials/section_dropdown.html" with form=additionalinfo_edit_forms|dict_get:info.id button_icon="✎" action_url=info.id|get_edit_url:"additionalinfo" button_label="Save Additional Info" %} 
+          <div class="text-right mt-4">
+            <a href="{% url 'delete-additionalinfo' info.id %}?next={{ request.get_full_path }}#edit-additionalinfo-{{ info.id }}" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-sm">Delete</a>
+          </div>
+        </div>
+        {% endfor %}
+    </section>
+
 </div>
 
 {% include "resume/collapse_script.html" %}

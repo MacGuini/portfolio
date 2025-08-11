@@ -1,5 +1,5 @@
 from django import forms
-from .models import Resume, Experience, Education, Skill, Project, Certification
+from .models import Resume, Experience, Education, Skill, Project, Certification, Award, Language, Interest, AdditionalInfo
 
 class BaseForm(forms.ModelForm):
     def update_fields(self, fields):
@@ -282,5 +282,149 @@ class CertificationForm(BaseForm):
                 'id': 'credential_url',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
                 'placeholder': 'https://example.com'
+            }
+        })
+
+class AwardForm(BaseForm):
+    class Meta:
+        model = Award
+        fields = '__all__'
+        exclude = ['user', 'position']
+
+    # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
+    resumes = forms.ModelMultipleChoiceField(
+        queryset=Resume.objects.none(),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # get user passed from the view
+        super(AwardForm, self).__init__(*args, **kwargs)
+        # Check if a user is passed to the form
+        if user:
+            # Filter resumes by the user passed to the form
+            self.fields['resumes'].queryset = Resume.objects.filter(user=user)
+        else:
+            self.fields['resumes'].queryset = Resume.objects.none()
+        self.update_fields({
+            'title': {
+                'id': 'title',
+                'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
+                'placeholder': 'Award Title'
+            },
+            'issuer': {
+                'id': 'issuer',
+                'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
+                'placeholder': 'Issuer'
+            },
+            'date_received': {
+                'id': 'date_received',
+                'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
+                'placeholder': 'Date Received',
+                'type': 'date'
+            },
+            'description': {
+                'id': 'description',
+                'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
+                'placeholder': 'Description'
+            }
+        })
+
+class LanguageForm(BaseForm):
+    class Meta:
+        model = Language
+        fields = '__all__'
+        exclude = ['user', 'position']
+
+    # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
+    resumes = forms.ModelMultipleChoiceField(
+        queryset=Resume.objects.none(),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # get user passed from the view
+        super(LanguageForm, self).__init__(*args, **kwargs)
+        # Check if a user is passed to the form
+        if user:
+            # Filter resumes by the user passed to the form
+            self.fields['resumes'].queryset = Resume.objects.filter(user=user)
+        else:
+            self.fields['resumes'].queryset = Resume.objects.none()
+        self.update_fields({
+            'name': {
+                'id': 'name',
+                'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
+                'placeholder': 'Language Name'
+            },
+            'proficiency': {
+                'id': 'proficiency',
+                'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
+                'placeholder': 'Proficiency'
+            }
+        })
+
+class InterestForm(BaseForm):
+    class Meta:
+        model = Interest
+        fields = '__all__'
+        exclude = ['user', 'position']
+
+    # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
+    resumes = forms.ModelMultipleChoiceField(
+        queryset=Resume.objects.none(),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False
+    )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # get user passed from the view
+        super(InterestForm, self).__init__(*args, **kwargs)
+        # Check if a user is passed to the form
+        if user:
+            # Filter resumes by the user passed to the form
+            self.fields['resumes'].queryset = Resume.objects.filter(user=user)
+        else:
+            self.fields['resumes'].queryset = Resume.objects.none()
+        self.update_fields({
+            'name': {
+                'id': 'name',
+                'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
+                'placeholder': 'Interest Name'
+            },
+            'description': {
+                'id': 'description',
+                'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
+                'placeholder': 'Description'
+            }
+        })
+
+class AdditionalInfoForm(BaseForm):
+    class Meta:
+        model = AdditionalInfo
+        fields = '__all__'
+        exclude = ['user', 'position']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)  # get user passed from the view
+        super(AdditionalInfoForm, self).__init__(*args, **kwargs)
+        # Check if a user is passed to the form
+        if user:
+            # Filter resumes by the user passed to the form
+            self.fields['resumes'].queryset = Resume.objects.filter(user=user)
+        else:
+            self.fields['resumes'].queryset = Resume.objects.none()
+        self.update_fields({
+            'title': {
+                'id': 'title',
+                'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
+                'placeholder': 'Title'
+            },
+            'content': {
+                'id': 'content',
+                'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
+                'placeholder': 'What else would you like to share?'
             }
         })
