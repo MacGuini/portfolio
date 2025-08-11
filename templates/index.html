@@ -2,14 +2,31 @@
 {% load static %}
 {% block content %}
 
-<section class="mx-auto flex flex-col md:flex-row bg-gradient-to-b from-blue-400 to-blue-500 md:px-28">
+<section class="mx-auto flex flex-col md:flex-row bg-gradient-to-b from-blue-400 to-blue-500 md:px-28 py-10">
     <div class="md:w-2/3 text-center my-auto">
-        <p class="text-2xl text-blue-900">Hello there! Welcome to my web portfolio. I built this site with Django and styled it with TailwindCSS. This site will act as a digital playground for me to showcase projects and ideas. Bare in mind, this site is still under construction. This site does have an email system. It will send emails from <a href="mailto:brian.s.lindsay829@gmail.com">brian.s.lindsay829@gmail.com</a> Which can also be used to contact me.</p>
+        <div>
+            <a href="{% url 'view-profile-resume' username='brian-lindsay' %}" class="inline-block px-6 py-3 mt-6 text-lg font-semibold text-blue-800 bg-teal-400 rounded-full shadow-lg hover:bg-blue-800 hover:text-cyan-400 transition duration-300 mb-4">
+                CHECK OUT MY DIGITAL RESUME HERE!
+            </a>
+        </div>
+        <p class="text-2xl text-blue-900">Hello there! Welcome to my web portfolio. I built this site with Django, Python, a little JavaScript, and styled it with TailwindCSS. This site will act as a digital playground for me to showcase projects and ideas.</p>
+        <br>
+        <a href="https://github.com/MacGuini/portfolio" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg shadow hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900">
+            
+            <!-- GitHub SVG Icon -->
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fill-rule="evenodd" d="M12 .5C5.73.5.5 5.73.5 12c0 5.1 3.3 9.42 7.86 10.95.58.11.79-.25.79-.55 0-.27-.01-1.16-.02-2.11-3.2.7-3.88-1.54-3.88-1.54-.53-1.36-1.28-1.73-1.28-1.73-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.04 1.77 2.73 1.26 3.4.96.11-.76.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.3 1.2-3.11-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.19a11.1 11.1 0 0 1 5.8 0c2.21-1.5 3.18-1.19 3.18-1.19.63 1.58.23 2.75.11 3.04.75.81 1.2 1.85 1.2 3.11 0 4.43-2.69 5.41-5.25 5.69.41.35.78 1.03.78 2.08 0 1.5-.01 2.7-.01 3.07 0 .3.21.66.8.55A10.5 10.5 0 0 0 23.5 12c0-6.27-5.23-11.5-11.5-11.5z" clip-rule="evenodd" />
+            </svg>
+
+            <span>View this site's repo</span>
+        </a>
+
     </div>
     <div class="md:w-1/3 sm:mx-auto md:mx-0">
         <img class="items-center rounded-b-full border-b-8 border-blue-700" src="{% static 'media/sillhouette.svg' %}" alt="">
-
-
     </div>
    
 </section>
@@ -19,18 +36,22 @@
         <img class="object-cover h-full w-full rounded-full sm:rounded-e-full sm:rounded-s border-e-8 border-cyan-500" src="{% static 'media/Brian_by_fire.jpg' %}" alt="">
     </div>
     <div class="md:w-2/3 text-center my-auto py-20 px-5 md:px-10">
-        <p class="text-cyan-200 text-3xl">I am currently studying Django web development and Cisco networking. Self taught and ambitious to try out new things. From here on, I will continue to develop and add to this site.</p>
+        <p class="text-cyan-200 text-3xl">My name is Brian Lindsay and this is my portfolio site. I have a mixture of interests and skills. This portfolio site should help me illustrate them. Self taught and ambitious to try out new things. From here on, I will continue to develop and add to this site.</p>
     </div>
+
 </section>
 
 <section class="flex flex-col md:flex-row bg-gradient-to-t from-slate-400 to-blue-300 min-h-screen">
 
     <div class="md:w-2/3 text-center my-auto py-20 px-5 md:px-10">
-        <p class="text-blue-600 text-3xl">This site is still under construction. But I hope to fill it with all sorts of bells and whistles to show off my skills. This will act as a digital resume. Just got to wire everything up first.</p>
+        <p class="text-blue-600 text-3xl">Served 911 as an EMT for about 15 years. Former 1st Lieutenant of Manchester First Aid and Rescue Squad. Current Field Training Officer at Quality Medical Transport</p>
+        <a href="{% url 'view-profile-resume' username='brian-lindsay' %}" class="inline-block px-6 py-3 mt-6 text-lg font-semibold text-blue-800 bg-teal-400 rounded-full shadow-lg hover:bg-blue-800 hover:text-cyan-400 transition duration-300 mb-4">
+                CHECK OUT MY DIGITAL RESUME HERE!
+        </a>
     </div>
 
     <div class="md:w-1/3">
-        <img class="object-cover h-full w-full mx-auto rounded-s-full border-s-8 border-blue-500" src="{% static 'media/brian-flat-cap.jpg' %}" alt="">
+        <img class="object-cover h-full w-full mx-auto rounded-s-full   border-blue-500" src="{% static 'media/brian-flat-cap.jpg' %}" alt="">
     </div>
 </section>
 

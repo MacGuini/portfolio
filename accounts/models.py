@@ -36,6 +36,8 @@ class Profile(models.Model):
 	email = models.EmailField(max_length=200, null=True, blank=True, unique=True)
 	preference = models.CharField(max_length=6, choices=CONTACT_TYPE, default='home', null=True, blank=True)
 
+	about = models.TextField(null=True, blank=True)
+
 	verification_token = models.CharField(max_length=100, blank=True, null=True)
 	token_created_at = models.DateTimeField(null=True, blank=True)
 
@@ -48,7 +50,19 @@ class Profile(models.Model):
 	created = models.DateTimeField(auto_now_add=True)
 	id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
 
+	def format_phone(self, phone):
+		if phone and len(phone) == 10:
+			return f"({phone[:3]}) {phone[3:6]}-{phone[6:]}"
+		return phone
 
+	def formatted_home_phone(self):
+		return self.format_phone(self.home)
+	
+	def formatted_mobile_phone(self):
+		return self.format_phone(self.mobile)
+	
+	def formatted_work_phone(self):
+		return self.format_phone(self.work)
 
 	def __str__(self):
 		return f'{self.fname} {self.lname} - {self.username}'

@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('accounts.urls')),
     path('forum/', include('forum.urls')),
+    path('resume/', include('resume.urls')),
     path("construction/", TemplateView.as_view(template_name="construction.html"), name="construction"),
     # Built in password reset views
     # User submits email for reset

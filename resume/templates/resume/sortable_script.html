@@ -1,0 +1,44 @@
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const sortableSections = [
+            {id: 'experiences-list', url: '{% url "update-experience-position" %}'},
+            {id: 'educations-list', url: '{% url "update-education-position" %}'},
+            {id: 'skills-list', url: '{% url "update-skill-position" %}'},
+            {id: 'projects-list', url: '{% url "update-project-position" %}'},
+            {id: 'certifications-list', url: '{% url "update-certification-position" %}'}
+        ];
+
+        sortableSections.forEach(section => {
+            const sectionElement = document.getElementById(section.id);
+            if (sectionElement) {
+                Sortable.create(sectionElement, {
+                    animation: 150,
+                    onEnd: function(evt) {
+                        const order = [];
+                        sectionElement.querySelectorAll('li').forEach((item, index) => {
+                            order.push({
+                                id: item.getAttribute('data-id'),
+                                position: index + 1
+                            });
+                        });
+                        // Send the new order to the server
+                        fetch(section.url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}'
+                            },
+                            body: JSON.stringify({order: order})
+                        }).then(response => {
+                            if (!response.ok) {
+                                console.error('Failed to update order');
+                            }
+                        }).catch(error => {
+                            console.error('Error:', error);
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>

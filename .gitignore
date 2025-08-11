@@ -80,3 +80,7 @@ coverage.xml
 
 # Ignore static files directory
 /staticfiles/
+
+# Ignore local notes
+dev_notes-local.txt
+dev_notes-local-issues.txt

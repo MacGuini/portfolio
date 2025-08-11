@@ -1,0 +1,30 @@
+{# resume/partials/section_dropdown.html #}
+{% if button_icon == "+" %}
+  <!-- ADD MODE: Collapsible, plus button -->
+  <div class="text-center mb-4 text-slate-300">
+    <button type="button" class="collapsible bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded">{{ button_icon }}</button>
+    <div class="content mt-2" style="display: none;">
+      <form method="post" action="{{ action_url }}" class="mx-auto max-w-md flex flex-col items-center">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">{{ button_label }}</button>
+      </form>
+    </div>
+  </div>
+{% else %}
+  <!-- EDIT INLINE MODE: Open form, no pencil button -->
+  <div class="text-center mb-4 text-slate-300">
+    <div class="content mt-2" style="display: block;">
+      <form method="post" action="{{ action_url }}" class="mx-auto max-w-md flex flex-col items-center">
+        {% csrf_token %}
+        <!-- Hidden field to redirect back to the edit resume page after saving -->
+        {% if resume and resume.id %}
+           <input type="hidden" name="resume_pk" value="{{ resume.id }}">
+        {% endif %}
+
+        {{ form.as_p }}
+        <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">{{ button_label }}</button>
+      </form>
+    </div>
+  </div>
+{% endif %}
