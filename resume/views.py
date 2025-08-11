@@ -126,7 +126,7 @@ def viewResume(request, pk, username):
     certifications = resume.certifications.all()
     awards = resume.awards.all()
     languages = resume.languages.all()
-    additional_infos = resume.additionalinfo_set.all()
+    additional_infos = resume.additional_infos.all()
     context = {
         'resume': resume,
         'username': username,
@@ -320,7 +320,7 @@ def editResume(request, pk):
     certifications = resume.certifications.all()
     awards = resume.awards.all()
     languages = resume.languages.all()
-    additional_infos = resume.additionalinfo_set.all()
+    additional_infos = resume.additional_infos.all()
 
     # Prepare an "edit" form for each instance
     experience_edit_forms = {
