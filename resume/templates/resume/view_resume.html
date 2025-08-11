@@ -5,8 +5,7 @@
 
 <div class="px-4"> <!-- Beginning of container -->
 
-
-<div class="flex flex-col items-center justify-center">
+<div class="flex flex-col">
   <div class="w-full flex justify-end mb-4">
     <a href="{% url 'print-resume' username resume.id %}" class="inline-flex items-center px-4 py-2 mt-4 bg-indigo-600 text-white text-sm font-semibold rounded hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400">
       Print Resume
@@ -62,8 +61,13 @@
       </div>
       {% endif %}
     </dl>
-  </div>
 
+    {% if resume.summary %}
+    <div class="mt-8 text-lg text-slate-300">
+      {{ resume.summary }}
+    </div>
+    {% endif %}
+  </div>
 </div>
 
 <!-- Stacked sections -->
