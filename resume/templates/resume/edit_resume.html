@@ -169,15 +169,15 @@
   
   <!-- Additional Info -->
   <section>
-    <div class="bg-slate-900 rounded-lg shadow-lg p-8 sm:p-10">
-      <h3 class="text-base font-semibold text-indigo-400">Additional Info</h3>
-      <div class=" ">
-        {% include "resume/partials/section_dropdown.html" with form=additional_info_add_form button_icon="+" action_url="additional_info"|get_add_url:resume.id button_label="Add Additional Info" %}
-        {% for info in additional_infos %}
-        <div id="edit-additional_info-{{ info.id }}" class="bg-slate-800 rounded-lg p-6 shadow">
-          {% include "resume/partials/section_dropdown.html" with form=additional_info_edit_forms|dict_get:info.id button_icon="✎" action_url=info.id|get_edit_url:"additional_info" button_label="Save Additional Info" %} 
+      <div class="bg-slate-900 rounded-lg shadow-lg p-8 sm:p-10">
+        <h3 class="text-base font-semibold text-indigo-400">Additional Info</h3>
+        <div class=" ">
+        {% include "resume/partials/section_dropdown.html" with form=additionalinfo_add_form button_icon="+" action_url="additionalinfo"|get_add_url:resume.id button_label="Add Additional Info" %}
+        {% for info in additionalinfos %}
+        <div id="edit-additionalinfo-{{ info.id }}" class="bg-slate-800 rounded-lg p-6 shadow">
+          {% include "resume/partials/section_dropdown.html" with form=additionalinfo_edit_forms|dict_get:info.id button_icon="✎" action_url=info.id|get_edit_url:"additionalinfo" button_label="Save Additional Info" %} 
           <div class="text-right mt-4">
-            <a href="{% url 'delete-additional_info' info.id %}?next={{ request.get_full_path }}#edit-additional_info-{{ info.id }}" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-sm">Delete</a>
+            <a href="{% url 'delete-additionalinfo' info.id %}?next={{ request.get_full_path }}#edit-additionalinfo-{{ info.id }}" class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow-sm">Delete</a>
           </div>
         </div>
         {% endfor %}

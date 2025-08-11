@@ -126,7 +126,7 @@ def viewResume(request, pk, username):
     certifications = resume.certifications.all()
     awards = resume.awards.all()
     languages = resume.languages.all()
-    additional_infos = resume.additional_infos.all()
+    additionalinfos = resume.additional_infos.all()
     context = {
         'resume': resume,
         'username': username,
@@ -138,7 +138,7 @@ def viewResume(request, pk, username):
         'certifications': certifications,
         'awards': awards,
         'languages': languages,
-        'additional_infos': additional_infos,
+    'additionalinfos': additionalinfos,
     }
     return render(request, 'resume/view_resume.html', context)
 
@@ -154,7 +154,7 @@ def viewProfileResume(request, username):
     certifications = Certification.objects.filter(user=profile)
     awards = Award.objects.filter(user=profile)
     languages = Language.objects.filter(user=profile)
-    additional_infos = AdditionalInfo.objects.filter(user=profile)
+    additionalinfos = AdditionalInfo.objects.filter(user=profile)
 
     resumes = Resume.objects.filter(user=profile)
     context = {
@@ -166,7 +166,7 @@ def viewProfileResume(request, username):
         'certifications': certifications,
         'awards': awards,
         'languages': languages,
-        'additional_infos': additional_infos,
+    'additionalinfos': additionalinfos,
         'resumes':resumes,
     }
     return render(request, 'resume/view_profile_resume.html', context)
@@ -186,7 +186,7 @@ def resumeDashboard(request):
     awards = Award.objects.filter(user=current_user_profile)
     languages = Language.objects.filter(user=current_user_profile)
     interests = Interest.objects.filter(user=current_user_profile)
-    additional_infos = AdditionalInfo.objects.filter(user=current_user_profile)
+    additionalinfos = AdditionalInfo.objects.filter(user=current_user_profile)
 
 
     experience_add_form = ExperienceForm(user=current_user_profile)
@@ -197,7 +197,7 @@ def resumeDashboard(request):
     award_add_form = AwardForm(user=current_user_profile)
     language_add_form = LanguageForm(user=current_user_profile)
     interest_add_form = InterestForm(user=current_user_profile)
-    additional_info_add_form = AdditionalInfoForm(user=current_user_profile)
+    additionalinfo_add_form = AdditionalInfoForm(user=current_user_profile)
 
 
     # Prepare an "edit" form for each instance
@@ -233,9 +233,9 @@ def resumeDashboard(request):
         interest.id: InterestForm(instance=interest, user=current_user_profile)
         for interest in interests
     }
-    additional_info_edit_forms = {
+    additionalinfo_edit_forms = {
         info.id: AdditionalInfoForm(instance=info, user=current_user_profile)
-        for info in additional_infos
+    for info in additionalinfos
     }
 
      # Add these forms to the context
@@ -251,7 +251,7 @@ def resumeDashboard(request):
         'awards': awards,
         'languages': languages,
         'interests': interests,
-        'additional_infos': additional_infos,
+    'additionalinfos': additionalinfos,
         'experience_add_form': experience_add_form,
         'education_add_form': education_add_form,
         'skill_add_form': skill_add_form,
@@ -260,7 +260,7 @@ def resumeDashboard(request):
         'award_add_form': award_add_form,
         'language_add_form': language_add_form,
         'interest_add_form': interest_add_form,
-        'additional_info_add_form': additional_info_add_form,
+    'additionalinfo_add_form': additionalinfo_add_form,
         'experience_edit_forms': experience_edit_forms,
         'education_edit_forms': education_edit_forms,
         'skill_edit_forms': skill_edit_forms,
@@ -269,7 +269,7 @@ def resumeDashboard(request):
         'award_edit_forms': award_edit_forms,
         'language_edit_forms': language_edit_forms,
         'interest_edit_forms': interest_edit_forms,
-        'additional_info_edit_forms': additional_info_edit_forms,
+    'additionalinfo_edit_forms': additionalinfo_edit_forms,
     }
     return render(request, 'resume/resume_dashboard.html', context)
 
@@ -320,7 +320,7 @@ def editResume(request, pk):
     award_add_form = AwardForm(user=current_user_profile)
     language_add_form = LanguageForm(user=current_user_profile)
     interest_add_form = InterestForm(user=current_user_profile)
-    additional_info_add_form = AdditionalInfoForm(user=current_user_profile)
+    additionalinfo_add_form = AdditionalInfoForm(user=current_user_profile)
     
     # Fetch related items for display
     experiences = resume.experiences.all()
@@ -331,7 +331,7 @@ def editResume(request, pk):
     awards = resume.awards.all()
     languages = resume.languages.all()
     interests = resume.interests.all()
-    additional_infos = resume.additional_infos.all()
+    additionalinfos = resume.additional_infos.all()
 
     # Prepare an "edit" form for each instance
     experience_edit_forms = {
@@ -366,9 +366,9 @@ def editResume(request, pk):
         interest.id: InterestForm(instance=interest, user=current_user_profile)
         for interest in interests
     }
-    additional_info_edit_forms = {
+    additionalinfo_edit_forms = {
         info.id: AdditionalInfoForm(instance=info, user=current_user_profile)
-        for info in additional_infos
+    for info in additionalinfos
     }
     
     context = {
@@ -383,7 +383,7 @@ def editResume(request, pk):
         'award_add_form': award_add_form,
         'language_add_form': language_add_form,
         'interest_add_form': interest_add_form,
-        'additional_info_add_form': additional_info_add_form,
+    'additionalinfo_add_form': additionalinfo_add_form,
         'experience_edit_forms': experience_edit_forms,
         'education_edit_forms': education_edit_forms,
         'skill_edit_forms': skill_edit_forms,
@@ -392,7 +392,7 @@ def editResume(request, pk):
         'award_edit_forms': award_edit_forms,
         'language_edit_forms': language_edit_forms,
         'interest_edit_forms': interest_edit_forms,
-        'additional_info_edit_forms': additional_info_edit_forms,
+    'additionalinfo_edit_forms': additionalinfo_edit_forms,
         'experiences': experiences,
         'educations': educations,
         'skills': skills,
@@ -401,7 +401,7 @@ def editResume(request, pk):
         'awards': awards,
         'languages': languages,
         'interests': interests,
-        'additional_infos': additional_infos,
+    'additionalinfos': additionalinfos,
     }
     return render(request, 'resume/edit_resume.html', context)
 
@@ -587,19 +587,19 @@ def deleteInterest(request, pk):
 def deleteAdditionalInfo(request, pk):
     # Handles deletion of additional info.
     current_user_profile = request.user.profile
-    additional_info = get_object_or_404(AdditionalInfo, id=pk, user=current_user_profile)
+    additionalinfo = get_object_or_404(AdditionalInfo, id=pk, user=current_user_profile)
     
-    primary_resume = additional_info.resumes.first()
+    primary_resume = additionalinfo.resumes.first()
     default_redirect_url = reverse('resume-dashboard')
     if primary_resume:
         default_redirect_url = reverse('edit-resume', kwargs={'pk': primary_resume.id})
     next_url = request.GET.get('next', default_redirect_url)
 
     if request.method == "POST":
-        additional_info.delete()
+        additionalinfo.delete()
         return redirect(next_url)
         
-    return render(request, 'delete_template.html', {'object': additional_info, 'next_url': next_url})
+    return render(request, 'delete_template.html', {'object': additionalinfo, 'next_url': next_url})
 
 # === Print Functions ===
 
@@ -619,6 +619,10 @@ def printResume(request, pk, username):
         skills = resume.skills.all()
         projects = resume.projects.all()
         certifications = resume.certifications.all()
+        awards = resume.awards.all()
+        languages = resume.languages.all()
+        interests = resume.interests.all()
+        additionalinfos = resume.additional_infos.all()
    
         context = {
             'resume': resume,
@@ -627,6 +631,10 @@ def printResume(request, pk, username):
             'skills': skills,
             'projects': projects,
             'certifications': certifications,
+            'awards': awards,
+            'languages': languages,
+            'interests': interests,
+            'additionalinfos': additionalinfos,
             'creatorProfile': profile,  # Pass the profile for context
         }
     return render(request, 'resume/print_resume.html', context)

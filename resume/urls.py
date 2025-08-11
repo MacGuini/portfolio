@@ -44,8 +44,8 @@ urlpatterns = [
     # path('update-interest-position/', views.update_interest_order, name='update-interest-position'),
 
     # Additional Info URLs
-    path('delete-additional-info/<int:pk>/', views.deleteAdditionalInfo, name='delete-additional-info'),
-    # path('update-additional-info-position/', views.update_additional_info_order, name='update-additional-info-position'),
+    path('delete-additionalinfo/<int:pk>/', views.deleteAdditionalInfo, name='delete-additionalinfo'),
+    # path('update-additionalinfo-position/', views.update_additional_info_order, name='update-additionalinfo-position'),
 
     # Generic add/edit/delete URLs:
     path('add/<str:section>/', section_form, {'action':'add'},    name='add-section'),
