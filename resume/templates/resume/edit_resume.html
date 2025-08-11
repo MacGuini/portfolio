@@ -169,9 +169,9 @@
   
   <!-- Additional Info -->
   <section>
-    <div class="bg-slate-900 rounded-lg shadow-lg p-8 sm:p-10">
-      <h3 class="text-base font-semibold text-indigo-400">Additional Info</h3>
-      <div class=" ">
+      <div class="bg-slate-900 rounded-lg shadow-lg p-8 sm:p-10">
+        <h3 class="text-base font-semibold text-indigo-400">Additional Info</h3>
+        <div class=" ">
         {% include "resume/partials/section_dropdown.html" with form=additionalinfo_add_form button_icon="+" action_url="additionalinfo"|get_add_url:resume.id button_label="Add Additional Info" %}
         {% for info in additionalinfos %}
         <div id="edit-additionalinfo-{{ info.id }}" class="bg-slate-800 rounded-lg p-6 shadow">

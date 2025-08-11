@@ -32,20 +32,22 @@
         const endDateInputs = document.querySelectorAll('input[name="end_date"]');
         const issueDateInputs = document.querySelectorAll('input[name="issue_date"]');
         const expirationDateInputs = document.querySelectorAll('input[name="expiration_date"]');
+        const date_receivedInputs = document.querySelectorAll('input[name="date_received"]');
 
         flatpickr(startDateInputs, { dateFormat: 'Y-m-d' });
         flatpickr(endDateInputs, { dateFormat: 'Y-m-d' });
         flatpickr(issueDateInputs, { dateFormat: 'Y-m-d' });
         flatpickr(expirationDateInputs, { dateFormat: 'Y-m-d' });
+        flatpickr(date_receivedInputs, { dateFormat: 'Y-m-d' });
 
-        // Initialize sortable sections
+        {% comment %} // Initialize sortable sections. Commented out for now since not in use and still being tested.
         const sortableSections = [
             {id: 'experiences-list', url: '{% url "update-experience-position" %}'},
             {id: 'educations-list', url: '{% url "update-education-position" %}'},
             {id: 'skills-list', url: '{% url "update-skill-position" %}'},
             {id: 'projects-list', url: '{% url "update-project-position" %}'},
             {id: 'certifications-list', url: '{% url "update-certification-position" %}'}
-        ];
+        ]; {% endcomment %}
 
         // --- Inline Edit Functionality (new code below) ---
 

@@ -31,7 +31,7 @@
     {% endif %}
   </div>
 
-  <!-- Experiences -->
+  <!-- Experience -->
   {% if experiences %}
   <div class="mb-8 print-keep-together">
     <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Experience</h2>
@@ -69,8 +69,6 @@
   </div>
   {% endif %}
 
-
-
   <!-- Projects -->
   {% if projects %}
   <div class="mb-8 print-keep-together">
@@ -89,91 +87,118 @@
   </div>
   {% endif %}
 
-  <!-- Certifications and Skills -->
-  <div class="flex flex-col md:flex-row gap-8 print-two-col">
-    <!-- Certifications Column -->
-    <div class="md:w-1/2 print-col">
-      {% if certifications %}
-      <div class="mb-8">
-        <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Certifications</h2>
-        {% for cert in certifications %}
-          <div class="mb-4">
-            <p class="text-sm font-semibold text-gray-800">{{ cert.name }}</p>
-            {% if cert.issuer %}
-              <p class="text-sm text-gray-700">
-                {{ cert.issuer }}{% if cert.issue_date %}: {{ cert.issue_date }}{% endif %}{% if cert.expiration_date %} - {{ cert.expiration_date }}{% endif %}
-              </p>
-            {% endif %}
-            {% if cert.credential_id %}
-              <p class="text-sm text-gray-600">Credential ID: {{ cert.credential_id }}</p>
-            {% endif %}
-            {% if cert.credential_url %}
-              <a href="{{ cert.credential_url }}" class="text-sm text-blue-500 hover:underline" target="_blank">{{ cert.credential_url }}</a>
-            {% endif %}
-          </div>
-        {% endfor %}
+  <!-- Certifications (stacked) -->
+  {% if certifications %}
+  <div class="mb-8 print-keep-together">
+    <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Certifications</h2>
+    {% for cert in certifications %}
+      <div class="mb-4">
+        <p class="text-sm font-semibold text-gray-800">{{ cert.name }}</p>
+        {% if cert.issuer %}
+          <p class="text-sm text-gray-700">
+            {{ cert.issuer }}{% if cert.issue_date %}: {{ cert.issue_date }}{% endif %}{% if cert.expiration_date %} - {{ cert.expiration_date }}{% endif %}
+          </p>
+        {% endif %}
+        {% if cert.credential_id %}
+          <p class="text-sm text-gray-600">Credential ID: {{ cert.credential_id }}</p>
+        {% endif %}
+        {% if cert.credential_url %}
+          <a href="{{ cert.credential_url }}" class="text-sm text-blue-500 hover:underline" target="_blank">{{ cert.credential_url }}</a>
+        {% endif %}
       </div>
-      {% endif %}
-    </div>
-    <!-- Skills Column -->
-    <div class="md:w-1/2 print-col">
-      {% if skills %}
-      <div class="mb-8">
-        <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Skills</h2>
-        <div class="flex flex-wrap gap-2 text-sm text-gray-800">
-          {% for skill in skills %}
-            <span class="text-sm text-grey-600">{{ skill.name }}</span>
-            {% if skill.proficiency %}
-              <span class="text-sm text-gray-500">Profifiency: {{ skill.proficiency }}</span>
-            {% endif %}
-          {% endfor %}
-        </div>
-      </div>
-      {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Skills (stacked) -->
+  {% if skills %}
+  <div class="mb-8 print-keep-together">
+    <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Skills</h2>
+    <div class="flex flex-wrap gap-2 text-sm text-gray-800">
+      {% for skill in skills %}
+        <span class="text-sm text-grey-600">{{ skill.name }}</span>
+        {% if skill.proficiency %}
+          <span class="text-sm text-gray-500">Profifiency: {{ skill.proficiency }}</span>
+        {% endif %}
+      {% endfor %}
     </div>
   </div>
+  {% endif %}
+
+  <!-- Languages -->
+  {% if languages %}
+  <div class="mb-8 print-keep-together">
+    <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Languages</h2>
+    {% for language in languages %}
+      <div class="mb-2">
+        <p class="text-sm text-gray-800">{{ language.name }}{% if language.proficiency %} — {{ language.proficiency }}{% endif %}</p>
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Awards -->
+  {% if awards %}
+  <div class="mb-8 print-keep-together">
+    <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Awards</h2>
+    {% for award in awards %}
+      <div class="mb-4">
+        <p class="text-sm font-semibold text-gray-800">{{ award.title }}</p>
+        {% if award.issuer or award.date_received %}
+          <p class="text-sm text-gray-700">
+            {% if award.issuer %}{{ award.issuer }}{% endif %}{% if award.date_received %}{% if award.issuer %} • {% endif %}{{ award.date_received }}{% endif %}
+          </p>
+        {% endif %}
+        {% if award.description %}
+          <p class="text-sm text-gray-600">{{ award.description }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Interests -->
+  {% if interests %}
+  <div class="mb-8 print-keep-together">
+    <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Interests</h2>
+    {% for interest in interests %}
+      <div class="mb-2">
+        <p class="text-sm text-gray-800">{{ interest.name }}</p>
+        {% if interest.description %}
+          <p class="text-sm text-gray-600">{{ interest.description }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Additional Information -->
+  {% if additionalinfos %}
+  <div class="mb-8 print-keep-together">
+    <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Additional Information</h2>
+    {% for info in additionalinfos %}
+      <div class="mb-2">
+        <p class="text-sm font-semibold text-gray-800">{{ info.title }}</p>
+        {% if info.content %}
+          <p class="text-sm text-gray-600">{{ info.content }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
 
 <style>
 @media print {
-  /* Hide UI chrome */
-  .no-print,
-  nav,
-  .navbar,
-  .site-header,
-  .site-footer { display: none !important; }
+  .no-print, nav, .navbar, .site-header, .site-footer { display: none !important; }
 
-  /* Make items stick together on one page when possible */
-  .print-keep-together {
-    break-inside: avoid;
-    page-break-inside: avoid; /* older engines */
-  }
+  .print-keep-together { break-inside: avoid; page-break-inside: avoid; }
 
-    /* force two columns on print */
-  .print-two-col {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 24px !important;
-    align-items: start;
-  }
+  h2, h3 { break-after: avoid; page-break-after: avoid; }
 
-  /* keep each column from breaking awkwardly */
-  .print-col {
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-
-  /* Keep headings with the first item under them */
-  h2, h3 {
-    break-after: avoid;
-    page-break-after: avoid;
-  }
-
-  /* Tidy up print */
   body { background: #fff !important; color: #000 !important; }
   * { box-shadow: none !important; }
-  
-  /* Optional: set page size & margins */
+
   @page { size: letter; margin: 12mm; }
 }
-
 </style>
