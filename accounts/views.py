@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 import requests
 from .models import IP_Address, Profile, Blacklist
-from .forms import CustomUserCreationForm, EmailVerificationForm, BlacklistForm
+from .forms import CustomUserCreationForm, EmailVerificationForm, BlacklistForm, ProfileForm
 from accounts import ip_management, mail_control, validation_control
 
 
@@ -221,3 +221,17 @@ def registerUser(request):
     context = {'form':form}
     return render (request, 'accounts/register_account.html', context)
 
+@login_required(login_url='login')
+def editAccount(request):
+    profile = request.user.profile
+    form = ProfileForm(request.POST or None, instance=profile)
+
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Account updated successfully!")
+            return redirect('edit-account')
+        else:
+            messages.error(request, "An error has occurred during update.")
+    
+    return render(request, 'accounts/edit_account.html', {'form': form})

@@ -7,6 +7,7 @@ urlpatterns = [
 	path('login/', views.loginUser, name='login'),
 	path('logout/', views.logoutUser, name='logout'),
     path('register-account/', views.registerUser, name='register-account'),
+    path('edit-account/', views.editAccount, name='edit-account'),
     path('verify-email/<str:pk>/<str:token>/', views.verifyEmail, name='verify-email'),
     path('verify-success/', TemplateView.as_view(template_name="accounts/verify_success.html"), name="verify-success"),
     path('validate-email/', views.newEmailVerification, name="validate-email"),

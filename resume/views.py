@@ -185,6 +185,7 @@ def resumeDashboard(request):
     certifications = Certification.objects.filter(user=current_user_profile)
     awards = Award.objects.filter(user=current_user_profile)
     languages = Language.objects.filter(user=current_user_profile)
+    interests = Interest.objects.filter(user=current_user_profile)
     additional_infos = AdditionalInfo.objects.filter(user=current_user_profile)
 
 
@@ -195,6 +196,7 @@ def resumeDashboard(request):
     certification_add_form = CertificationForm(user=current_user_profile)
     award_add_form = AwardForm(user=current_user_profile)
     language_add_form = LanguageForm(user=current_user_profile)
+    interest_add_form = InterestForm(user=current_user_profile)
     additional_info_add_form = AdditionalInfoForm(user=current_user_profile)
 
 
@@ -227,6 +229,10 @@ def resumeDashboard(request):
         lang.id: LanguageForm(instance=lang, user=current_user_profile)
         for lang in languages
     }
+    interest_edit_forms = {
+        interest.id: InterestForm(instance=interest, user=current_user_profile)
+        for interest in interests
+    }
     additional_info_edit_forms = {
         info.id: AdditionalInfoForm(instance=info, user=current_user_profile)
         for info in additional_infos
@@ -244,6 +250,7 @@ def resumeDashboard(request):
         'certifications': certifications,
         'awards': awards,
         'languages': languages,
+        'interests': interests,
         'additional_infos': additional_infos,
         'experience_add_form': experience_add_form,
         'education_add_form': education_add_form,
@@ -252,6 +259,7 @@ def resumeDashboard(request):
         'certification_add_form': certification_add_form,
         'award_add_form': award_add_form,
         'language_add_form': language_add_form,
+        'interest_add_form': interest_add_form,
         'additional_info_add_form': additional_info_add_form,
         'experience_edit_forms': experience_edit_forms,
         'education_edit_forms': education_edit_forms,
@@ -260,6 +268,7 @@ def resumeDashboard(request):
         'certification_edit_forms': certification_edit_forms,
         'award_edit_forms': award_edit_forms,
         'language_edit_forms': language_edit_forms,
+        'interest_edit_forms': interest_edit_forms,
         'additional_info_edit_forms': additional_info_edit_forms,
     }
     return render(request, 'resume/resume_dashboard.html', context)
@@ -310,6 +319,7 @@ def editResume(request, pk):
     certification_add_form = CertificationForm(user=current_user_profile)
     award_add_form = AwardForm(user=current_user_profile)
     language_add_form = LanguageForm(user=current_user_profile)
+    interest_add_form = InterestForm(user=current_user_profile)
     additional_info_add_form = AdditionalInfoForm(user=current_user_profile)
     
     # Fetch related items for display
@@ -320,6 +330,7 @@ def editResume(request, pk):
     certifications = resume.certifications.all()
     awards = resume.awards.all()
     languages = resume.languages.all()
+    interests = resume.interests.all()
     additional_infos = resume.additional_infos.all()
 
     # Prepare an "edit" form for each instance
@@ -351,6 +362,10 @@ def editResume(request, pk):
         lang.id: LanguageForm(instance=lang, user=current_user_profile)
         for lang in languages
     }
+    interest_edit_forms = {
+        interest.id: InterestForm(instance=interest, user=current_user_profile)
+        for interest in interests
+    }
     additional_info_edit_forms = {
         info.id: AdditionalInfoForm(instance=info, user=current_user_profile)
         for info in additional_infos
@@ -367,6 +382,7 @@ def editResume(request, pk):
         'certification_add_form': certification_add_form,
         'award_add_form': award_add_form,
         'language_add_form': language_add_form,
+        'interest_add_form': interest_add_form,
         'additional_info_add_form': additional_info_add_form,
         'experience_edit_forms': experience_edit_forms,
         'education_edit_forms': education_edit_forms,
@@ -375,6 +391,7 @@ def editResume(request, pk):
         'certification_edit_forms': certification_edit_forms,
         'award_edit_forms': award_edit_forms,
         'language_edit_forms': language_edit_forms,
+        'interest_edit_forms': interest_edit_forms,
         'additional_info_edit_forms': additional_info_edit_forms,
         'experiences': experiences,
         'educations': educations,
@@ -383,6 +400,7 @@ def editResume(request, pk):
         'certifications': certifications,
         'awards': awards,
         'languages': languages,
+        'interests': interests,
         'additional_infos': additional_infos,
     }
     return render(request, 'resume/edit_resume.html', context)
@@ -503,105 +521,85 @@ def deleteCertification(request, pk):
         
     return render(request, 'delete_template.html', {'object': certification, 'next_url': next_url})
 
-# === Update Order Views ===
-# These views update item positions. They should also ensure users can only reorder their own items.
-# The current implementation Experience.objects.get(id=item['id']) is insecure.
+# === Award Views ===
 
-@csrf_protect
-@login_required(login_url='login') # Add login_required
-def update_experience_order(request):
-    # Updates the display order of experiences.
-    if request.method == "POST":
-        current_user_profile = request.user.profile # Get current user's profile
-        try:
-            data = json.loads(request.body)
-            for item_data in data['order']: # Renamed 'item' to 'item_data' to avoid conflict
-                # Securely fetch the experience, ensuring it belongs to the current user
-                experience = get_object_or_404(Experience, id=item_data['id'], user=current_user_profile)
-                experience.position = item_data['position']
-                experience.save()
-            return JsonResponse({'status': 'success'})
-        except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
-        except Exception as e: # Catch other potential errors
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405) # Method Not Allowed
-
-@csrf_protect
 @login_required(login_url='login')
-def update_education_order(request):
-    # Updates the display order of education items.
-    if request.method == "POST":
-        current_user_profile = request.user.profile
-        try:
-            data = json.loads(request.body)
-            for item_data in data['order']:
-                education = get_object_or_404(Education, id=item_data['id'], user=current_user_profile)
-                education.position = item_data['position']
-                education.save()
-            return JsonResponse({'status': 'success'})
-        except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+def deleteAward(request, pk):
+    # Handles deletion of an award.
+    current_user_profile = request.user.profile
+    award = get_object_or_404(Award, id=pk, user=current_user_profile)
+    
+    primary_resume = award.resumes.first()
+    default_redirect_url = reverse('resume-dashboard')
+    if primary_resume:
+        default_redirect_url = reverse('edit-resume', kwargs={'pk': primary_resume.id})
+    next_url = request.GET.get('next', default_redirect_url)
 
-@csrf_protect
-@login_required(login_url='login')
-def update_skill_order(request):
-    # Updates the display order of skills.
     if request.method == "POST":
-        current_user_profile = request.user.profile
-        try:
-            data = json.loads(request.body)
-            for item_data in data['order']:
-                skill = get_object_or_404(Skill, id=item_data['id'], user=current_user_profile)
-                skill.position = item_data['position']
-                skill.save()
-            return JsonResponse({'status': 'success'})
-        except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+        award.delete()
+        return redirect(next_url)
+        
+    return render(request, 'delete_template.html', {'object': award, 'next_url': next_url})
 
-@csrf_protect
-@login_required(login_url='login')
-def update_project_order(request):
-    # Updates the display order of projects.
-    if request.method == "POST":
-        current_user_profile = request.user.profile
-        try:
-            data = json.loads(request.body)
-            for item_data in data['order']:
-                project = get_object_or_404(Project, id=item_data['id'], user=current_user_profile)
-                project.position = item_data['position']
-                project.save()
-            return JsonResponse({'status': 'success'})
-        except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+# === Language Views ===
 
-@csrf_protect
 @login_required(login_url='login')
-def update_certification_order(request):
-    # Updates the display order of certifications.
+def deleteLanguage(request, pk):
+    # Handles deletion of a language.
+    current_user_profile = request.user.profile
+    language = get_object_or_404(Language, id=pk, user=current_user_profile)
+    
+    primary_resume = language.resumes.first()
+    default_redirect_url = reverse('resume-dashboard')
+    if primary_resume:
+        default_redirect_url = reverse('edit-resume', kwargs={'pk': primary_resume.id})
+    next_url = request.GET.get('next', default_redirect_url)
+
     if request.method == "POST":
-        current_user_profile = request.user.profile
-        try:
-            data = json.loads(request.body)
-            for item_data in data['order']:
-                certification = get_object_or_404(Certification, id=item_data['id'], user=current_user_profile)
-                certification.position = item_data['position']
-                certification.save()
-            return JsonResponse({'status': 'success'})
-        except json.JSONDecodeError:
-            return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+        language.delete()
+        return redirect(next_url)
+        
+    return render(request, 'delete_template.html', {'object': language, 'next_url': next_url})
+
+# === Interest Views ===
+
+@login_required(login_url='login')
+def deleteInterest(request, pk):
+    # Handles deletion of an interest.
+    current_user_profile = request.user.profile
+    interest = get_object_or_404(Interest, id=pk, user=current_user_profile)
+    
+    primary_resume = interest.resumes.first()
+    default_redirect_url = reverse('resume-dashboard')
+    if primary_resume:
+        default_redirect_url = reverse('edit-resume', kwargs={'pk': primary_resume.id})
+    next_url = request.GET.get('next', default_redirect_url)
+
+    if request.method == "POST":
+        interest.delete()
+        return redirect(next_url)
+        
+    return render(request, 'delete_template.html', {'object': interest, 'next_url': next_url})
+
+# === Additional Info Views ===
+
+@login_required(login_url='login')
+def deleteAdditionalInfo(request, pk):
+    # Handles deletion of additional info.
+    current_user_profile = request.user.profile
+    additional_info = get_object_or_404(AdditionalInfo, id=pk, user=current_user_profile)
+    
+    primary_resume = additional_info.resumes.first()
+    default_redirect_url = reverse('resume-dashboard')
+    if primary_resume:
+        default_redirect_url = reverse('edit-resume', kwargs={'pk': primary_resume.id})
+    next_url = request.GET.get('next', default_redirect_url)
+
+    if request.method == "POST":
+        additional_info.delete()
+        return redirect(next_url)
+        
+    return render(request, 'delete_template.html', {'object': additional_info, 'next_url': next_url})
 
 # === Print Functions ===
 
@@ -633,3 +631,106 @@ def printResume(request, pk, username):
         }
     return render(request, 'resume/print_resume.html', context)
 # This view renders a printable version of the resume, including all related sections.
+
+
+
+# === Update Order Views ===
+# These views update item positions. They should also ensure users can only reorder their own items.
+# The current implementation Experience.objects.get(id=item['id']) is insecure.
+# This is still experimental and should be tested thoroughly before use in production.
+
+# @csrf_protect
+# @login_required(login_url='login') # Add login_required
+# def update_experience_order(request):
+#     # Updates the display order of experiences.
+#     if request.method == "POST":
+#         current_user_profile = request.user.profile # Get current user's profile
+#         try:
+#             data = json.loads(request.body)
+#             for item_data in data['order']: # Renamed 'item' to 'item_data' to avoid conflict
+#                 # Securely fetch the experience, ensuring it belongs to the current user
+#                 experience = get_object_or_404(Experience, id=item_data['id'], user=current_user_profile)
+#                 experience.position = item_data['position']
+#                 experience.save()
+#             return JsonResponse({'status': 'success'})
+#         except json.JSONDecodeError:
+#             return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+#         except Exception as e: # Catch other potential errors
+#             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+#     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405) # Method Not Allowed
+
+# @csrf_protect
+# @login_required(login_url='login')
+# def update_education_order(request):
+#     # Updates the display order of education items.
+#     if request.method == "POST":
+#         current_user_profile = request.user.profile
+#         try:
+#             data = json.loads(request.body)
+#             for item_data in data['order']:
+#                 education = get_object_or_404(Education, id=item_data['id'], user=current_user_profile)
+#                 education.position = item_data['position']
+#                 education.save()
+#             return JsonResponse({'status': 'success'})
+#         except json.JSONDecodeError:
+#             return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+#         except Exception as e:
+#             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+#     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+
+# @csrf_protect
+# @login_required(login_url='login')
+# def update_skill_order(request):
+#     # Updates the display order of skills.
+#     if request.method == "POST":
+#         current_user_profile = request.user.profile
+#         try:
+#             data = json.loads(request.body)
+#             for item_data in data['order']:
+#                 skill = get_object_or_404(Skill, id=item_data['id'], user=current_user_profile)
+#                 skill.position = item_data['position']
+#                 skill.save()
+#             return JsonResponse({'status': 'success'})
+#         except json.JSONDecodeError:
+#             return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+#         except Exception as e:
+#             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+#     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+
+# @csrf_protect
+# @login_required(login_url='login')
+# def update_project_order(request):
+#     # Updates the display order of projects.
+#     if request.method == "POST":
+#         current_user_profile = request.user.profile
+#         try:
+#             data = json.loads(request.body)
+#             for item_data in data['order']:
+#                 project = get_object_or_404(Project, id=item_data['id'], user=current_user_profile)
+#                 project.position = item_data['position']
+#                 project.save()
+#             return JsonResponse({'status': 'success'})
+#         except json.JSONDecodeError:
+#             return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+#         except Exception as e:
+#             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+#     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+
+# @csrf_protect
+# @login_required(login_url='login')
+# def update_certification_order(request):
+#     # Updates the display order of certifications.
+#     if request.method == "POST":
+#         current_user_profile = request.user.profile
+#         try:
+#             data = json.loads(request.body)
+#             for item_data in data['order']:
+#                 certification = get_object_or_404(Certification, id=item_data['id'], user=current_user_profile)
+#                 certification.position = item_data['position']
+#                 certification.save()
+#             return JsonResponse({'status': 'success'})
+#         except json.JSONDecodeError:
+#             return JsonResponse({'status': 'error', 'message': 'Invalid JSON'}, status=400)
+#         except Exception as e:
+#             return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+#     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)

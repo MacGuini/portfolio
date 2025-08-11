@@ -406,6 +406,13 @@ class AdditionalInfoForm(BaseForm):
         model = AdditionalInfo
         fields = '__all__'
         exclude = ['user', 'position']
+    
+    # Defines the resumes field as a ModelMultipleChoiceField with a CheckboxSelectMultiple widget
+    resumes = forms.ModelMultipleChoiceField(
+        queryset=Resume.objects.none(),
+        widget=forms.CheckboxSelectMultiple(),
+        required=False
+    )
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)  # get user passed from the view
