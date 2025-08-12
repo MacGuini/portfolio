@@ -126,6 +126,7 @@ def viewResume(request, pk, username):
     certifications = resume.certifications.all()
     awards = resume.awards.all()
     languages = resume.languages.all()
+    interests = resume.interests.all()
     additionalinfos = resume.additional_infos.all()
     context = {
         'resume': resume,
@@ -138,7 +139,8 @@ def viewResume(request, pk, username):
         'certifications': certifications,
         'awards': awards,
         'languages': languages,
-    'additionalinfos': additionalinfos,
+        'interests': interests,
+        'additionalinfos': additionalinfos,
     }
     return render(request, 'resume/view_resume.html', context)
 
@@ -154,6 +156,7 @@ def viewProfileResume(request, username):
     certifications = Certification.objects.filter(user=profile)
     awards = Award.objects.filter(user=profile)
     languages = Language.objects.filter(user=profile)
+    interests = Interest.objects.filter(user=profile)
     additionalinfos = AdditionalInfo.objects.filter(user=profile)
 
     resumes = Resume.objects.filter(user=profile)
@@ -166,7 +169,8 @@ def viewProfileResume(request, username):
         'certifications': certifications,
         'awards': awards,
         'languages': languages,
-    'additionalinfos': additionalinfos,
+        'interests': interests,
+        'additionalinfos': additionalinfos,
         'resumes':resumes,
     }
     return render(request, 'resume/view_profile_resume.html', context)
@@ -251,7 +255,7 @@ def resumeDashboard(request):
         'awards': awards,
         'languages': languages,
         'interests': interests,
-    'additionalinfos': additionalinfos,
+        'additionalinfos': additionalinfos,
         'experience_add_form': experience_add_form,
         'education_add_form': education_add_form,
         'skill_add_form': skill_add_form,
@@ -260,7 +264,7 @@ def resumeDashboard(request):
         'award_add_form': award_add_form,
         'language_add_form': language_add_form,
         'interest_add_form': interest_add_form,
-    'additionalinfo_add_form': additionalinfo_add_form,
+        'additionalinfo_add_form': additionalinfo_add_form,
         'experience_edit_forms': experience_edit_forms,
         'education_edit_forms': education_edit_forms,
         'skill_edit_forms': skill_edit_forms,
@@ -269,7 +273,7 @@ def resumeDashboard(request):
         'award_edit_forms': award_edit_forms,
         'language_edit_forms': language_edit_forms,
         'interest_edit_forms': interest_edit_forms,
-    'additionalinfo_edit_forms': additionalinfo_edit_forms,
+        'additionalinfo_edit_forms': additionalinfo_edit_forms,
     }
     return render(request, 'resume/resume_dashboard.html', context)
 
