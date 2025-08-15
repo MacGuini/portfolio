@@ -157,35 +157,6 @@
   </div>
   {% endif %}
 
-  <!-- Interests -->
-  {% if interests %}
-  <div class="mb-8 print-keep-together">
-    <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Interests</h2>
-    {% for interest in interests %}
-      <div class="mb-2">
-        <p class="text-sm text-gray-800">{{ interest.name }}</p>
-        {% if interest.description %}
-          <p class="text-sm text-gray-600">{{ interest.description }}</p>
-        {% endif %}
-      </div>
-    {% endfor %}
-  </div>
-  {% endif %}
-
-  <!-- Additional Information -->
-  {% if additionalinfos %}
-  <div class="mb-8 print-keep-together">
-    <h2 class="text-lg font-semibold text-gray-700 border-b pb-1 mb-4 uppercase tracking-wide">Additional Information</h2>
-    {% for info in additionalinfos %}
-      <div class="mb-2">
-        <p class="text-sm font-semibold text-gray-800">{{ info.title }}</p>
-        {% if info.content %}
-          <p class="text-sm text-gray-600">{{ info.content }}</p>
-        {% endif %}
-      </div>
-    {% endfor %}
-  </div>
-  {% endif %}
 </div>
 
 <style>

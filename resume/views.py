@@ -1,4 +1,7 @@
 import json
+import qrcode
+import base64
+from io import BytesIO
 from django.apps import apps
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, redirect, get_object_or_404
@@ -617,6 +620,11 @@ def printResume(request, pk, username):
         raise Http404("Resume not found")
     else:
 
+        # Contruct URL for the digital resume to be accessable from the print view.
+        # This allows potential employers to find more detailed information about the candidate.
+        resume_url = request.build_absolute_uri(reverse('view-resume', args=[username, pk]))
+        print("*********\nprintResume() function\nResume URL:", resume_url)
+
         # Fetch related items for display
         experiences = resume.experiences.all()
         educations = resume.educations.all()
@@ -625,8 +633,6 @@ def printResume(request, pk, username):
         certifications = resume.certifications.all()
         awards = resume.awards.all()
         languages = resume.languages.all()
-        interests = resume.interests.all()
-        additionalinfos = resume.additional_infos.all()
    
         context = {
             'resume': resume,
@@ -637,8 +643,8 @@ def printResume(request, pk, username):
             'certifications': certifications,
             'awards': awards,
             'languages': languages,
-            'interests': interests,
-            'additionalinfos': additionalinfos,
+
+            'resume_url': resume_url,
             'creatorProfile': profile,  # Pass the profile for context
         }
     return render(request, 'resume/print_resume.html', context)
