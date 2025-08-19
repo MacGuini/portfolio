@@ -9,7 +9,7 @@ idna==3.10
 packaging==24.2
 pillow==11.3.0
 qrcode==8.2
-requests==2.32.3
+requests==2.32.4
 setuptools==75.6.0
 sqlparse==0.4.2
 typing_extensions==4.12.2
