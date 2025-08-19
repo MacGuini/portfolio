@@ -7,8 +7,7 @@ All other known and solved issues should be listed here
 
 KNOWN ISSUES====================================================================
 
--Skills details aren't rendering. Check other objects to make sure they are rendering properly.
-
+- I was trying to remove the days from the dates in the resume. But CoPilot messed it all up. Need more work.
 
 -Need better dashboard styling. 
     - When you open up the collapsible add script, the other elements change in size and make it look weird.

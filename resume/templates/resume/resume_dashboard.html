@@ -99,7 +99,7 @@
                 <h4 class="font-semibold text-slate-200">{{ experience.job_title }}</h4>
                 <p class="text-sm text-slate-400">
                   {% if experience.company_name %}{{ experience.company_name }}{% endif %}
-                  {% if experience.start_date or experience.end_date %}{% if experience.company_name %} &middot; {% endif %}{{ experience.start_date|date:"M Y" }}{% if experience.end_date %} to {{ experience.end_date|date:"M Y" }}{% else %} – Present{% endif %}{% endif %}
+                  {% if experience.start_date or experience.end_date %}{% if experience.company_name %} &middot; {% endif %}{{ experience.start_date }}{% if experience.end_date %} to {{ experience.end_date }}{% else %} – Present{% endif %}{% endif %}
                 </p>
                 {% if experience.description %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ experience.description }}</p>{% endif %}
               </div>
@@ -130,7 +130,7 @@
                 <h4 class="font-semibold text-slate-200">{{ education.degree }}</h4>
                 <p class="text-sm text-slate-400">
                   {% if education.institution_name %}{{ education.institution_name }}{% endif %}
-                  {% if education.start_date or education.end_date %}{% if education.institution_name %} &middot; {% endif %}{{ education.start_date|date:"M Y" }}{% if education.end_date %} to {{ education.end_date|date:"M Y" }}{% else %} – Present{% endif %}{% endif %}
+                  {% if education.start_date or education.end_date %}{% if education.institution_name %} &middot; {% endif %}{{ education.start_date }}{% if education.end_date %} to {{ education.end_date }}{% else %} – Present{% endif %}{% endif %}
                 </p>
                 {% if education.description %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ education.description }}</p>{% endif %}
               </div>
