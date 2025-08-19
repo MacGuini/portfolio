@@ -65,13 +65,13 @@ class ExperienceForm(BaseForm):
                 'id': 'start_date',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
                 'placeholder': 'Start Date',
-                'type': 'date'
+                'type': 'text'
             },
             'end_date': {
                 'id': 'end_date',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
                 'placeholder': 'End Date',
-                'type': 'date'
+                'type': 'text'
             },
             'is_current': {
                 'id': 'is_current',
@@ -134,14 +134,14 @@ class EducationForm(BaseForm):
                 'id': 'start_date',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
                 'placeholder': 'Start Date',
-                'type': 'date'
+                'type': 'text'
 
             },
             'end_date': {
                 'id': 'end_date',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
                 'placeholder': 'End Date',
-                'type': 'date'
+                'type': 'text'
             },
             'description': {
                 'id': 'description',
@@ -265,13 +265,13 @@ class CertificationForm(BaseForm):
                 'id': 'issue_date',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
                 'placeholder': 'Issue Date',
-                'type': 'date'
+                'type': 'text'
             },
             'expiration_date': {
                 'id': 'expiration_date',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
                 'placeholder': 'Expiration Date',
-                'type': 'date'
+                'type': 'text'
             },
             'credential_id': {
                 'id': 'credential_id',
@@ -322,7 +322,7 @@ class AwardForm(BaseForm):
                 'id': 'date_received',
                 'class': 'bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 my-2',
                 'placeholder': 'Date Received',
-                'type': 'date'
+                'type': 'text'
             },
             'description': {
                 'id': 'description',

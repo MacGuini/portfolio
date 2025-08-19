@@ -27,18 +27,37 @@
             console.error('flatpickr is not loaded');
         }
 
-        // Initialize flatpickr
+        // Initialize flatpickr with monthSelect plugin for month/year-only selection
         const startDateInputs = document.querySelectorAll('input[name="start_date"]');
         const endDateInputs = document.querySelectorAll('input[name="end_date"]');
         const issueDateInputs = document.querySelectorAll('input[name="issue_date"]');
         const expirationDateInputs = document.querySelectorAll('input[name="expiration_date"]');
         const date_receivedInputs = document.querySelectorAll('input[name="date_received"]');
 
-        flatpickr(startDateInputs, { dateFormat: 'Y-m-d' });
-        flatpickr(endDateInputs, { dateFormat: 'Y-m-d' });
-        flatpickr(issueDateInputs, { dateFormat: 'Y-m-d' });
-        flatpickr(expirationDateInputs, { dateFormat: 'Y-m-d' });
-        flatpickr(date_receivedInputs, { dateFormat: 'Y-m-d' });
+        const monthPickerOptions = {
+            plugins: [new monthSelectPlugin({ shorthand: false })],
+            // Keep the stored value as a full date so Django DateField accepts it.
+            // We'll normalize to the first day of the month on change.
+            dateFormat: 'Y-m-d',
+            altInput: true,
+            altFormat: 'm/Y',
+            onChange: function(selectedDates, dateStr, instance) {
+                if (selectedDates && selectedDates.length) {
+                    const d = selectedDates[0];
+                    const normalized = new Date(d.getFullYear(), d.getMonth(), 1);
+                    // write ISO YYYY-MM-DD into the real input
+                    instance.input.value = normalized.toISOString().slice(0,10);
+                    // set visible alt input to MM/YYYY
+                    if (instance.altInput) instance.altInput.value = ("0" + (normalized.getMonth()+1)).slice(-2) + "/" + normalized.getFullYear();
+                }
+            }
+        };
+
+        startDateInputs.forEach(i => flatpickr(i, monthPickerOptions));
+        endDateInputs.forEach(i => flatpickr(i, monthPickerOptions));
+        issueDateInputs.forEach(i => flatpickr(i, monthPickerOptions));
+        expirationDateInputs.forEach(i => flatpickr(i, monthPickerOptions));
+        date_receivedInputs.forEach(i => flatpickr(i, monthPickerOptions));
 
         {% comment %} // Initialize sortable sections. Commented out for now since not in use and still being tested.
         const sortableSections = [

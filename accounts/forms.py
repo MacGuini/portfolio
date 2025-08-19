@@ -71,6 +71,7 @@ class ProfileForm(forms.ModelForm):
             'mobile': forms.TextInput(), # or forms.TelInput()
             'work': forms.TextInput(),   # or forms.TelInput()
             'email': forms.EmailInput(),
+            'website': forms.URLInput(),
             'preference': forms.RadioSelect(),
             'is_staff': forms.CheckboxInput(),
         }

@@ -64,7 +64,7 @@
 
     {% if resume.summary %}
     <div class="mt-8 text-lg text-slate-300">
-      {{ resume.summary }}
+      {{ resume.summary|linebreaksbr }}
     </div>
     {% endif %}
   </div>
@@ -85,7 +85,7 @@
               <div class="flex-auto">
                 <h4 class="font-semibold text-slate-200">{{ experience.job_title }}</h4>
                 <p class="text-sm text-slate-400">{{ experience.company_name }} &middot; {{ experience.start_date }} to {{ experience.end_date }}</p>
-                <p class="mt-2 text-sm leading-6 text-slate-300">{{ experience.description }}</p>
+                <p class="mt-2 text-sm leading-6 text-slate-300">{{ experience.description|linebreaksbr }}</p>
               </div>
             </div>
           </div>
@@ -107,7 +107,7 @@
               <div class="flex-auto">
                 <h4 class="font-semibold text-slate-200">{{ education.degree }}</h4>
                 <p class="text-sm text-slate-400">{{ education.institution_name }} &middot; {{ education.start_date }} to {{ education.end_date }}</p>
-                <p class="mt-2 text-sm leading-6 text-slate-300">{{ education.description }}</p>
+                <p class="mt-2 text-sm leading-6 text-slate-300">{{ education.description|linebreaksbr }}</p>
               </div>
             </div>
           </div>
@@ -147,7 +147,7 @@
             <div class="flex items-start gap-x-4">
               <div class="flex-auto">
                 <h4 class="font-semibold text-slate-200">{{ project.title }}</h4>
-                <p class="mt-1 text-sm leading-6 text-slate-300">{{ project.description }}</p>
+                <p class="mt-1 text-sm leading-6 text-slate-300">{{ project.description|linebreaksbr }}</p>
                 {% if project.link %}<a href="{{ project.link }}" class="text-sm font-semibold text-indigo-400 hover:text-indigo-300" target="_blank" rel="noopener noreferrer">View Project &rarr;</a>{% endif %}
               </div>
             </div>
@@ -226,7 +226,7 @@
               <p class="text-sm text-slate-400">
                 {% if award.issuer %}{{ award.issuer }}{% endif %}{% if award.date_received %}{% if award.issuer %} &middot; {% endif %}{{ award.date_received|date:"M j, Y" }}{% endif %}
               </p>
-              {% if award.description %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ award.description }}</p>{% endif %}
+              {% if award.description %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ award.description|linebreaksbr }}</p>{% endif %}
             </div>
           </div>
         </div>
@@ -246,7 +246,7 @@
           <div class="flex items-start gap-x-4">
             <div class="flex-auto">
               <h4 class="font-semibold text-slate-200">{{ interest.name }}</h4>
-              {% if interest.description %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ interest.description }}</p>{% endif %}
+              {% if interest.description %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ interest.description|linebreaksbr }}</p>{% endif %}
             </div>
           </div>
         </div>
@@ -266,7 +266,7 @@
           <div class="flex items-start gap-x-4">
             <div class="flex-auto">
               <h4 class="font-semibold text-slate-200">{{ info.title }}</h4>
-              {% if info.content %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ info.content }}</p>{% endif %}
+              {% if info.content %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ info.content|linebreaksbr }}</p>{% endif %}
             </div>
           </div>
         </div>

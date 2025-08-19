@@ -27,7 +27,7 @@
         {% endif %}
     </p>
     {% if resume.summary %}
-      <p class="mt-3 text-gray-800 text-base italic">{{ resume.summary }}</p>
+      <p class="mt-3 text-gray-800 text-base italic">{{ resume.summary|linebreaksbr }}</p>
     {% endif %}
   </div>
 
@@ -43,7 +43,7 @@
         </div>
         <p class="text-sm text-gray-700">{{ exp.company_name }}</p>
         {% if exp.description %}
-          <p class="mt-1 text-sm text-gray-600">{{ exp.description }}</p>
+          <p class="mt-1 text-sm text-gray-600">{{ exp.description|linebreaksbr }}</p>
         {% endif %}
       </div>
     {% endfor %}
@@ -62,7 +62,7 @@
         </div>
         <p class="text-sm text-gray-700">{{ edu.institution_name }}</p>
         {% if edu.description %}
-          <p class="mt-1 text-sm text-gray-600">{{ edu.description }}</p>
+          <p class="mt-1 text-sm text-gray-600">{{ edu.description|linebreaksbr }}</p>
         {% endif %}
       </div>
     {% endfor %}
@@ -77,7 +77,7 @@
       <div class="mb-4">
         <p class="font-semibold text-sm text-gray-800">{{ proj.title }}</p>
         {% if proj.description %}
-          <p class="text-sm text-gray-600">{{ proj.description }}</p>
+          <p class="text-sm text-gray-600">{{ proj.description|linebreaksbr }}</p>
         {% endif %}
         {% if proj.link %}
           <a href="{{ proj.link }}" class="text-sm text-blue-500 hover:underline" target="_blank">{{ proj.link }}</a>
@@ -150,7 +150,7 @@
           </p>
         {% endif %}
         {% if award.description %}
-          <p class="text-sm text-gray-600">{{ award.description }}</p>
+          <p class="text-sm text-gray-600">{{ award.description|linebreaksbr }}</p>
         {% endif %}
       </div>
     {% endfor %}
@@ -159,11 +159,26 @@
 
 </div>
 
+<div class="my-4 text-center print-keep-together">
+  <p>View my digital resume here:</p>
+  <img src="data:image/png;base64, {{ qr_code }}" alt="QR Code" class="mx-auto w-32 h-32">
+  <a href="{{ resume_url }}" class="text-blue-500 hover:underline mb-4">{{ resume_url }}</a>
+</div>
+
 <style>
 @media print {
-  .no-print, nav, .navbar, .site-header, .site-footer { display: none !important; }
 
+  /* Hide elements that are not needed in print */
+  .no-print, nav, .navbar, .site-header, .site-footer { display: none !important; }
+  
+  /* Keep sections together on the same page */
   .print-keep-together { break-inside: avoid; page-break-inside: avoid; }
+
+  /* Ensure QR code is pushed to the last page*/
+  .qr-section {
+    break-before: page; /* Modern spec */
+    page-break-before: always; /* Legacy browsers */
+  }
 
   h2, h3 { break-after: avoid; page-break-after: avoid; }
 

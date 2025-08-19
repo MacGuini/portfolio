@@ -1,4 +1,3 @@
-import json
 import qrcode
 import base64
 from io import BytesIO
@@ -616,6 +615,7 @@ def printResume(request, pk, username):
     # Handles printing of a resume.
     profile = get_object_or_404(Profile, username=username)
     resume = get_object_or_404(Resume, id=pk, user=profile)
+    # Ensures resume exists
     if not resume:
         raise Http404("Resume not found")
     else:
@@ -623,7 +623,12 @@ def printResume(request, pk, username):
         # Contruct URL for the digital resume to be accessable from the print view.
         # This allows potential employers to find more detailed information about the candidate.
         resume_url = request.build_absolute_uri(reverse('view-resume', args=[username, pk]))
-        print("*********\nprintResume() function\nResume URL:", resume_url)
+
+        # Generate a QR code for the resume URL
+        qr = qrcode.QRCode(box_size=6, border=2)
+        qr.add_data(resume_url)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
 
         # Fetch related items for display
         experiences = resume.experiences.all()
@@ -633,6 +638,11 @@ def printResume(request, pk, username):
         certifications = resume.certifications.all()
         awards = resume.awards.all()
         languages = resume.languages.all()
+
+        # Convert the QR code image to base64 for embedding in the template
+        buffer = BytesIO()
+        img.save(buffer, format='PNG')
+        img_str = base64.b64encode(buffer.getvalue()).decode()
    
         context = {
             'resume': resume,
@@ -646,6 +656,7 @@ def printResume(request, pk, username):
 
             'resume_url': resume_url,
             'creatorProfile': profile,  # Pass the profile for context
+            'qr_code': img_str,  # Base64 encoded QR code image
         }
     return render(request, 'resume/print_resume.html', context)
 # This view renders a printable version of the resume, including all related sections.

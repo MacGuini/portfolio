@@ -33,6 +33,8 @@ class Profile(models.Model):
 	mobile = models.CharField(max_length=10, null=True, blank=True)
 	work = models.CharField(max_length=10, null=True, blank=True)
 
+	website = models.URLField(max_length=200, null=True, blank=True)
+
 	email = models.EmailField(max_length=200, null=True, blank=True, unique=True)
 	preference = models.CharField(max_length=6, choices=CONTACT_TYPE, default='home', null=True, blank=True)
 
