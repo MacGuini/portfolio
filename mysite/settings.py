@@ -26,6 +26,36 @@ else:
     CSRF_TRUSTED_ORIGINS = ["https://brian-lindsay.com", "https://www.brian-lindsay.com", "https://blindsay-portfolio-nj2bm.ondigitalocean.app"]
 
 
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'file': {
+                'level': 'DEBUG',
+                'class': 'logging.FileHandler',
+                'filename': BASE_DIR / 'logs/django.log',
+            },
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+            },
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['file', 'console'],
+                'level': 'DEBUG',
+                'propagate': True,
+            },
+            'accounts': {  # your app
+                'handlers': ['file', 'console'],
+                'level': 'DEBUG',
+                'propagate': False,
+            },
+        },
+    }
+
+
+
 # Application definition
 
 INSTALLED_APPS = [

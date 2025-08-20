@@ -3,17 +3,18 @@
 {% load resume_tags %}
 {% block content %}
 
-<div class="px-4"> <!-- Beginning of container -->
+<div class="px-4 max-w-4xl mx-auto"> <!-- Beginning of container -->
 
 <div class="flex flex-col">
   <div class="w-full flex justify-end mb-4">
     <a href="{% url 'print-resume' username resume.id %}" class="inline-flex items-center px-4 py-2 mt-4 bg-indigo-600 text-white text-sm font-semibold rounded hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-      Print Resume
+      Printable Version
     </a>
   </div>
 
-  <!-- Header -->
+  
   <div class="max-w-4xl">
+    <!-- Header -->
     <h2 class="text-base/7 font-semibold text-indigo-400">Digital Resume</h2>
     <p class="mt-2 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
       {{ creatorProfile.fname }}{% if creatorProfile.mname %} {{ creatorProfile.mname }}{% endif %} {{ creatorProfile.lname }}
@@ -84,7 +85,7 @@
             <div class="flex items-start gap-x-4">
               <div class="flex-auto">
                 <h4 class="font-semibold text-slate-200">{{ experience.job_title }}</h4>
-                <p class="text-sm text-slate-400">{{ experience.company_name }} &middot; {{ experience.start_date }} to {{ experience.end_date }}</p>
+                <p class="text-sm text-slate-400">{{ experience.company_name }} &middot; {{ experience.start_date }} - {% if experience.is_current or not experience.end_date %}Present{% else %}{{ experience.end_date }} {% endif %}</p>
                 <p class="mt-2 text-sm leading-6 text-slate-300">{{ experience.description|linebreaksbr }}</p>
               </div>
             </div>
@@ -105,7 +106,7 @@
           <div class="py-6">
             <div class="flex items-start gap-x-4">
               <div class="flex-auto">
-                <h4 class="font-semibold text-slate-200">{{ education.degree }}</h4>
+                {% if education.degree %}<h4 class="font-semibold text-slate-200">{{ education.degree }}{% if education.field_of_study %} in {{ education.field_of_study }}{% endif %}</h4>{% endif %}
                 <p class="text-sm text-slate-400">{{ education.institution_name }} &middot; {{ education.start_date }} to {{ education.end_date }}</p>
                 <p class="mt-2 text-sm leading-6 text-slate-300">{{ education.description|linebreaksbr }}</p>
               </div>

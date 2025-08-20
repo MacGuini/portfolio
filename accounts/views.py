@@ -236,6 +236,14 @@ def registerUser(request):
                 return redirect('confirm-email-notice')
             else:
                 messages.error(request, "An error has occured during registration")
+                logger.error(
+                    "Register failed: email_allowed=%s | user=%s | email=%s | domain=%s | form_errors=%s",
+                    email_allowed,
+                    request.POST.get('username', 'unknown'),
+                    request.POST.get('email', 'unknown'),
+                    request.POST.get('email', 'unknown').split('@')[1] if '@' in (request.POST.get('email') or '') else '',
+                    form.errors.as_json()  # or just form.errors if you prefer brevity
+                )
         else:
             logger.info("Register blocked: reCAPTCHA failed for user %s", request.POST.get('username', 'unknown'))
             messages.error(request, 'Please complete recaptcha challenge')

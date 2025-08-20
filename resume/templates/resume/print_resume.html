@@ -57,8 +57,8 @@
     {% for edu in educations %}
       <div class="mb-4">
         <div class="flex justify-between text-sm font-semibold text-gray-800">
-          <span>{{ edu.degree }} in {{ edu.field_of_study }}</span>
-          <span>{{ edu.start_date }} – {{ edu.end_date }}</span>
+          {% if edu.degree %}<span>{{ edu.degree }}{% if edu.field_of_study %} in {{ edu.field_of_study }}{% endif %}</span>{% else %}<span>{{ edu.field_of_study }}</span>{% endif %}
+          {% if edu.start_date or edu.end_date %}<span>{{ edu.start_date }} – {% if edu.is_current or not edu.end_date %}Present{% else %}{{ edu.end_date }}{% endif %}</span>{% endif %}
         </div>
         <p class="text-sm text-gray-700">{{ edu.institution_name }}</p>
         {% if edu.description %}
