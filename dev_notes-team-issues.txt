@@ -7,7 +7,7 @@ All other known and solved issues should be listed here
 
 KNOWN ISSUES====================================================================
 
-- Need mail server that works
+- Add languages in resume dashboard
 
 -Need better dashboard styling. 
     - When you open up the collapsible add script, the other elements change in size and make it look weird.

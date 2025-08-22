@@ -4,7 +4,7 @@ def commentReplied(comment):
     # Common variables used in both notifications
     pageId = comment.post.id
     url = f"https://brian-lindsay.com/forum/view-post/{pageId}"
-    from_email = "brian.s.lindsay829@gmail.com"
+    from_email = "noreply@brian-lindsay.com"
 
     # Notify when someone replies to another user's comment
     if comment.parent is not None and comment.author != comment.parent.author:

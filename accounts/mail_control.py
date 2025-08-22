@@ -5,7 +5,7 @@ def notifyUserCreated(user, ipaddr):
     ('User ' + str(user.username) + ' was successfully created'),
     ('A user was created for brian-lindsay.com!\n\nUsername: ' + str(user.username) + '\n\nName: ' + str(user.first_name) + ' ' + str(user.last_name) + '\n\nEmail: ' + str(user.email) +  "\n\nIP Address: "  + str(ipaddr)),
     'noreply@brian-lindsay.com',
-    ['brian.s.lindsay829@gmail.com'],
+    ['noreply@brian-lindsay.com'],
     fail_silently=False,
 ) 
 
@@ -24,7 +24,7 @@ def blacklistBlocked(ipaddr):
         (f'Blacklist blocked IP Address: {ipaddr}'),
         (f'This message sent to alert you that the IP blocker has successfully blocked a request from {ipaddr}'),
         'noreply@brian-lindsay.com',
-        ['brian.s.lindsay829@gmail.com'],
+        ['noreply@brian-lindsay.com'],
         fail_silently=False
     )
 
@@ -33,7 +33,7 @@ def blacklistMiddlewareActivated(ipaddr):
         f'Blacklist Middleware activated, blocking {ipaddr}',
         f'This email was sent to verify that the middleware blacklisting is functioning correctly. The IP address {ipaddr} has been blocked.',
         'noreply@brian-lindsay.com',
-        ['brian.s.lindsay829@gmail.com'],
+        ['noreply@brian-lindsay.com'],
         fail_silently=False
     )
 def captchaFail():
@@ -41,6 +41,6 @@ def captchaFail():
         f'Captcha failed',
         f'Someone failed the captcha test on brian-lindsay.com',
         'noreply@brian-lindsay.com',
-        ['brian.s.lindsay829@gmail.com'],
+        ['noreply@brian-lindsay.com'],
         fail_silently=False
     )
