@@ -1,18 +1,33 @@
-asgiref==3.8.1
-certifi==2024.8.30
-charset-normalizer==3.4.0
-dj-database-url==2.3.0
-Django==5.1.3
-django-cleanup==9.0.0
-gunicorn==23.0.0
-idna==3.10
-packaging==24.2
-pillow==11.3.0
-qrcode==8.2
-requests==2.32.3
-setuptools==75.6.0
-sqlparse==0.4.2
-typing_extensions==4.12.2
-urllib3==2.2.3
-whitenoise==6.8.2
-psycopg2==2.9.9
+# asgiref==3.8.1
+# certifi==2024.8.30
+# charset-normalizer==3.4.0
+# dj-database-url==2.3.0
+# Django==5.1.3
+# django-cleanup==9.0.0
+# gunicorn==23.0.0
+# idna==3.10
+# packaging==24.2
+# pillow==11.3.0
+# qrcode==8.2
+# requests==2.32.3
+# setuptools==75.6.0
+# sqlparse==0.4.2
+# typing_extensions==4.12.2
+# urllib3==2.2.3
+# whitenoise==6.8.2
+# psycopg[binary]>=3.1
+
+# Web framework & helpers
+Django~=5.1
+whitenoise~=6.8
+gunicorn~=23.0
+dj-database-url~=2.3
+
+# PostgreSQL driver (Python 3.13-friendly)
+psycopg[binary]~=3.1
+
+# Your direct libraries
+pillow~=11.0
+qrcode~=8.2
+requests~=2.32
+django-cleanup~=9.0
