@@ -29,12 +29,13 @@ def updateProfile(sender, instance, created, **kwargs):
 	profile = instance
 	user = profile.user
 
+	if not user:
+		return
+
 	if created == False:
-		user.first_name = profile.fname 
+		user.first_name = profile.fname
 		user.last_name = profile.lname
 		user.email = profile.email
-		# user.is_staff = profile.is_staff
-		# user.is_superuser = profile.is_superuser
 		user.save()
 
 @receiver(post_delete, sender=Profile)

@@ -48,8 +48,8 @@ class CustomUserCreationForm(UserCreationForm): # Inherets all aspects of the im
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = '__all__'
-        exclude = ['is_superuser']
+        fields = ['username', 'fname', 'mname', 'lname', 'street1', 'street2', 'city', 'state', 'zipcode', 'home', 'mobile', 'work', 'email', 'website', 'preference', 'about']
+        exclude = ['is_superuser', 'is_staff', 'is_approved', 'email_valid', 'verification_token', 'token_created_at', 'created', 'id', 'user']
         labels = {
             'fname':'First Name',
             'mname':'Middle Name',
@@ -67,13 +67,13 @@ class ProfileForm(forms.ModelForm):
             'city': forms.TextInput(),
             'state': forms.TextInput(),
             'zipcode': forms.TextInput(),
-            'home': forms.TextInput(),   # or forms.TelInput() Haven't tested this yet but leaving the comment here for future reference
+            'home': forms.TextInput(),   # or forms.TelInput() Haven't tested this yet but leaving the comment here for future reference. In case I want to try it or style things differently.
             'mobile': forms.TextInput(), # or forms.TelInput()
             'work': forms.TextInput(),   # or forms.TelInput()
             'email': forms.EmailInput(),
             'website': forms.URLInput(),
             'preference': forms.RadioSelect(),
-            'is_staff': forms.CheckboxInput(),
+            'about': forms.Textarea(attrs={'rows': 4}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -84,8 +84,8 @@ class ProfileForm(forms.ModelForm):
         }
         checkbox_base = {'class': 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500'}
 
-        # apply Tailwind to all text-like fields
-        for name in ['username','fname','mname','lname','street1','street2','city','state','zipcode','home','mobile','work','email']:
+        # apply Tailwind to all text-based fields
+        for name in ['username','fname','mname','lname','street1','street2','city','state','zipcode','home','mobile','work','email','website','about']:
             if name in self.fields:
                 self.fields[name].widget.attrs.update({**text_base})
 
@@ -98,7 +98,9 @@ class ProfileForm(forms.ModelForm):
             'home': 'Home Phone (digits only)',
             'mobile': 'Mobile Phone (digits only)',
             'work': 'Work Phone (digits only)',
-            'email': 'you@example.com'
+            'email': 'you@example.com',
+            'website': 'https://example.com',
+            'about': 'A little about yourself...',
         }
         for k, v in placeholders.items():
             if k in self.fields:
@@ -107,10 +109,6 @@ class ProfileForm(forms.ModelForm):
         # radio group (preference)
         if 'preference' in self.fields:
             self.fields['preference'].widget.attrs.update({'class': 'space-y-2'})
-
-        # is_staff checkbox
-        if 'is_staff' in self.fields:
-            self.fields['is_staff'].widget.attrs.update(checkbox_base)
 
     # phone validators
     def clean_mobile(self):

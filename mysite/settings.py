@@ -33,31 +33,47 @@ else:
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] {levelname} {name} | {message}',
+            'style': '{',
+        },
+        'json': {
+            'format': '{{"time": "{asctime}", "level": "{levelname}", "name": "{name}", "message": "{message}"}}',
+            'style': '{',
+        },
+    },
+
     'handlers': {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': str(LOG_DIR / 'django.log'),
-            'delay': True,
+            'filename': BASE_DIR / 'logs/django.log',
+            'formatter': 'verbose',  # <-- you can switch to 'json' if you prefer
         },
         'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',  # <-- or 'json' here too
         },
     },
+
     'loggers': {
         'django': {
             'handlers': ['file', 'console'],
             'level': 'DEBUG',
             'propagate': True,
         },
-        'accounts': {  # your app
+        'accounts': {
             'handlers': ['file', 'console'],
             'level': 'DEBUG',
             'propagate': False,
         },
     },
 }
+
+
 
 
 

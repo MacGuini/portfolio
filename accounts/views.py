@@ -258,7 +258,9 @@ def editAccount(request):
 
     if request.method == 'POST':
         if form.is_valid():
-            form.save()
+            obj = form.save(commit=False)
+            obj.user = request.user # Ensure user is attached 
+            obj.save()
             messages.success(request, "Account updated successfully!")
             return redirect('edit-account')
         else:
