@@ -8,3 +8,5 @@ IDEAS===========================================================================
 
 -Add a boolean to the resume model if the user wants it to be public or private. So that even if someone were to guess the link to view their resume, it will not show any of the information. 
     -Add a text field to store a randomly generated key to be required to be included in the link in order to see the resume. That way only those with the link can view it. The user then can select to make it public but must be verified via the key in the URL. The user can choose to randomly generate a new key or create their own unique key of their own.
+
+- Add mroe DRY to view resume and view profile resume. Or make them look different.

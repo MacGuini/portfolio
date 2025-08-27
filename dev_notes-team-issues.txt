@@ -7,7 +7,7 @@ All other known and solved issues should be listed here
 
 KNOWN ISSUES====================================================================
 
-- Add languages in resume dashboard
+- Consider new UI for builder. Adding and having to scroll all the way back down is annoying.
 
 -Need better dashboard styling. 
     - When you open up the collapsible add script, the other elements change in size and make it look weird.

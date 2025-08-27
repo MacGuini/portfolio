@@ -284,6 +284,43 @@
       </div>
     </div>
 
+    <!--Languages-->
+    <div class="rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black p-px shadow-lg">
+      <div class="rounded-lg p-8 sm:p-10">
+        <h3 class="text-base font-semibold leading-7 text-indigo-400">Languages</h3>
+        <div class="mt-6 -my-6 divide-y divide-slate-700">
+          {% for language in languages %}
+          <div class="py-6">
+            <div class="flex items-start gap-x-4">
+              <div class="flex-auto">
+                <h4 class="font-semibold text-slate-200">{{ language.name }}</h4>
+                {% if language.proficiency %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ language.proficiency }}</p>{% endif %}
+              </div>
+              <button type="button" class="edit-collapsible flex-none rounded-md bg-white/10 px-2 py-1 text-xs font-semibold text-white shadow-sm hover:bg-white/20" data-target="#edit-language-{{ language.id }}">Edit</button>
+            </div>
+            <div id="edit-language-{{ language.id }}" class="edit-content mt-4" style="display:none;">
+              {% include "resume/partials/section_dropdown.html" with form=language_edit_forms|dict_get:language.id button_icon="✎" action_url=language.id|get_edit_url:"language" button_label="Save Language" %}
+              <div class="mt-2 text-right"><a href="javascript:void(0)" class="close-edit text-sm font-semibold text-indigo-400 hover:text-indigo-300" data-target="#edit-language-{{ language.id }}">Cancel</a></div>
+            </div>
+          </div>
+          {% empty %}
+          <p class="py-6 text-sm text-slate-400">No languages added yet.</p>
+          {% endfor %}
+        </div>
+        <div class="mt-8">{% include "resume/partials/section_dropdown.html" with form=language_add_form button_icon="+" action_url="language"|get_add_url button_label="Add Language" %}</div>
+      </div>
+    </div>
+
+<br>
+<!-- Disclaimer -->
+<div class="w-full text-center py-10 border-y border-slate-400 max-w-4xl mx-auto">
+  <span class="text-slate-400">
+    The sections below will only appear on your digital resume. As of right now, there is not selection of printable templates that will accomodate this option. Check back later for further customization.
+  </span>
+</div>
+<br>
+
+
     <!-- Interests -->
     <div class="rounded-lg bg-gradient-to-br from-slate-800 via-slate-900 to-black p-px shadow-lg">
       <div class="rounded-lg p-8 sm:p-10">

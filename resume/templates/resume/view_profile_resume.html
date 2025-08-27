@@ -94,7 +94,7 @@
             {% endif %}
           </p>
           {% endif %}
-          {% if experience.description %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ experience.description }}</p>{% endif %}
+          {% if experience.description|linebreaksbr %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ experience.description|linebreaksbr }}</p>{% endif %}
         </div>
         {% endfor %}
       </div>
@@ -109,7 +109,7 @@
       <div class="mt-6 -my-6 divide-y divide-slate-700">
         {% for education in educations %}
         <div class="py-6">
-          {% if education.degree %}<h4 class="font-semibold text-slate-200">{{ education.degree }}</h4>{% endif %}
+          {% if education.degree %}<h4 class="font-semibold text-slate-200">{{ education.degree }}{% if education.field_of_study %} in {{ education.field_of_study }}{% endif %}</h4>{% endif %}
           {% if education.institution_name or education.start_date or education.end_date %}
           <p class="text-sm text-slate-400">
             {% if education.institution_name %}{{ education.institution_name }}{% endif %}
@@ -119,7 +119,7 @@
             {% endif %}
           </p>
           {% endif %}
-          {% if education.description %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ education.description }}</p>{% endif %}
+          {% if education.description|linebreaksbr %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ education.description|linebreaksbr }}</p>{% endif %}
         </div>
         {% endfor %}
       </div>
@@ -151,7 +151,7 @@
         {% for project in projects %}
         <div class="py-6">
           {% if project.title %}<h4 class="font-semibold text-slate-200">{{ project.title }}</h4>{% endif %}
-          {% if project.description %}<p class="mt-1 text-sm leading-6 text-slate-300">{{ project.description }}</p>{% endif %}
+          {% if project.description|linebreaksbr %}<p class="mt-1 text-sm leading-6 text-slate-300">{{ project.description|linebreaksbr }}</p>{% endif %}
           {% if project.link %}<a href="{{ project.link }}" class="text-sm font-semibold text-indigo-400 hover:text-indigo-300" target="_blank" rel="noopener noreferrer">View Project →</a>{% endif %}
         </div>
         {% endfor %}
@@ -224,7 +224,7 @@
             {% if award.issuer %}{{ award.issuer }}{% endif %}{% if award.date_received %}{% if award.issuer %} &middot; {% endif %}{{ award.date_received|date:"M j, Y" }}{% endif %}
           </p>
           {% endif %}
-          {% if award.description %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ award.description }}</p>{% endif %}
+          {% if award.description|linebreaksbr %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ award.description|linebreaksbr }}</p>{% endif %}
         </div>
         {% endfor %}
       </div>
@@ -240,7 +240,7 @@
         {% for interest in interests %}
         <div class="py-6">
           {% if interest.name %}<h4 class="font-semibold text-slate-200">{{ interest.name }}</h4>{% endif %}
-          {% if interest.description %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ interest.description }}</p>{% endif %}
+          {% if interest.description|linebreaksbr %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ interest.description|linebreaksbr }}</p>{% endif %}
         </div>
         {% endfor %}
       </div>
@@ -256,7 +256,7 @@
         {% for info in additionalinfos %}
         <div class="py-6">
           {% if info.title %}<h4 class="font-semibold text-slate-200">{{ info.title }}</h4>{% endif %}
-          {% if info.content %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ info.content }}</p>{% endif %}
+          {% if info.content %}<p class="mt-2 text-sm leading-6 text-slate-300">{{ info.content|linebreaksbr }}</p>{% endif %}
         </div>
         {% endfor %}
       </div>
