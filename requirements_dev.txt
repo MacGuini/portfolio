@@ -17,7 +17,7 @@
 # whitenoise==6.8.2
 
 # Keep dev minimal; no transitive pins
-Django~=5.1
+Django~=4.2
 whitenoise~=6.8
 dj-database-url~=2.3
 pillow~=11.0
