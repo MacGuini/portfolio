@@ -27,7 +27,7 @@ dj-database-url~=2.3
 psycopg[binary]~=3.1
 
 # Your direct libraries
-pillow~=11.0
+pillow~=12.1
 qrcode~=8.2
 requests~=2.32
 django-cleanup~=9.0

@@ -20,7 +20,7 @@
 Django~=5.1
 whitenoise~=6.8
 dj-database-url~=2.3
-pillow~=11.0
+pillow~=12.1
 qrcode~=8.2
 requests~=2.32
 django-cleanup~=9.0
