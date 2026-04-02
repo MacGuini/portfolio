@@ -187,11 +187,11 @@ else:
     # Production email settings
     # Use Zoho Mail SMTP settings
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.zoho.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'noreply@brian-lindsay.com'
-EMAIL_HOST_PASSWORD = os.getenv('ZOHO_APP_PASSWORD')
+    EMAIL_HOST = 'smtp.zoho.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = 'noreply@brian-lindsay.com'
+    EMAIL_HOST_PASSWORD = os.getenv('ZOHO_APP_PASSWORD')
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
