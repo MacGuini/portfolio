@@ -174,24 +174,56 @@ else:
         }
     }
 
-# # Testing Database issues
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
-    # Production email settings
-    # Use Zoho Mail SMTP settings
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = 'smtp.zoho.com'
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-    EMAIL_HOST_USER = 'noreply@brian-lindsay.com'
-    EMAIL_HOST_PASSWORD = os.getenv('ZOHO_APP_PASSWORD')
+# Old configuration
+# if DEBUG:
+#     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# else:
+#     # Production email settings
+#     # Use Zoho Mail SMTP settings
+#     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#     EMAIL_HOST = 'smtp.zoho.com'
+#     EMAIL_PORT = 587
+#     EMAIL_USE_TLS = True
+#     EMAIL_HOST_USER = 'noreply@brian-lindsay.com'
+#     EMAIL_HOST_PASSWORD = os.getenv('ZOHO_APP_PASSWORD')
+
+# EMAIL_BACKEND = os.getenv(
+#     "EMAIL_BACKEND",
+#     "django.core.mail.backends.smtp.EmailBackend"
+# )
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtppro.zoho.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = True
+# EMAIL_HOST_USER = 'noreply@brian-lindsay.com'
+# EMAIL_HOST_PASSWORD = os.getenv('ZOHO_APP_PASSWORD')
+# DEFAULT_FROM_EMAIL = 'noreply@brian-lindsay.com'
+
+EMAIL_BACKEND = os.getenv(
+    "EMAIL_BACKEND",
+    "django.core.mail.backends.smtp.EmailBackend"
+)
+
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.zoho.com")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "true").lower() == "true"
+EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "false").lower() == "true"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "noreply@brian-lindsay.com")
+EMAIL_HOST_PASSWORD = os.getenv("ZOHO_APP_PASSWORD")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
+
+logger = logging.getLogger(__name__)
+
+logger.warning("EMAIL_BACKEND=%s", EMAIL_BACKEND)
+logger.warning("EMAIL_HOST=%s", EMAIL_HOST)
+logger.warning("EMAIL_PORT=%s", EMAIL_PORT)
+logger.warning("EMAIL_USE_TLS=%s", EMAIL_USE_TLS)
+logger.warning("EMAIL_USE_SSL=%s", EMAIL_USE_SSL)
+logger.warning("EMAIL_HOST_USER=%s", EMAIL_HOST_USER)
+logger.warning("ZOHO_APP_PASSWORD set=%s", bool(EMAIL_HOST_PASSWORD))
+logger.warning("DEFAULT_FROM_EMAIL=%s", DEFAULT_FROM_EMAIL)
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
