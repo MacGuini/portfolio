@@ -1,5 +1,5 @@
 
-<script src="https://www.google.com/recaptcha/api.js?render=6LfZNx0pAAAAAFUVUTW0GPhjD_hJihyjlSf9iAMB"></script>
+<script src="https://www.google.com/recaptcha/api.js?render={{ site_key_v3 }}"></script>
 <script>
   // 3
   grecaptcha.ready(function() {
@@ -8,7 +8,7 @@
           var form = this;
           // 5
           e.preventDefault()
-          grecaptcha.execute('6LfZNx0pAAAAAFUVUTW0GPhjD_hJihyjlSf9iAMB',).then(function(token) {
+          grecaptcha.execute('{{ site_key_v3 }}',).then(function(token) {
               // 6
               $('#recaptcha').val(token)
               // 7
