@@ -2,7 +2,7 @@ asgiref==3.11.1
 certifi==2026.2.25
 charset-normalizer==3.4.6
 dj-database-url==2.3.0
-Django==5.2.12
+Django==5.2.14
 django-cleanup==9.0.0
 idna==3.11
 pillow==11.3.0
